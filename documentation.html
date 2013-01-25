@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>ZMap · Documentation</title>
+		<meta name="description" context="some description should go here"/>
+		
+		<link href="css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="css/bootstrap-responsive.min.css" rel="stylesheet"/>
+		<link href="css/local.css" rel="stylesheet"/>
+	</head>
+	<body>
+		<div class="navbar navbar-static-top navbar-inverse">
+		  <div class="navbar-inner">
+		    <a class="brand" href="index.html">zmap · the ultrafast internet scanner</a>
+		    <ul class="nav pull-right">
+		      <li><a href="introduction.html">introduction</a></li>
+					<li class="active"><a href="documentation.html">documentation</a></li>
+					<li><a href="download.html">download</a></li>
+		    </ul>
+		  </div>
+		</div>
+		<div class="content">
+			<div class="container">
+				<div class="row">
+					<div class="span10 offset1 white-panel title">
+						<div class="titlecontent">
+							<h2>ZMap · Technical Documentation</h2>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span2 offset1 white-nav">
+						<ul class="nav nav-tabs nav-stacked">
+						  <li><a href="#introduction">Introduction</a></li>
+							<li><a href="#basic">Basic Usage</a></li>
+							<li><a href="#requirements">System Requirements</a></li>
+							<li><a href="#output">Results Output</a></li>
+							<li><a href="#">Address Selection</a></li>
+							<li><a href="#blacklisting">Blacklisting</a></li>
+							<li><a href="#">Types of Scanning</a></li>
+							<li><a href="#ratelimiting">Rate Limiting</a></li>
+							<li><a href="#sampling">Sampling</a></li>
+							<li><a href="#">Sending Details</a></li>
+							<li><a href="#">Receiving Details</a></li>
+							<li><a href="#">Extending ZMAP</a></li>
+						</ul>
+					</div>
+					<div class="span8 white-panel">
+						<div class="content">
+							<a name="introduction"></a>
+							<h3>Introduction</h3>
+							<p>ZMap is a network scanner designed for performing comprehensive scans of the IPv4 address space. On a typical desktop computer and a one gigabit ethernet connection, ZMap is capable of performing a scan of the Internet in 40 minutes and with approximately 97% coverage. While previous network tools have been designed to scan small network segments, ZMap is specifically architected to scan the entire address space, and is built in a modular manner in order to allow its incorporation with other network survey tools. ZMap operates on GNU/Linux platform and currently supports <a href="http://en.wikipedia.org/wiki/Port_scanner#SYN_scanning">TCP SYN</a> and <a href="http://en.wikipedia.org/wiki/Ping_(networking_utility)#Echo_request">ICMP echo request</a> scanning.</p>
+							<br/>
+							<h3>Basic Usage</h3>
+							<a name="basic"></a> 
+							<p></p>
+
+							<br/>
+							<a name="requirements"></a> 
+							<h3>System Requirements</h3>
+							
+							<p>ZMap was designed to run on GNU/Linux based systems. ZMap requires <a href="gmplib.org">GMP</a>, a free library for arbitrary precision arithmetic.	 GMP can installed on Debian based systems by running <code>sudo apt-get install libgmp3c2 libgmp3-dev</code> or <code>sudo yum install gmp gmp-devel</code> on RHEL and Fedora based systems. If you are building ZMap with <a href="http://redis.io/">Redis</a> support, you will need to install <a href="https://github.com/redis/hiredis">Hiredis</a>.</p>
+							<br/>
+							
+							<h3>Address Selection</h3>
+							<a name="address"></a> 
+							<p>IP addresses are scanned in a random permutation that is generated at the beginning of each scan. If you want to scan addresses in the same order over multiple scans or to scan the same subset of the IPv4 address space (see <a href="#sampling">sampling</a>), you can specify the permutation by specifying the seed option. It is not possible to specify the exact order in which addresses are scanned.</p>
+
+							<dl class="dl-horizontal params">
+							  <dt>-s, --seed=n</dt><dd>Set seed for selecting address permutation</dd>
+							</dl>
+							<br/>
+							<a name="blacklisting"></a>
+							<h3>Blacklisting and Whitelisting</h3>
+							<p>ZMap supports both blacklisting and whitelisting network prefixes. If ZMap is not provided with blacklist or whitelist parameters, ZMap will scan all IPv4 address (including local, reserved, and multicast addresses). If a blacklist file is specified, network prefixes in the blacklisted segments will not be scanned; if a whitelist file is provided, only network prefixes in the whitelist file will be scanned. A whitelist and blacklist file can be used in coordination. Whitelist and blacklist files can be specified on the command-line as follows:</p>
+
+<dl class="dl-horizontal params">
+  <dt>-b, --blacklist-file=path</dt><dd>File of subnets to blacklist in CIDR notation, e.g. 192.168.0.0/16</dd>
+	<dt>-w, --whitelist-file=path</dt><dd>File of subnets to limit scan to in CIDR notation, e.g. 192.168.0.0/16</dd>
+</dl>
+	
+<p>Blacklist files should be formatted with a single network prefix in <a href="http://en.wikipedia.org/wiki/CIDR_notation">CIDR notation</a> per line. Comments are allowed using the <code>#</code> character. An example is provided below:</p>
+						
+<pre>
+0.0.0.0/8           # reserved
+10.0.0.0/8          # RFC 1918
+192.168.0.0/16      # RFC 1918
+172.16.0.0/12       # RFC 1918
+224.0.0.0/3         # multicast/future use
+169.254.0.0/16      # link local addresses</pre><br/>
+							<p><span class="label label-info">Heads Up!</span> If you are looking to scan only a random portion of the internet, checkout <a href="#sampling">Sampling</a>, instead of using whitelisting and blacklisting.</p>	
+							<br/>
+							<a name="ratelimiting"></a> 
+							<h3>Rate Limiting</h3>
+							<p>By default, ZMap will scan at the fastest rate that your network adaptor supports. In our experiences on commodity hardware, this is generally around 95-98% of the theoretical speed of gigabit ethernet, which may be faster than your upstream provider can handle. ZMap will not automatically adjust its send-rate based on your upstream provider and the send-rate may need to be manually adjusted to find the fastest you can scan without experiencing significant packet drop.</p>
+							<dl class="dl-horizontal params">
+								<dt>-r, --rate=pps</dt><dd>Set maximum send rate in packets/sec</dd>
+							</dl>
+							<br/>
+							<h3>Sampling</h3>
+							<a name="sampling"></a> 
+							<p>ZMap allows random sampling of the IPv4 address space by specifying max-targets and/or max-runtime. Because hosts are scanned in a random permutation generated per scan instantiation, limiting a scan to <emph>n</emph> hosts will perform a random sampling of <emph>n</emph> hosts. Command-line options:</p>
+							<dl class="dl-horizontal params">
+							  <dt>-m, --max-targets=n</dt><dd>Cap number of targets to probe</dd>
+								<dt>-T, --max-runtime=s</dt><dd>Cap length of time for sending packets (in seconds)</dd>
+							</dl>
+							<br/>
+							<h3>Extending ZMAP</h3>
+							<a name="sampling"></a> 
+							<p>ZMap allows random sampling of the IPv4 address space by specifying max-targets and/or max-runtime. Because hosts are scanned in a random permutation generated per scan instantiation, limiting a scan to <emph>n</emph> hosts will perform a random sampling of <emph>n</emph> hosts. Command-line options:</p>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</body>
+</html>
