@@ -32,46 +32,184 @@
 				<div class="row">
 					<div class="span2 offset1 white-nav">
 						<ul class="nav nav-tabs nav-stacked">
-						  <li><a href="#introduction">Introduction</a></li>
 							<li><a href="#basic">Basic Usage</a></li>
 							<li><a href="#requirements">System Requirements</a></li>
 							<li><a href="#output">Results Output</a></li>
 							<li><a href="#">Address Selection</a></li>
 							<li><a href="#blacklisting">Blacklisting</a></li>
-							<li><a href="#">Types of Scanning</a></li>
 							<li><a href="#ratelimiting">Rate Limiting</a></li>
-							<li><a href="#sampling">Sampling</a></li>
-							<li><a href="#">Sending Details</a></li>
-							<li><a href="#">Receiving Details</a></li>
-							<li><a href="#">Extending ZMAP</a></li>
+							<li><a href="#ratelimiting">Sampling</a></li>
+							<li><a href="#multiple">Multiple Packets</a></li>
+							<li><a href="#advanced">Advanced Usage</a></li>
+							<li><a href="extension">Extending ZMAP</a></li>
 						</ul>
 					</div>
 					<div class="span8 white-panel">
 						<div class="content">
-							<a name="introduction"></a>
-							<h3>Introduction</h3>
-							<p>ZMap is a network scanner designed for performing comprehensive scans of the IPv4 address space. On a typical desktop computer and a one gigabit ethernet connection, ZMap is capable of performing a scan of the Internet in 40 minutes and with approximately 97% coverage. While previous network tools have been designed to scan small network segments, ZMap is specifically architected to scan the entire address space, and is built in a modular manner in order to allow its incorporation with other network survey tools. ZMap operates on GNU/Linux platform and currently supports <a href="http://en.wikipedia.org/wiki/Port_scanner#SYN_scanning">TCP SYN</a> and <a href="http://en.wikipedia.org/wiki/Ping_(networking_utility)#Echo_request">ICMP echo request</a> scanning.</p>
-							<br/>
-							<h3>Basic Usage</h3>
 							<a name="basic"></a> 
-							<p></p>
+							<h3>Basic Usage</h3>
+							<p>ZMap currently supports two types of scanning: TCP SYN scanning against a single target port and ICMP echo request (ping) scanning. For all types of scans, ZMAP requires several parameters: source ip address and gateway MAC address. ZMap supports sending packets from multiple source IP addresses and in the case of TCP SYN scans, from multiple ports. Because ZMap utilizes a raw socket to send network packets and <b>libpcap</b> to collect responses, ZMap must be run as root or with <b>cap_net_raw</b> (recommended). In the case that you want packets sent through a non-default interface, this can be be set by providing the <strong>interface</strong> argument.</p> <p> Basic arguments:</p>
+							
+							<dl class="dl-horizontal params">
+								<dt>-S, --source-ip=ip|range</dt><dd>Source address(es) for scan packets (e.g. <b>1.1.1.3-1.1.1.8</b>)</dd>
+							  	<dt>-G, --gateway-mac=addr</dt><dd>Specify gateway MAC address (e.g. <b>b4:23:f9:28:fa:2d</b>)</dd>
+								<dt>-I, --interface=name</dt><dd>Specify network interface to use (e.g. <b>eth1</b>)</dd>
+							</dl>
+							
+							<p><span class="label label-info">Heads Up!</span> One of the reasons that ZMap supports sending packets from multiple addresses and source ports is because this allows the scanner to embed small amounts of packet checksum data in these fields. This functionality helps the scanner separate legitimate responses from extraneous responses that may be received during scan runtime. If you scan from a single source port and single source address, ZMap has no ability of filtering out these extraneous responses.</p>	
+																
+							<br/><h4>TCP SYN Scans</h4>
+							<p>When performing a TCP SYN scan, ZMap requires a single target port and supports setting a range of source ports from which the scan will originate.</p>
+							<dl class="dl-horizontal params">
+								<dt>-t, --target-port=port</dt><dd>TCP port number to scan (e.g. <b>443</b>)</dd>
+								<dt>-P, --source-port=port|range</dt><dd>Source port(s) for scan packets (e.g. <strong>40000-50000</strong>)</dd>
+							</dl>
+							<p>For example, if you wanted to scan the Internet on port 443, from interface <b>eth1</b> at the rate of 1,000,000 hosts per second and saving the IP addresses that responded with synack packets, this could be accomplished with a command similar to the following:</p>
+							<pre>zmap -t 443 -G 'b4:23:f9:28:fa:2d' -I eth1 -S 1.1.1.4 -r 10000000 -o results.csv</pre><br/>
 
+							<p><span class="label label-warning">Warning!</span> ZMap relies on the Linux kernel to respond to SYN/ACK packets with RST packets in order to close connections opened by the scanner. This occurs because ZMap sends packets at the ethernet layer in order to reduce overhead otherwise incurred in the kernel from tracking open TCP connections and performing route lookups. As such, if you have a firewall rule that tracks established connections such as a netfilter rule similar to <code>-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT</code>, this will block SYN/ACK packets from reaching the kernel. This will not prevent ZMap from recording responses, but it will prevent RST packets from being sent back, ultimately using up a connection on the scanned host until your connection times out. We strongly recommend that you select a set of unused ports on your scanning host which can be allowed access in your firewall and specifying this port range when executing ZMap, similar to the following:</p>
+							<pre>zmap -t 443 -G 'b4:23:f9:28:fa:2d' -I eth1 -S 1.1.1.4 -r 10000000 -P '50000-60000'</pre>
 							<br/>
+							
+							<h4>ICMP Echo Request Scans</h4>
+							<p>While ZMap performs TCP SYN scans by default, it also supports ICMP echo request scans in which an ICMP echo request packet is sent to each host and the type of ICMP response received in reply is denoted. An ICMP scan can be performed by selecting the <strong>icmp_echoscan</strong> scan module similar to the following:</p>
+							<pre>zmap -t 443 -G 'b4:23:f9:28:fa:2d' -S 1.1.1.4 --scan-type=icmp_echoscan -r 10000000</pre>
+							<br/>
+							<h4>Configuration Files</h4>
+							<p>ZMap supports configuration files instead of requiring all options to be specified on the command-line. A configuration can be created by specifying one long-name option and the value per line such as:</p>
+							<pre>
+interface "eth1"
+source-ip 1.1.1.4-1.1.1.8
+gateway-mac b4:23:f9:28:fa:2d # upstream gateway
+cooldown-time 300 # seconds
+quiet
+summary
+</pre><br/>
+<p>ZMap can then be run with a configuration file and specifying any additional necessary parameters:</p>
+<pre>zmap --config=~/.zmap.conf --target-port=443 </pre>
+							<br/>
+							<h4>Verbosity</h4>
+							<p>There are several types of on-screen output that ZMap produces. By default, ZMap will print out basic progress information similar to the following every 1 second. This can be disabled by setting the <strong>quiet</strong> flag.</p>
+							<pre>
+send: 74983 74949 p/s (74917 p/s avg); recv: 2150 2150 p/s (2148 p/s avg); hits: 0.29%</pre>
+<br/>
+<p>ZMap also prints out informational messages during scanner configuration such as the followingwhich can be controlled with the <strong>verbosity</strong> argument.</p>
+<pre>
+Jan 29 00:46:17.116 [INFO] blacklist: '0.0.0.0/8'
+Jan 29 00:46:17.116 [INFO] blacklist: '10.0.0.0/8'
+Jan 29 00:46:17.116 [INFO] blacklist: '192.168.0.0/16'
+</pre>
+<br/>
+<p>ZMap also supports printing out a grep-able summary at the end of the scan, similar to below, which can be invoked with the <strong>summary</strong> flag.</p>
+<pre>
+cnf	target-port				443
+cnf	source-port-range-begin			32768
+cnf	source-port-range-end			61000
+cnf	source-addr-range-begin			141.212.121.20
+cnf	source-addr-range-end			141.212.121.83
+cnf	maximum-packets				4294967295
+cnf	maximum-runtime				0
+cnf	permutation-seed			0
+cnf	cooldown-period				300
+cnf	send-interface				eth1
+cnf	rate					45000
+env	nprocessors				8
+exc	send-start-time				Fri Jan 18 01:47:35 2013
+exc	send-end-time				Sat Jan 19 00:47:07 2013
+exc	recv-start-time				Fri Jan 18 01:47:35 2013
+exc	recv-end-time				Sat Jan 19 00:52:07 2013
+exc	sent					3722335150
+exc	blacklisted				572632145
+exc	first-scanned				1318129262
+exc	hit-rate				0.874102
+exc	synack-received-unique			32537000
+exc	synack-received-total			36689941
+exc	synack-cooldown-received-unique		193
+exc	synack-cooldown-received-total		1543
+exc	rst-received-unique			141901021
+exc	rst-received-total			166779002
+adv	source-port-secret			37952
+adv	permutation-gen				4215763218
+</pre>
+<br/>
+<p>Verbosity Arguments:</p>
+							<dl class="dl-horizontal params">
+								<dt>-q, --quiet</dt><dd>Do not print update regular status updates</dd>
+								<dt>-g, --summary</dt><dd>Provide a greppable summary at the end of the scan</dd>
+								<dt>-v, --verbosity=n</dt><dd>Level of output detail</dd>
+								<dt>-h, --help</dt><dd>Print help and exit</dd>
+								<dt>-V, --version</dt><dd>Print version and exit</dd>
+							</dl>
+							<br/>
+							<h4>Dry-Run Mode</h4>
+							<p>Dry-run mode allows you test your configuration and find what packets will be sent without creating any traffic.</p> <dl class="dl-horizontal params">
+								<dt>-d, --dryrun</dt><dd>Don't send actual packets</dd>
+							</dl>
+							
+							<p>Instead of sending any traffic, ZMap will produce an output similar to the following:</p>
+														<pre>
+tcp { source: 46870 | dest: 443 | seq: 15587922 | checksum: 2520973312 }
+ip { saddr: 1.1.1.4 | daddr: 98.28.28.36 | checksum: 910295040 }
+eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }
+---------------------------------------------------------------------------------
+tcp { source: 52413 | dest: 443 | seq: 15587922 | checksum: 1787953152 }
+ip { saddr: 1.1.1.4 | daddr: 114.144.33.186 | checksum: 540540928 }
+eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }
+---------------------------------------------------------------------------------
+tcp { source: 38524 | dest: 443 | seq: 15587922 | checksum: 3076063232 }
+ip { saddr: 1.1.1.4 | daddr: 177.175.204.20 | checksum: 918421504 }
+eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }</pre><br/>
+
 							<a name="requirements"></a> 
 							<h3>System Requirements</h3>
-							
-							<p>ZMap was designed to run on GNU/Linux based systems. ZMap requires <a href="gmplib.org">GMP</a>, a free library for arbitrary precision arithmetic.	 GMP can installed on Debian based systems by running <code>sudo apt-get install libgmp3c2 libgmp3-dev</code> or <code>sudo yum install gmp gmp-devel</code> on RHEL and Fedora based systems. If you are building ZMap with <a href="http://redis.io/">Redis</a> support, you will need to install <a href="https://github.com/redis/hiredis">Hiredis</a>.</p>
+							<p>ZMap was designed to run on GNU/Linux based systems. ZMap requires <a href="http://gmplib.org">GMP</a>, a free library for arbitrary precision arithmetic. GMP can installed on Debian based systems by running <code>sudo apt-get install libgmp3c2 libgmp3-dev</code> or <code>sudo yum install gmp gmp-devel</code> on RHEL and Fedora based systems. If you are building ZMap with <a href="http://redis.io/">Redis</a> support, you will need to install <a href="https://github.com/redis/hiredis">Hiredis</a>.</p>
 							<br/>
-							
-							<h3>Address Selection</h3>
+							<a name="output"></a> 
+							<h3>Results Output</h3>
+								<p>ZMap can produce results in several formats through the use of output modules. ZMap currently supports three output formats: <strong>simple-file</strong>, <strong>extended-file</strong>, and <strong>redis</strong>. By default, ZMap will return results in the simple-file format and if no output file is specified, ZMap will not produce specific results. See <a href="extending">Extending ZMAP</a> for information on writing custom output modules.</p>
+								
+								<dl class="dl-horizontal params">
+									<dt>-o, --output-file=p</dt><dd>File to write list of live IPs to</dd>
+								  <dt>-M, --output-module=p</dt><dd>Invoke a custom output module</dd>
+									<dt>-L, --list-output-modules</dt><dd>Lists installed output modules</dd>
+								</dl><br/>
+								
+								<h4>Simple File</h4>
+								<p>The simple file module will produce an output file containing only the unique IP addresses that responded successfully (e.g. SYNACK packet for TCP SYN scan). Example:
+<pre>115.237.116.119
+23.9.117.80
+207.118.204.141
+217.120.143.111
+50.195.22.82
+31.6.64.244
+145.216.89.22
+68.171.59.173</pre>						<br/>
+								<h4>Extended File</h4>
+								<p>The extended file module will produce a detailed record of all responses received from the scan.</p>
+<pre>response, saddr, daddr, sport, dport, in_cooldown, is_repeat, timestamp
+synack, 12.2.45.67, 1.1.1.3, 443, 55834, 0, 0, 2013-01-25 14:58:43.833
+rst, 119.220.213.46, 1.1.1.2, 443, 38424, 0, 0, 2013-01-25 14:58:43.845
+rst, 119.220.213.46, 1.1.1.2, 443, 38424, 0, 1, 2013-01-25 14:58:43.849
+rst, 189.64.129.255, 1.1.1.3, 443, 39083, 0, 1, 2013-01-25 14:58:49.381
+synack, 117.197.216.208, 1.1.1.2, 443, 44826, 0, 1, 2013-01-25 14:58:49.381
+rst, 209.145.67.159, 1.1.1.3, 443, 56190, 0, 1, 2013-01-25 14:58:49.386
+rst, 114.234.179.115, 1.1.1.3, 443, 50203, 0, 1, 2013-01-25 14:58:49.386</pre><br/>
+								<h4>Redis</h4>
+<p>The redis output module allows addresses to be added to a Redis queue instead of being saved to file which ultimately allows ZMap to be incorporated with post processing tools.</p
+  
+  <p> <span class="label label-info">Heads Up!</span> ZMap does not build with Redis support by default. If you are building ZMap from source, you can build with Redis support by running <code>make REDIS=true</code>.</p>
+														<br/>
+
 							<a name="address"></a> 
+							<h3>Address Selection</h3>
+							
 							<p>IP addresses are scanned in a random permutation that is generated at the beginning of each scan. If you want to scan addresses in the same order over multiple scans or to scan the same subset of the IPv4 address space (see <a href="#sampling">sampling</a>), you can specify the permutation by specifying the seed option. It is not possible to specify the exact order in which addresses are scanned.</p>
 
 							<dl class="dl-horizontal params">
 							  <dt>-s, --seed=n</dt><dd>Set seed for selecting address permutation</dd>
 							</dl>
 							<br/>
-							<a name="blacklisting"></a>
+							<a name="blacklisting"></a> 
 							<h3>Blacklisting and Whitelisting</h3>
 							<p>ZMap supports both blacklisting and whitelisting network prefixes. If ZMap is not provided with blacklist or whitelist parameters, ZMap will scan all IPv4 address (including local, reserved, and multicast addresses). If a blacklist file is specified, network prefixes in the blacklisted segments will not be scanned; if a whitelist file is provided, only network prefixes in the whitelist file will be scanned. A whitelist and blacklist file can be used in coordination. Whitelist and blacklist files can be specified on the command-line as follows:</p>
 
@@ -80,7 +218,7 @@
 	<dt>-w, --whitelist-file=path</dt><dd>File of subnets to limit scan to in CIDR notation, e.g. 192.168.0.0/16</dd>
 </dl>
 	
-<p>Blacklist files should be formatted with a single network prefix in <a href="http://en.wikipedia.org/wiki/CIDR_notation">CIDR notation</a> per line. Comments are allowed using the <code>#</code> character. An example is provided below:</p>
+<p>Blacklist files should be formatted with a single network prefix in <a href="http://en.wikipedia.org/wiki/CIDR_notation">CIDR notation</a> per line. Comments are allowed using the <code>#</code> character. Example:</p>
 						
 <pre>
 0.0.0.0/8           # reserved
@@ -91,24 +229,119 @@
 169.254.0.0/16      # link local addresses</pre><br/>
 							<p><span class="label label-info">Heads Up!</span> If you are looking to scan only a random portion of the internet, checkout <a href="#sampling">Sampling</a>, instead of using whitelisting and blacklisting.</p>	
 							<br/>
+
 							<a name="ratelimiting"></a> 
-							<h3>Rate Limiting</h3>
+							<h3>Rate Limiting and Sampling</h3>
 							<p>By default, ZMap will scan at the fastest rate that your network adaptor supports. In our experiences on commodity hardware, this is generally around 95-98% of the theoretical speed of gigabit ethernet, which may be faster than your upstream provider can handle. ZMap will not automatically adjust its send-rate based on your upstream provider and the send-rate may need to be manually adjusted to find the fastest you can scan without experiencing significant packet drop.</p>
 							<dl class="dl-horizontal params">
 								<dt>-r, --rate=pps</dt><dd>Set maximum send rate in packets/sec</dd>
 							</dl>
-							<br/>
-							<h3>Sampling</h3>
-							<a name="sampling"></a> 
-							<p>ZMap allows random sampling of the IPv4 address space by specifying max-targets and/or max-runtime. Because hosts are scanned in a random permutation generated per scan instantiation, limiting a scan to <emph>n</emph> hosts will perform a random sampling of <emph>n</emph> hosts. Command-line options:</p>
+
+							<p>ZMap also allows random sampling of the IPv4 address space by specifying max-targets and/or max-runtime. Because hosts are scanned in a random permutation generated per scan instantiation, limiting a scan to <emph>n</emph> hosts will perform a random sampling of <emph>n</emph> hosts. Command-line options:</p>
 							<dl class="dl-horizontal params">
 							  <dt>-m, --max-targets=n</dt><dd>Cap number of targets to probe</dd>
-								<dt>-T, --max-runtime=s</dt><dd>Cap length of time for sending packets (in seconds)</dd>
+							  <dt>-T, --max-runtime=s</dt><dd>Cap length of time for sending packets (in seconds)</dd>
+							</dl>
+							<p>For example, if you wanted to scan the same one million hosts on the Internet for multiple scans, you could set a predetermined seed and cap the number of scanned hosts similar to the following:</p>
+							<pre>zmap -t 443 -G 'b4:23:f9:28:fa:2d' -I eth1 -S 1.1.1.4 -s 3 -m 10000000 -o results.csv</pre><br/>
+							<p>In order to determine which one million hosts were going to be scanned, you could run the scan in dry-run mode which will print out the packets that would be sent instead of performing the actual scan.</p>
+							<pre>zmap -t 443 -G 'b4:23:f9:28:fa:2d' -I eth1 -S 1.1.1.4 -s 3 -m 10000000 --dryrun</pre>
+							<br/>
+							<a name="multiple"></a> 
+							<h3>Sending Multiple Packets</h3>
+							<p>ZMap supports sending multiple packets to each host through two options <strong>packet-streams</strong> and <strong>ident-packets</strong>. When multiple packet streams are used, slightly different packets (differing in source address or source port) are sent to each host and if a host receives these multiple packets, it will open a connection for each packet. In the case of identical packets, the a distinct packet will be sent multiple times to the same host. If a host received multiple identical packets, these often be treated as duplicates and only a single connection will be opened.</p>
+			
+							<dl class="dl-horizontal params">
+							  <dt>-u, --packet-streams=n</dt><dd>The number of unique packets sent to an IP address</dd>
+							  <dt>-p, --ident-packets=n</dt><dd>The number of times each particular scan packet is sent</dd>
 							</dl>
 							<br/>
+							
+							<p><span class="label label-info">Heads Up!</span> Many routers on the Internet drop duplicated packets (such as those created by the <strong>ident-packets</strong>).</p>	
+													
+							<a name="advanced"></a> 
+							<h3>Advanced Options</h3>
+							<h4>Scanner Cool-Down</h4>
+							<p> Because the sending and receiving components of ZMap operate independently, each can run for different lengths of time. We generally recommend that receiving component continue running approximately 30 seconds after the finish of the sending thread in order to receive any slow responses. This can be set to a different value via the <strong>cooldown-time</strong> parameter</p>
+							<dl class="dl-horizontal params">
+								<dt>-c, --cooldown-time=secs</dt><dd>How long to wait after the last packet is sent before terminating receiver</dd>
+							</dl>
+							<br/>
+							<h4>Threading</h4>
+							<p>ZMap always operates the sending and receiving components in separate threads. However, ZMap also supports sending from multiple threads which can greatly improve performance. The <strong>sender-threads</strong> parameter determines the number of threads that ZMap will utilize to send packets. It generally does not increase performance to have a larger number than sending threads than the number of available CPUs in the scanning host.</p>
+							<dl class="dl-horizontal params">
+								<dt>-n, --sender-threads</dt><dd>Threads used to send packets (default=`1')</dd>
+							</dl><br/>
+							<a name="extension"></a> 
 							<h3>Extending ZMAP</h3>
-							<a name="sampling"></a> 
-							<p>ZMap allows random sampling of the IPv4 address space by specifying max-targets and/or max-runtime. Because hosts are scanned in a random permutation generated per scan instantiation, limiting a scan to <emph>n</emph> hosts will perform a random sampling of <emph>n</emph> hosts. Command-line options:</p>
+							<p>ZMap can be extended to support different types of scanning through <strong>send modules</strong> and additional types of results output through <strong>output modules</strong>. Registered send and output modules can be listed through the command-line interface:</p>
+							<dl class="dl-horizontal params">
+								<dt>-n, --sender-threads</dt><dd>Threads used to send packets (default=`1')</dd>
+							</dl><br/>
+							<a name="extension"></a>
+							
+							<br/>
+							<h4>Send Modules</h4>
+							<p>Packets are constructed using <strong>send modules</strong> which allow abstracted packet creation and updates. Each type of scan (e.g. TCP SYN scan or ICMP echo request scan) is implemented by developing and registering the necessary callbacks in a <code>send_module_t</code> struct:</p>
+<pre>
+typedef struct send_module {
+	const char *name;
+
+	size_t packet_length;
+	const char *pcap_filter;
+
+	setup_cb global_initialize;
+	send_init_cb thread_initialize;
+	make_packet_cb make_packet;
+	print_packet_cb print_packet;
+	classify_packet_cb classify_packet;
+	update_cb close;
+	response_type_t responses[];
+	
+} send_module_t;
+</pre>
+
+<pre>
+typedef int (*pckt_cb)(ipaddr_n_t, ipaddr_n_t,
+		port_n_t, port_n_t, struct timeval*, 
+		const char*, int, int, const u_char*);
+</pre>
+<pre>typedef int (*setup_cb)(struct state_conf *);</pre>
+<pre>
+typedef int (*update_cb)(struct state_conf*,
+		struct state_send*, struct state_recv*);
+</pre>
+
+<pre>typedef int (*send_init_cb)(void*, macaddr_t*, macaddr_t*, port_n_t);</pre>
+
+<pre>typedef int (*make_packet_cb)(void*, ipaddr_n_t, port_n_t, 
+		ipaddr_n_t, port_n_t);</pre>
+
+<pre>typedef void (*print_packet_cb)(FILE *fp, void* packet);</pre>
+
+<pre>typedef struct response_type {
+		uint16_t is_success;
+		char name[MAX_RESPONSE_TYPE_NAME+1];
+} response_type_t;</pre>
+<pre>typedef response_type_t* (*classify_packet_cb)(const u_char*, uint32_t);
+</pre>
+							
+							<h4>Output Modules</h4>
+							<p></p>
+							
+<pre>typedef struct output_module {
+	const char *name;
+	unsigned update_interval;
+
+	setup_cb init;
+	update_cb start;
+	update_cb update;
+	update_cb close;
+
+	send_cb synsend;
+	pckt_cb success_ip;
+	pckt_cb other_ip;
+} output_module_t;</pre>
 					</div>
 				</div>
 			</div>
