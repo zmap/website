@@ -37,18 +37,11 @@
 							<li><a href="#requirements">Who is behind ZMap?</a></li>
 						</ul>
 					</div>
+					
 					<div class="span8 white-panel">
 						<div class="content">
 							<h3>Introduction</h3>
-							<p>ZMap is a network scanner designed for performing comprehensive scans of the IPv4 address space. On a typical desktop computer and a one gigabit ethernet connection, ZMap is capable of performing a scan of the Internet in 40 minutes and with approximately 97% coverage. While previous network tools have been designed to scan small network segments, ZMap is specifically architected to scan the entire address space, and is built in a modular manner in order to allow its incorporation with other network survey tools. ZMap operates on GNU/Linux platform and currently supports <a href="http://en.wikipedia.org/wiki/Port_scanner#SYN_scanning">TCP SYN</a> and <a href="http://en.wikipedia.org/wiki/Ping_(networking_utility)#Echo_request">ICMP echo request</a> scanning.</p>
-							<br/>
-							<h3>Architecture</h3>
-							<a name="basic"></a> 
-							<p>Nunc sed lectus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae tellus non lectus dignissim porttitor eu id massa. Morbi in risus non mauris mattis bibendum. In hac habitasse platea dictumst. Sed vestibulum tristique dui nec ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus mattis, dui non feugiat fringilla, mi dui cursus velit, id vestibulum erat enim at magna. Sed tellus arcu, malesuada eleifend condimentum eget, sodales ac mi. Suspendisse sit amet lectus a mauris viverra mattis. Sed hendrerit tristique dignissim.</p>
-							<br/>
-							<h3>Ethical Usage</h3>
-							<a name="basic"></a> 
-							<p>Nunc sed lectus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae tellus non lectus dignissim porttitor eu id massa. Morbi in risus non mauris mattis bibendum. In hac habitasse platea dictumst. Sed vestibulum tristique dui nec ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus mattis, dui non feugiat fringilla, mi dui cursus velit, id vestibulum erat enim at magna. Sed tellus arcu, malesuada eleifend condimentum eget, sodales ac mi. Suspendisse sit amet lectus a mauris viverra mattis. Sed hendrerit tristique dignissim.</p>
+							<p>ZMap is a network scanner designed for performing comprehensive scans of the IPv4 address space. On a typical desktop computer and a one gigabit ethernet connection, ZMap is capable of performing a scan of the Internet in 40 minutes and with approximately 97% coverage. </p><p>While previous network tools have been designed to scan small network segments, ZMap is specifically architected to scan the entire address space, and is built in a modular manner in order to allow its incorporation with other network survey tools. ZMap operates on GNU/Linux platform and currently supports <a href="http://en.wikipedia.org/wiki/Port_scanner#SYN_scanning">TCP SYN</a> and <a href="http://en.wikipedia.org/wiki/Ping_(networking_utility)#Echo_request">ICMP echo request</a> scanning.</p>
 							<br/>
 							<a name="team"></a>
 							<h3>Who is behind ZMap?</h3>
@@ -59,8 +52,81 @@
 					            <li><a href="https://jhalderm.com">J. Alex Halderman</a>, Assistant Professor, University of Michigan</li>
 					          </ul>
 					          <p>The research team can be reached at <a href="mailto:zmap-team@umich.edu">zmap-team@umich.edu</a>.</p>
-							<p>We also acknowledge and thank Michael Bailey, Kevin Cheek, Alek Durumeric, Nadia Heninger, Paul Howell, Pat Pannuto, and the University of Michigan Information and Infrastructure Assurance Team for their support and advice in developing and testing ZMap.</p>
+							<p>We also acknowledge and thank Michael Bailey, Kevin Cheek, Alek Durumeric, Nadia Heninger, Paul Howell, James Kasten, Pat Pannuto, and the University of Michigan Information and Infrastructure Assurance Team for their support and advice in developing and testing ZMap.</p>
 							<br/>
+							<h3>Architecture</h3>
+							<a name="basic"></a> 
+							<p>ZMap is written in C99 and is intended for use on Linux-based operating systems. The scanner is composed of three major components: a modular sender, receiver, and a plugin-based framework for managing result output.</p><p> We implement ZMap as a multi-threaded architecture in order to allow concurrent sending and receiving and increased performance by generating and sending packets on multiple cores; it is inherently designed to be run on a multi-core or multi-processor host.</p><p>Unlike many network scanners, we do not perform “bucketing” in which we wait for a certain segment of the scan to complete before continuing nor do we limit the number of open connections, or enforce any strict timeout period. Instead, we allow the sender and receiver to act independently and continuously throughout the scan.</p><br/>
+							<h4>Sending</h4>
+							<p>The sending component of ZMap operates across one or more threads, each of which maintains a tight loop that sends Ethernet-level packets through a raw Linux socket. On ZMap initialization, each thread generates the skeleton of the probe packet. During iteration, ZMap updates host specific values, calculates the necessary checksums, sends the packet on a RAW socket.</p><p>Sending packets at the Ethernet layer allows us to bypass inefficiencies otherwise incurred in the kernel such as route lookups, connection tracking, and allows us to update and re-checksum the necessary parts of probe packets. This methodology ultimately allows us to scan at the rate of approximately 1.4 million packets per second on an entry level server and a 1 gigabit Internet connection. Packets are generated using <i>send modules</i> which allow different types of scans (currently TCP SYN and ICMP echo request) to be supported with the same architecture.</p><br/>
+							
+							<h4>Statelessness</h4>
+							<p>We expect that a small percentage of hosts will respond
+              with an open port (e.g. with a SYNACK packet) and we can
+              greatly increase the rate at which we can send packets and
+              reduce system requirements by removing the need to maintain
+              state on sent packets. We scan IP addresses according
+              to a randomly generated permutation in order to avoid overloading
+              destination networks, triggering intrusion detection systems
+              (IDS), and to provide more consistent results in the case of
+              transient network failures</p>
+              
+              <p>In order to scan in a random order without having to
+              maintain a list of what addresses have been scanned or need to be scanned, we iterate over a <a href="http://en.wikipedia.org/wiki/Multiplicative_group_of_integers_modulo_n">multiplicative group of integers modulo p</a>, choosing p to be a prime slightly
+              larger than 2**32. By choosing p to be a prime, we guarantee that the
+              group is cyclic and will reach all addresses in the IPv4
+              address space except 0.0.0.0 (an IANA reserved address)
+              once per scan. Using this methodology, we only need to
+              maintain a minimal state of three integers: the primitive root
+              used to generate the multiplicative group, the last IP address
+              scanned, and the IP address initially scanned. We generate a new permutation of addresses for each
+              scan invocation by generating a random primitive root of the multiplicative group and a random starting address within
+              the permutation.</p>
+              
+              <p>While we refrain from locally
+              storing state for sent packets, we perform simple validation
+              on received response packets by encoding a secret in the
+              TCP source port of the initial probe packet and checking the
+              destination port or ICMP IDs on received response packets. We generate
+              this secret by performing an XOR of a scan-speciﬁc secret
+              and destination address modulo the size of the port range.
+              This check, while inexpensive, prevents the incorrect
+              reporting of spurious packets and responses from
+              prior scans.</p>
+              
+							<br/>
+							<h4>Receiving</h4>
+								<p>We implement the receiver component of
+								ZMap using <a href="http://www.tcpdump.org/">libpcap</a> which allows us to reduce shared state between sending
+								and receiving components. On receipt of response packets on the selected device, we check source
+								and destination port, discard packets not initiated by the scanner, and	perform a user-controlled callback.
+								In order to handle duplicate packets, either sent spuriouslyby hosts or due to a dropped RST packet, we implement
+								an in-memory bit-array to track hosts that have responded.</p><br/>
+								
+							<h4>Modular Output</h4>
+							<p>We expect that the results of ZMap scans will be fed into
+							other tools for additional processing such as performing a protocol handshake. In order to support this operation and
+								to allow ZMap to be easily extended to perform additional
+								analysis on the RAW packet data, we implement a modular
+								interface to handle scan output.</p>This modular interface allows additional outputs to be
+								easily developed by writing callbacks that accept parsed
+								data and are triggered by speciﬁc ZMap actions as desired:
+								scan initialization, probe packet sent, new response received,
+								regular progress updates, and scan termination.
+								ZMap includes several modules that we believe will cover
+								basic use and can be selected at runtime including a simple
+								ﬁle output (ﬁle stream containing a list of unique IP addresses
+								with the speciﬁed port open), extended ﬁle output (file stream
+								containing a list of all packet responses and timing data),
+								and a pipelined interface to the Redis in-memory key-value
+								store.<p></p>
+							
+							<br/>
+							<h3>Ethical Usage</h3>
+							<a name="basic"></a> 
+							<p>Nunc sed lectus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae tellus non lectus dignissim porttitor eu id massa. Morbi in risus non mauris mattis bibendum. In hac habitasse platea dictumst. Sed vestibulum tristique dui nec ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus mattis, dui non feugiat fringilla, mi dui cursus velit, id vestibulum erat enim at magna. Sed tellus arcu, malesuada eleifend condimentum eget, sodales ac mi. Suspendisse sit amet lectus a mauris viverra mattis. Sed hendrerit tristique dignissim.</p>
+							<br/>
+
 						</div>
 					</div>
 				</div>
