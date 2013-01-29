@@ -32,29 +32,29 @@
 				<div class="row">
 					<div class="span2 offset1 white-nav">
 						<ul class="nav nav-tabs nav-stacked">
-						  <li><a href="#introduction">Introduction</a></li>
-							<li><a href="#">ZMap Architecture</a></li>
-							<li><a href="#output">Ethical Usage</a></li>
-							<li><a href="#requirements">Who is behind ZMap?</a></li>
+						  <li><a href="#stable">Stable Release</a></li>
+							<li><a href="#bleeding">Bleeding Edge</a></li>
+							<li><a href="#build">Building ZMap</a></li>
 						</ul>
 					</div>
 					<div class="span8 white-panel">
 						<div class="content">
-							<h3>Introduction</h3>
-							<p>ZMap is a network scanner designed for performing comprehensive scans of the IPv4 address space. On a typical desktop computer and a one gigabit ethernet connection, ZMap is capable of performing a scan of the Internet in 40 minutes and with approximately 97% coverage. While previous network tools have been designed to scan small network segments, ZMap is specifically architected to scan the entire address space, and is built in a modular manner in order to allow its incorporation with other network survey tools. ZMap operates on GNU/Linux platform and currently supports <a href="http://en.wikipedia.org/wiki/Port_scanner#SYN_scanning">TCP SYN</a> and <a href="http://en.wikipedia.org/wiki/Ping_(networking_utility)#Echo_request">ICMP echo request</a> scanning.</p>
+							<a name="stable"></a> 
+							<h3>Stable Release</h3>
+							<p>The latest stable release of ZMap is version 1.4.0 which can be download at <a href="https://github.com/zakird/pyad/tarball/0.4.10">zmap.0.4.10.tar.gz</a>. Any issues with the latest release should be reported on the <a href="https://github.com/zmap/zmap/issues">GitHub Issue Tracker</a>.</p>
 							<br/>
-							<h3>Architecture</h3>
-							<a name="basic"></a> 
-							<p>Nunc sed lectus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae tellus non lectus dignissim porttitor eu id massa. Morbi in risus non mauris mattis bibendum. In hac habitasse platea dictumst. Sed vestibulum tristique dui nec ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus mattis, dui non feugiat fringilla, mi dui cursus velit, id vestibulum erat enim at magna. Sed tellus arcu, malesuada eleifend condimentum eget, sodales ac mi. Suspendisse sit amet lectus a mauris viverra mattis. Sed hendrerit tristique dignissim.</p>
+							<a name="bleeding"></a> 
+							<h3>Bleeding Edge</h3>
+							
+							<p>The latest zmap code can be downloaded at <a href="https://github.com/zakird/pyad/tarball/master">https://github.com/zakird/pyad/tarball/master</a> or cloned from the git repository <code>git://github.com/zmap/zmap.git</code>.</p>
 							<br/>
-							<h3>Ethical Usage</h3>
-							<a name="basic"></a> 
-							<p>Nunc sed lectus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae tellus non lectus dignissim porttitor eu id massa. Morbi in risus non mauris mattis bibendum. In hac habitasse platea dictumst. Sed vestibulum tristique dui nec ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus mattis, dui non feugiat fringilla, mi dui cursus velit, id vestibulum erat enim at magna. Sed tellus arcu, malesuada eleifend condimentum eget, sodales ac mi. Suspendisse sit amet lectus a mauris viverra mattis. Sed hendrerit tristique dignissim.</p>
+							<a name="build"></a> 
+							<h3>Building and Installing ZMap</h3>
+							<p>ZMap was designed to run on GNU/Linux based systems and can be built with most recent versions of gcc. ZMap also requires <a href="http://gmplib.org">GMP</a>, a free library for arbitrary precision arithmetic. GMP can installed on Debian based systems by running <code>sudo apt-get install libgmp3c2 libgmp3-dev</code> or <code>sudo yum install gmp gmp-devel</code> on RHEL and Fedora based systems. If you are building ZMap with <a href="http://redis.io/">Redis</a> support, you will need to install <a href="https://github.com/redis/hiredis">Hiredis</a>.</p>
+							<p>Once these requirements have been installed, ZMap can be installed by running <code>make</code> and <code>make install</code>. ZMap does not build with Redis support by default. If you are building ZMap from source, you can build with Redis support by running <code>make REDIS=true</code>.</p>
+							
 							<br/>
-							<a name="team"></a>
-							<h3>Who is behind ZMap?</h3>
-							<p>Nunc sed lectus justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae tellus non lectus dignissim porttitor eu id massa. Morbi in risus non mauris mattis bibendum. In hac habitasse platea dictumst. Sed vestibulum tristique dui nec ultricies. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus mattis, dui non feugiat fringilla, mi dui cursus velit, id vestibulum erat enim at magna. Sed tellus arcu, malesuada eleifend condimentum eget, sodales ac mi. Suspendisse sit amet lectus a mauris viverra mattis. Sed hendrerit tristique dignissim.</p>
-							<br/>
+
 						</div>
 					</div>
 				</div>
