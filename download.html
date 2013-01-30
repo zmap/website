@@ -9,7 +9,7 @@
 		<link href="css/bootstrap-responsive.min.css" rel="stylesheet"/>
 		<link href="css/local.css" rel="stylesheet"/>
 	</head>
-	<body>
+	<body data-spy="scroll" data-target=".sidebar">
 		<div class="navbar navbar-static-top navbar-inverse">
 		  <div class="navbar-inner">
 		    <a class="brand" href="index.html">ZMap · The Ultrafast Internet Scanner</a>
@@ -22,22 +22,22 @@
 		</div>
 		<div class="content">
 			<div class="container">
-				<div class="row">
-					<div class="span10 offset1 white-panel title">
+				<div class="row-fluid">
+					<div class="span12 white-panel title">
 						<div class="titlecontent">
 							<h2>ZMap · Download</h2>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="span2 offset1 white-nav">
-						<ul class="nav nav-tabs nav-stacked">
+				<div class="row-fluid">
+					<div class="span2">
+						<ul class="nav nav-tabs nav-stacked navbar  white-nav">
 						  <li><a href="#stable">Stable Release</a></li>
 							<li><a href="#bleeding">Bleeding Edge</a></li>
 							<li><a href="#build">Building ZMap</a></li>
 						</ul>
 					</div>
-					<div class="span8 white-panel">
+					<div class="span10 white-panel">
 						<div class="content">
 							<a name="stable"></a> 
 							<h3>Stable Release</h3>
@@ -46,8 +46,7 @@
 							<a name="bleeding"></a> 
 							<h3>Bleeding Edge</h3>
 							
-							<p>The latest zmap code can be downloaded at <a href="https://github.com/zakird/pyad/tarball/master">https://github.com/zakird/pyad/tarball/master</a> or cloned from the git repository <code>git://github.com/zmap/zmap.git</code>.</p>
-							<br/>
+							<p>The latest zmap code can be downloaded at <a href="https://github.com/zmap/zmap/tarball/master">https://github.com/zmap/zmap/tarball/master</a> or cloned from the git repository <code>git://github.com/zmap/zmap.git</code>. ZMap utilizes git submodules for some libraries. As such, you will need to recursively clone the repository or run <code>git submodule init</code> and <code>git submodule update</code> after cloning.</p>
 							<a name="build"></a> 
 							<h3>Building and Installing ZMap</h3>
 							<p>ZMap was designed to run on GNU/Linux based systems and can be built with most recent versions of gcc. ZMap also requires <a href="http://gmplib.org">GMP</a>, a free library for arbitrary precision arithmetic. GMP can installed on Debian based systems by running <code>sudo apt-get install libgmp3c2 libgmp3-dev</code> or <code>sudo yum install gmp gmp-devel</code> on RHEL and Fedora based systems. If you are building ZMap with <a href="http://redis.io/">Redis</a> support, you will need to install <a href="https://github.com/redis/hiredis">Hiredis</a>.</p>

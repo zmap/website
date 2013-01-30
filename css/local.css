@@ -91,3 +91,7 @@ IMG.displayed {
     margin-left: 30px;
     padding-top: 2px;
 }
+
+.affix {
+    top: 10px;
+}​

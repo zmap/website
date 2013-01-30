@@ -10,6 +10,8 @@
 		<link href="css/local.css" rel="stylesheet"/>
 	</head>
 	<body>
+		<script type="text/JavaScript" src="js/jquery.min.js"></script> 
+		<script type="text/JavaScript" src="js/bootstrap.min.js"></script> 
 		<div class="navbar navbar-static-top navbar-inverse">
 		  <div class="navbar-inner">
 		    <a class="brand" href="index.html">ZMap · The Ultrafast Internet Scanner</a>
@@ -22,29 +24,28 @@
 		</div>
 		<div class="content">
 			<div class="container">
-				<div class="row">
-					<div class="span10 offset1 white-panel title">
+				<div class="row-fluid">
+					<div class="span12 white-panel title">
 						<div class="titlecontent">
 							<h2>ZMap · Technical Documentation</h2>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="span2 offset1 white-nav">
-						<ul class="nav nav-tabs nav-stacked">
+				<div class="row-fluid">
+					<div class="span2">
+						<ul class="white-nav nav nav-tabs nav-stacked">
 							<li><a href="#basic">Basic Usage</a></li>
-							<li><a href="#requirements">System Requirements</a></li>
 							<li><a href="#output">Results Output</a></li>
-							<li><a href="#">Address Selection</a></li>
+							<li><a href="#address">Scan Order</a></li>
 							<li><a href="#blacklisting">Blacklisting</a></li>
 							<li><a href="#ratelimiting">Rate Limiting</a></li>
 							<li><a href="#ratelimiting">Sampling</a></li>
 							<li><a href="#multiple">Multiple Packets</a></li>
 							<li><a href="#advanced">Advanced Usage</a></li>
-							<li><a href="extension">Extending ZMAP</a></li>
+							<li><a href="#extension">Extending ZMAP</a></li>
 						</ul>
-					</div>
-					<div class="span8 white-panel">
+						</div>
+					<div class="span10 white-panel">
 						<div class="content">
 							<a name="basic"></a> 
 							<h3>Basic Usage</h3>
@@ -59,7 +60,7 @@
 							<p><span class="label label-info">Heads Up!</span> One of the reasons that ZMap supports sending packets from multiple addresses and source ports is because this allows the scanner to embed small amounts of packet checksum data in these fields. This functionality helps the scanner separate legitimate responses from extraneous responses that may be received during scan runtime. If you scan from a single source port and single source address, ZMap has no ability of filtering out these extraneous responses.</p>	
 																
 							<br/><h4>TCP SYN Scans</h4>
-							<p>When performing a TCP SYN scan, ZMap requires a single target port and supports setting a range of source ports from which the scan will originate.</p>
+							<p>When performing a TCP SYN scan, ZMap requires a single target port and supports specifying a range of source ports from which the scan will originate.</p>
 							<dl class="dl-horizontal params">
 								<dt>-t, --target-port=port</dt><dd>TCP port number to scan (e.g. <b>443</b>)</dd>
 								<dt>-P, --source-port=port|range</dt><dd>Source port(s) for scan packets (e.g. <strong>40000-50000</strong>)</dd>
@@ -105,15 +106,15 @@ Jan 29 00:46:17.116 [INFO] blacklist: '192.168.0.0/16'
 cnf	target-port				443
 cnf	source-port-range-begin			32768
 cnf	source-port-range-end			61000
-cnf	source-addr-range-begin			141.212.121.20
-cnf	source-addr-range-end			141.212.121.83
+cnf	source-addr-range-begin			1.1.1.4
+cnf	source-addr-range-end			1.1.1.8
 cnf	maximum-packets				4294967295
 cnf	maximum-runtime				0
 cnf	permutation-seed			0
 cnf	cooldown-period				300
 cnf	send-interface				eth1
 cnf	rate					45000
-env	nprocessors				8
+env	nprocessors				16
 exc	send-start-time				Fri Jan 18 01:47:35 2013
 exc	send-end-time				Sat Jan 19 00:47:07 2013
 exc	recv-start-time				Fri Jan 18 01:47:35 2013
@@ -133,22 +134,22 @@ adv	permutation-gen				4215763218
 </pre>
 <br/>
 <p>Verbosity Arguments:</p>
-							<dl class="dl-horizontal params">
-								<dt>-q, --quiet</dt><dd>Do not print update regular status updates</dd>
-								<dt>-g, --summary</dt><dd>Provide a greppable summary at the end of the scan</dd>
-								<dt>-v, --verbosity=n</dt><dd>Level of output detail</dd>
-								<dt>-h, --help</dt><dd>Print help and exit</dd>
-								<dt>-V, --version</dt><dd>Print version and exit</dd>
-							</dl>
-							<br/>
+<dl class="dl-horizontal params">
+	<dt>-q, --quiet</dt><dd>Do not print update regular status updates</dd>
+	<dt>-g, --summary</dt><dd>Provide a greppable summary at the end of the scan</dd>
+	<dt>-v, --verbosity=n</dt><dd>Level of output detail</dd>
+	<dt>-h, --help</dt><dd>Print help and exit</dd>
+	<dt>-V, --version</dt><dd>Print version and exit</dd>
+</dl>
+<br/>
 							<h4>Dry-Run Mode</h4>
 							<p>Dry-run mode allows you test your configuration and find what packets will be sent without creating any traffic.</p> <dl class="dl-horizontal params">
 								<dt>-d, --dryrun</dt><dd>Don't send actual packets</dd>
 							</dl>
 							
 							<p>Instead of sending any traffic, ZMap will produce an output similar to the following:</p>
-														<pre>
-tcp { source: 46870 | dest: 443 | seq: 15587922 | checksum: 2520973312 }
+											
+<pre>tcp { source: 46870 | dest: 443 | seq: 15587922 | checksum: 2520973312 }
 ip { saddr: 1.1.1.4 | daddr: 98.28.28.36 | checksum: 910295040 }
 eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }
 ---------------------------------------------------------------------------------
@@ -160,10 +161,6 @@ tcp { source: 38524 | dest: 443 | seq: 15587922 | checksum: 3076063232 }
 ip { saddr: 1.1.1.4 | daddr: 177.175.204.20 | checksum: 918421504 }
 eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }</pre><br/>
 
-							<a name="requirements"></a> 
-							<h3>System Requirements</h3>
-							<p>ZMap was designed to run on GNU/Linux based systems. ZMap requires <a href="http://gmplib.org">GMP</a>, a free library for arbitrary precision arithmetic. GMP can installed on Debian based systems by running <code>sudo apt-get install libgmp3c2 libgmp3-dev</code> or <code>sudo yum install gmp gmp-devel</code> on RHEL and Fedora based systems. If you are building ZMap with <a href="http://redis.io/">Redis</a> support, you will need to install <a href="https://github.com/redis/hiredis">Hiredis</a>.</p>
-							<br/>
 							<a name="output"></a> 
 							<h3>Results Output</h3>
 								<p>ZMap can produce results in several formats through the use of output modules. ZMap currently supports three output formats: <strong>simple-file</strong>, <strong>extended-file</strong>, and <strong>redis</strong>. By default, ZMap will return results in the simple-file format and if no output file is specified, ZMap will not produce specific results. See <a href="extending">Extending ZMAP</a> for information on writing custom output modules.</p>
@@ -201,7 +198,7 @@ rst, 114.234.179.115, 1.1.1.3, 443, 50203, 0, 1, 2013-01-25 14:58:49.386</pre><b
 														<br/>
 
 							<a name="address"></a> 
-							<h3>Address Selection</h3>
+							<h3>Scan Order and Address Selection</h3>
 							
 							<p>IP addresses are scanned in a random permutation that is generated at the beginning of each scan. If you want to scan addresses in the same order over multiple scans or to scan the same subset of the IPv4 address space (see <a href="#sampling">sampling</a>), you can specify the permutation by specifying the seed option. It is not possible to specify the exact order in which addresses are scanned.</p>
 
@@ -276,7 +273,8 @@ rst, 114.234.179.115, 1.1.1.3, 443, 50203, 0, 1, 2013-01-25 14:58:49.386</pre><b
 							<h3>Extending ZMAP</h3>
 							<p>ZMap can be extended to support different types of scanning through <strong>send modules</strong> and additional types of results output through <strong>output modules</strong>. Registered send and output modules can be listed through the command-line interface:</p>
 							<dl class="dl-horizontal params">
-								<dt>-n, --sender-threads</dt><dd>Threads used to send packets (default=`1')</dd>
+								<dt>-L, --list-output-modules</dt><dd>Lists installed output modules</dd>
+								<dt>-l, --list-scan-types</dt><dd>Lists available scan types</dd>
 							</dl><br/>
 					</div>
 				</div>
