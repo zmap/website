@@ -46,8 +46,8 @@
 							<a name="bleeding"></a> 
 							<h3>Bleeding Edge</h3>
 							
-							<p>The latest zmap code can be downloaded at <a href="https://github.com/zmap/zmap/tarball/master">https://github.com/zmap/zmap/tarball/master</a> or cloned from the git repository <code>git://github.com/zmap/zmap.git</code>. ZMap utilizes git submodules for some libraries. As such, you will need to recursively clone the repository or run <code>git submodule init</code> and <code>git submodule update</code> after cloning.</p>
-							<a name="build"></a> 
+							<p>The latest zmap code can be downloaded at <a href="https://github.com/zmap/zmap/tarball/master">https://github.com/zmap/zmap/tarball/master</a> or cloned from the git repository <code>git://github.com/zmap/zmap.git</code>. ZMap utilizes git submodules for some libraries. As such, you will need to recursively clone the repository or run <code>git submodule init</code> and <code>git submodule update</code> after cloning.</p><br/>
+							<a name="build"></a>
 							<h3>Building and Installing ZMap</h3>
 							<p>ZMap was designed to run on GNU/Linux based systems and can be built with most recent versions of gcc. ZMap also requires <a href="http://gmplib.org">GMP</a>, a free library for arbitrary precision arithmetic. GMP can installed on Debian based systems by running <code>sudo apt-get install libgmp3c2 libgmp3-dev</code> or <code>sudo yum install gmp gmp-devel</code> on RHEL and Fedora based systems. If you are building ZMap with <a href="http://redis.io/">Redis</a> support, you will need to install <a href="https://github.com/redis/hiredis">Hiredis</a>.</p>
 							<p>Once these requirements have been installed, ZMap can be installed by running <code>make</code> and <code>make install</code>. ZMap does not build with Redis support by default. If you are building ZMap from source, you can build with Redis support by running <code>make REDIS=true</code>.</p>
