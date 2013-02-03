@@ -42,14 +42,14 @@
 							<li><a href="#ratelimiting">Sampling</a></li>
 							<li><a href="#multiple">Multiple Packets</a></li>
 							<li><a href="#advanced">Advanced Usage</a></li>
-							<li><a href="#extension">Extending ZMAP</a></li>
+							<li><a href="#extension">Extending ZMap</a></li>
 						</ul>
 						</div>
 					<div class="span10 white-panel">
 						<div class="content">
 							<a name="basic"></a> 
 							<h3>Basic Usage</h3>
-							<p>ZMap currently supports two types of scanning: TCP SYN scanning against a single target port and ICMP echo request (ping) scanning. For all types of scans, ZMAP requires several parameters: source ip address and gateway MAC address. ZMap supports sending packets from multiple source IP addresses and in the case of TCP SYN scans, from multiple ports. Because ZMap utilizes a raw socket to send network packets and <b>libpcap</b> to collect responses, ZMap must be run as root or with <b>cap_net_raw</b> (recommended). In the case that you want packets sent through a non-default interface, this can be be set by providing the <strong>interface</strong> argument.</p> <p> Basic arguments:</p>
+							<p>ZMap currently supports two types of scanning: TCP SYN scanning against a single target port and ICMP echo request (ping) scanning. For all types of scans, ZMap requires several parameters: source ip address and gateway MAC address. ZMap supports sending packets from multiple source IP addresses and in the case of TCP SYN scans, from multiple ports. Because ZMap utilizes a raw socket to send network packets and <b>libpcap</b> to collect responses, ZMap must be run as root or with <b>cap_net_raw</b> (recommended). In the case that you want packets sent through a non-default interface, this can be be set by providing the <strong>interface</strong> argument.</p> <p> Basic arguments:</p>
 							
 							<dl class="dl-horizontal params">
 								<dt>-S, --source-ip=ip|range</dt><dd>Source address(es) for scan packets (e.g. <b>1.1.1.3-1.1.1.8</b>)</dd>
@@ -163,7 +163,7 @@ eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }</pre><br/>
 
 							<a name="output"></a> 
 							<h3>Results Output</h3>
-								<p>ZMap can produce results in several formats through the use of output modules. ZMap currently supports three output formats: <strong>simple-file</strong>, <strong>extended-file</strong>, and <strong>redis</strong>. By default, ZMap will return results in the simple-file format and if no output file is specified, ZMap will not produce specific results. See <a href="extending">Extending ZMAP</a> for information on writing custom output modules.</p>
+								<p>ZMap can produce results in several formats through the use of output modules. ZMap currently supports three output formats: <strong>simple-file</strong>, <strong>extended-file</strong>, and <strong>redis</strong>. By default, ZMap will return results in the simple-file format and if no output file is specified, ZMap will not produce specific results. See <a href="#extension">Extending ZMap</a> for informationals.</p>
 								
 								<dl class="dl-horizontal params">
 									<dt>-o, --output-file=p</dt><dd>File to write list of live IPs to</dd>
@@ -270,14 +270,14 @@ rst, 	14.234.179.115,	1.1.1.3, 443, 	50203, 0,	 1,	2013-01-25 14:58:49.386</pre>
 								<dt>-n, --sender-threads</dt><dd>Threads used to send packets (default=`1')</dd>
 							</dl><br/>
 							<a name="extension"></a> 
-							<h3>Extending ZMAP</h3>
+							<h3>Extending ZMap</h3>
 							<p>ZMap can be extended to support different types of scanning through <strong>send modules</strong> and additional types of results output through <strong>output modules</strong>. Registered send and output modules can be listed through the command-line interface:</p>
 							<dl class="dl-horizontal params">
 								<dt>-L, --list-output-modules</dt><dd>Lists installed output modules</dd>
 								<dt>-l, --list-scan-types</dt><dd>Lists available scan types</dd>
 							</dl><br/>
 							<h4>Output Modules</h4>
-							<p>ZMap output and post-processing can be extended by implementing and registering a <strong>output modules</strong> with the scaner. Output modules receive a callback for every received response packet. While the default provided modules perform only simple output, output modules are also capable of performing additional post-processing (e.g. keeping track of duplicates or outputting numbers in terms of AS instead of IP address)</p><br/>
+							<p>ZMap output and post-processing can be extended by implementing and registering <strong>output modules</strong> with the scanner. Output modules receive a callback for every received response packet. While the default provided modules provide simple output, these modules are also capable of performing additional post-processing (e.g. keeping track of duplicates or outputting numbers in terms of AS instead of IP address)</p><br/>
 							
 <p>Output modules are created by defining a new output_module struct and registering it in <a href="#">output_modules.c</a>:</p>
 
@@ -319,7 +319,7 @@ typedef int (*pckt_cb) (
 );
 </pre><br/>
 	
-<p>An output module can also register callbacks for scanner initialization (tasks such as opening an output file), start of the scan (tasks such as writing scan details such as blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
+<p>An output module can also register callbacks to be executed at scanner initialization (tasks such as opening an output file), start of the scan (such as documenting blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
 <pre>typedef int (*update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre>
 <p>which are defined in <a href="#">state.h</a>. An example is available at <a href="#">src/output_modules/module_extended_file.c</a>.</p>
 <br/>

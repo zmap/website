@@ -47,22 +47,24 @@
 							<br/>
 							<a name="team"></a>
 							<h3>The Team</h3>
-							<p>ZMap was developed and is maintained by a team of computer scientists at the <a href="https://www.cse.umich.edu">University of Michigan</a>.</p>
+							<p>ZMap was developed and is maintained by a team of computer scientists at the <a href="https://www.cse.umich.edu">University of Michigan</a>:</p>
 							<ul class="authors">
 					            <li><a href="https://zakird.com">Zakir Durumeric</a>, Ph.D. Student, University of Michigan</li>
 					            <li><a href="https://ericw.us/trow/">Eric Wustrow</a>, Ph.D. Student, University of Michigan</li>
 					            <li><a href="https://jhalderm.com">J. Alex Halderman</a>, Assistant Professor, University of Michigan</li>
 					          </ul>
 					          <p>The research team can be reached at <a href="mailto:zmap-team@umich.edu">zmap-team@umich.edu</a>.</p>
-							<p>We also acknowledge and thank Michael Bailey, Kevin Cheek, Alek Durumeric, Nadia Heninger, Paul Howell, James Kasten, Pat Pannuto, and the University of Michigan Information and Infrastructure Assurance Team for their support and advice in developing and testing ZMap.</p>
+							<p>We also acknowledge and thank Michael Bailey, Kevin Cheek, Aleksander Durumeric, Nadia Heninger, Paul Howell, James Kasten, Patrick Pannuto, and the University of Michigan Information and Infrastructure Assurance Team for their support and advice in developing and testing ZMap.</p>
 							<br/>
 							<a name="architecture"></a> 
 							<h3>Architecture</h3>
+							<p>While previous network scanners have been developed for scanning smaller network segments, ZMap is specifically architected for comprehensively scanning the public IPv4 address space. The scanner is composed of three major components: a modular sender, receiver, and a plugin-based framework for managing result output. ZMap is written in C and is designed for use on GNU/Linux, but is otherwise platform independent; no special drivers, hardware, or specific system configuration is necessary.</p>
 							
-							<p>ZMap is written in C99 and is intended for use on Linux-based operating systems. The scanner is composed of three major components: a modular sender, receiver, and a plugin-based framework for managing result output.</p><p> We implement ZMap as a multi-threaded architecture in order to allow concurrent sending and receiving and increased performance by generating and sending packets on multiple cores; it is inherently designed to be run on a multi-core or multi-processor host.</p><p>Unlike many network scanners, we do not perform “bucketing” in which we wait for a certain segment of the scan to complete before continuing nor do we limit the number of open connections, or enforce any strict timeout period. Instead, we allow the sender and receiver to act independently and continuously throughout the scan.</p><br/>
-							<h4>Sending</h4>
-							<p>The sending component of ZMap operates across one or more threads, each of which maintains a tight loop that sends Ethernet-level packets through a raw Linux socket. On ZMap initialization, each thread generates the skeleton of the probe packet. During iteration, ZMap updates host specific values, calculates the necessary checksums, sends the packet on a RAW socket.</p><p>Sending packets at the Ethernet layer allows us to bypass inefficiencies otherwise incurred in the kernel such as route lookups, connection tracking, and allows us to update and re-checksum only the necessary parts of probe packets. This methodology ultimately allows us to scan at the rate of approximately 1.4 million packets per second on an entry level server and a 1 gigabit Internet connection.</p><p>Packets are generated using <i>send modules</i> which allow different types of scans (currently TCP SYN and ICMP echo request) to be supported with the same architecture. ZMap can be extended to perform other types of single-packet scans by implementing and registering a send module with ZMap.</p><br/>
-							
+							<p>ZMap is capable of performing such rapid scans because it maintains no local state for individual scanned hosts and bypasses most components in the Linux network stack. Further, ZMap does not perform <em>bucketing</em> or enforce strict-timeouts which ultimately lead to blocking throughout the scan. Instead, ZMap utilizes several algebraic number theory primitives that allow the sender and receiver to act independently and continuously throughout the scan and overloads otherwise unused values in each probe packet in order to perform validation. Scan speed is currently limited by the theoretical limits of 1gigE.</p>
+							<p> We implement ZMap as a multi-threaded architecture in order to allow concurrent sending and receiving and increased performance by generating and sending packets on multiple cores; it is inherently designed to be run on a multi-core or multi-processor host. ZMap requires approximately 512 MB of memory for scanning which we believe is commonplace in most commodity servers at this time.</p><br/>
+				              	<h4>Sending</h4>
+								<p>The sending component of ZMap operates across one or more threads, each of which maintains a tight loop that sends Ethernet-level packets through a raw Linux socket. On ZMap initialization, each thread generates the skeleton of the probe packet. During iteration, ZMap updates host specific values, calculates the necessary partial checksums, and sends the packet on a RAW socket.</p><p>Sending packets at the Ethernet layer allows us to bypass inefficiencies otherwise incurred in the kernel such as route lookups, connection tracking, and allows us to update and re-checksum only the necessary parts of probe packets. This methodology ultimately allows us to scan at the rate of approximately 1.4 million packets per second on an entry level server and a 1 gigabit Internet connection.</p><p>Packets are generated using <a href="documentation.html#extension">send modules</a> which allow different types of scans (currently TCP SYN and ICMP echo request) to be supported with the same architecture. ZMap can be extended to perform other types of single-packet scans by implementing and registering a send module with ZMap.</p>
+								<br/>
 							<h4>Statelessness</h4>
 							<p>We expect that a small percentage of hosts will respond
               with an open port (e.g. with a SYNACK packet) and we can
@@ -88,12 +90,12 @@
               <p>While we refrain from locally
               storing state for sent packets, we perform validation
               on received response packets by encoding a secret in the
-              TCP source port of the initial probe packet and checking the
+              TCP or UDP source port of the initial probe packet and checking the
               destination port or ICMP IDs on received response packets.
               This check, while inexpensive, prevents the incorrect
               reporting of spurious packets and responses from
               prior scans.</p>
-              
+			
 							<br/>
 							<h4>Receiving</h4>
 								<p>We implement the receiver component of
@@ -108,7 +110,9 @@
 							other tools for additional processing such as performing a protocol handshake. In order to support this operation and
 								to allow ZMap to be easily extended in order to perform additional
 								analysis on the RAW packet data, we implement a modular
-								interface to handle scan output.</p><p>This modular interface allows additional outputs to be
+								interface to handle scan output.</p>
+								
+								<p>This modular interface allows additional outputs to be
 								easily developed by writing callbacks that accept parsed
 								data and are triggered by specific ZMap actions as desired:
 								scan initialization, probe packet sent, new response received,
@@ -119,7 +123,7 @@
 								with the specified port open), extended file output (file stream
 								containing a list of all packet responses and timing data),
 								and a pipelined interface to the Redis in-memory key-value
-								store.</p>
+								store. Additional information on developing output modules can be found <a href="documentation.html#extension">here</a>.</p>
 							
 							<br/>
 							<a name="ethics"></a> 
