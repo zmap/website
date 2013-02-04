@@ -281,50 +281,103 @@ rst, 	14.234.179.115,	1.1.1.3, 443, 	50203, 0,	 1,	2013-01-25 14:58:49.386</pre>
 							
 <p>Output modules are created by defining a new output_module struct and registering it in <a href="#">output_modules.c</a>:</p>
 
-<pre>typedef struct output_module {
+<pre>struct output_module {
 	
-	const char *name; <em>// how is output module referenced in the CLI</em>
-	unsigned update_interval; <em>// how often is update called in seconds</em>
+    const char *name; <em>// how is output module referenced in the CLI</em>
+    unsigned update_interval; <em>// how often is update called in seconds</em>
 
-	setup_cb init;	<em>// called at scanner initialization</em>
-	update_cb start; <em>// called at the beginning of scanner</em>
-	update_cb update; <em>// called every update_interval seconds</em>
-	update_cb close; <em>// called at scanner termination</em>
+    setup_cb init;  <em>// called at scanner initialization</em>
+    update_cb start; <em>// called at the beginning of scanner</em>
+    update_cb update; <em>// called every update_interval seconds</em>
+    update_cb close; <em>// called at scanner termination</em>
 
-	send_cb synsend; <em>// called when a probe packet is sent</em>
-	pckt_cb success_ip; <em>// called when a successful response is received</em>
-	pckt_cb other_ip; <em>// called when any other responses are received</em>
+    send_cb synsend; <em>// called when a probe packet is sent</em>
+    pckt_cb success_ip; <em>// called when a successful response is received</em>
+    pckt_cb other_ip; <em>// called when any other responses are received</em>
 	
 } output_module_t;</pre><br/>
 	
-<p>Output modules must have a name which is how they are referenced on the command-line and generally implement <strong>success_ip</strong> and oftentimes <strong>other_ip</strong> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>send module</strong>. The other_ip callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <strong>pckt_cb</strong> definition:</p>
+<p>Output modules must have a name which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>send module</strong>. The <code>other_ip</code> callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <code>pckt_cb</code> definition:</p>
 
 <pre>
-typedef int (*pckt_cb) (
+int (*pckt_cb) (
 
-	ipaddr_n_t saddr, <em>// IP address of scanned host in network-order</em>
-	ipaddr_n_t daddr, <em>// destination IP address in network-order </em>
-	
-	port_n_t sport, <em>// port of scanned host in network-order</em>
-	port_n_t dport, <em>// destination port in network-order</em>
-	
-	struct timeval* recv_at, <em>// timeval of when response was received</em>
-	const char* response_type, <em>// send-module classification of packet</em>
-	
-	int is_repeat, <em>// {0: first response from host, 1: subsequent responses}</em>
-	int in_cooldown, <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
-	
-	const u_char* packet, <em>// pointer to raw packet struct</em>
-	size_t packet_len <em>// length of raw packet</em>	
+    ipaddr_n_t saddr, <em>// IP address of scanned host in network-order</em>
+    ipaddr_n_t daddr, <em>// destination IP address in network-order </em>
+
+    port_n_t sport, <em>// port of scanned host in network-order</em>
+    port_n_t dport, <em>// destination port in network-order</em>
+
+    struct timeval* recv_at, <em>// timeval of when response was received</em>
+    const char* response_type, <em>// send-module classification of packet</em>
+
+    int is_repeat, <em>// {0: first response from host, 1: subsequent responses}</em>
+    int in_cooldown, <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
+
+    const u_char* packet, <em>// pointer to raw packet struct</em>
+    size_t packet_len <em>// length of raw packet</em>
+    
 );
 </pre><br/>
 	
 <p>An output module can also register callbacks to be executed at scanner initialization (tasks such as opening an output file), start of the scan (such as documenting blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
-<pre>typedef int (*update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre>
+<pre>int (*update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre>
 <p>which are defined in <a href="#">state.h</a>. An example is available at <a href="#">src/output_modules/module_extended_file.c</a>.</p>
 <br/>
 
-							<h4>Send Modules</4>
+							<h4>Send Modules</h4>
+<p>Packets are constructed using <strong>send modules</strong> which allow abstracted packet creation and response classification. Each type of scan (e.g. TCP SYN scan or ICMP echo request scan) is implemented by developing and registering the necessary callbacks in a <code>send_module_t</code> struct:</p>
+<pre>
+struct send_module {
+  const char *name; <em>// how scan is invoked on command-line</em>
+
+  size_t packet_length; <em>// how long is probe packet (must be static size)</em>
+  const char *pcap_filter; <em>// PCAP filter for collecting responses</em>
+
+  setup_cb global_initialize; <em>// called once at scanner initialization</em>
+  send_init_cb thread_initialize; <em>// called once for each thread packet buffer</em>
+  make_packet_cb make_packet; <em>// called once per host to update packet</em>
+  
+  print_packet_cb print_packet; <em>// called per packet if in dry-run mode</em>
+  classify_packet_cb classify_packet; <em>// called by receiver to classify response</em>
+  update_cb close; <em>// called at scanner termination</em>
+  
+  response_type_t responses[]; <em>// possible response classifications</em>
+
+} send_module_t;
+</pre><br/>
+<p>and a set of responses as which packets can be classified. Example:</p>
+<pre>
+static response_type_t responses[] = {
+	{
+		.is_success = 1,	
+		.name = "synack"
+	},
+	{
+		.is_success = 0,
+		.name = "rst"
+	}
+};</pre>
+<br/><p>At scanner initialization, <code>global_initialize</code> is called once and can be utilized to perform any necessary global configuration or initialization. However, <code>global_initialize</code> does not have access to the packet buffer which is thread-specific. Instead, <code>thread_initialize</code> is called at the initialization of each sender thread and is provided with access to the buffer that will be used for constructing probe packets along with global source and destination values. This callback should be used to construct the host agonistic packet structure such that only specific values (e.g. destination host and checksum) need to be be updated for each host. For example, the ethernet header will not change between headers (minus checksum which is calculated in hardware by the NIC) and therefore can be defined ahead of time in order to reduce overhead at scan time.</p>
+
+<p>The <code>make_packet</code> callback is called for each host that is scanned to allow the <strong>scan module</strong> to update host specific values and is provided with port and IP address values. The send module must utilize these values instead of assigning their own or response packets will be discarded.</p>
+<pre>int make_packet(
+  
+  void *buf, // packet buffer
+  
+  ipaddr_n_t src_ip, // source IP in network-order
+  port_n_t src_port, // source port in network-order
+  
+  ipaddr_n_t dst_ip, // destination IP in network-order
+  port_n_t dst_port // destination IP in network-order
+
+);</pre><br/>
+
+<p>Scan modules must also define <code>pcap_filter</code> and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>classify_packet</code> function
+  
+  
+</p>
+							
 					</div>
 				</div>
 			</div>
