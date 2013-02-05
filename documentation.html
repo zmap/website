@@ -94,7 +94,7 @@ summary
 							<pre>
 send: 74983 74949 p/s (74917 p/s avg); recv: 2150 2150 p/s (2148 p/s avg); hits: 0.29%</pre>
 <br/>
-<p>ZMap also prints out informational messages during scanner configuration such as the followingwhich can be controlled with the <strong>verbosity</strong> argument.</p>
+<p>ZMap also prints out informational messages during scanner configuration such as the following, which can be controlled with the <strong>verbosity</strong> argument.</p>
 <pre>
 Jan 29 00:46:17.116 [INFO] blacklist: '0.0.0.0/8'
 Jan 29 00:46:17.116 [INFO] blacklist: '10.0.0.0/8'
@@ -246,7 +246,7 @@ rst, 	14.234.179.115,	1.1.1.3, 443, 	50203, 0,	 1,	2013-01-25 14:58:49.386</pre>
 							<br/>
 							<a name="multiple"></a> 
 							<h3>Sending Multiple Packets</h3>
-							<p>ZMap supports sending multiple packets to each host through two options <strong>packet-streams</strong> and <strong>ident-packets</strong>. When multiple packet streams are used, slightly different packets (differing in source address or source port) are sent to each host and if a host receives these multiple packets, it will open a connection for each packet. In the case of identical packets, the a distinct packet will be sent multiple times to the same host. If a host received multiple identical packets, these often be treated as duplicates and only a single connection will be opened.</p>
+							<p>ZMap supports sending multiple packets to each host through two options <strong>packet-streams</strong> and <strong>ident-packets</strong>. When multiple packet streams are used, slightly different packets (differing in source address or source port) are sent to each host and if a host receives these multiple packets, it will open a connection for each packet. In the case of identical packets, a distinct packet will be sent multiple times to the same host. If a host received multiple identical packets, these often be treated as duplicates and only a single connection will be opened.</p>
 			
 							<dl class="dl-horizontal params">
 							  <dt>-u, --packet-streams=n</dt><dd>The number of unique packets sent to an IP address</dd>
@@ -357,7 +357,7 @@ struct send_module {
   port_n_t src_port, // source port in network-order
   
   ipaddr_n_t dst_ip, // destination IP in network-order
-  port_n_t dst_port // destination IP in network-order
+  port_n_t dst_port // destination port in network-order
 
 );</pre><br/>
 
