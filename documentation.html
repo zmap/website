@@ -351,13 +351,13 @@ struct send_module {
 <p>The <code>make_packet</code> callback is called for each host that is scanned to allow the <strong>scan module</strong> to update host specific values and is provided with port and IP address values (shown below). The send module must utilize these values instead of assigning their own or response packets will be discarded.</p>
 <pre>int make_packet(
   
-  void *buf, // packet buffer
+  void *buf, <em>// packet buffer</em>
   
-  ipaddr_n_t src_ip, // source IP in network-order
-  port_n_t src_port, // source port in network-order
+  ipaddr_n_t src_ip, <em>// source IP in network-order</em>
+  port_n_t src_port, <em>// source port in network-order</em>
   
-  ipaddr_n_t dst_ip, // destination IP in network-order
-  port_n_t dst_port // destination port in network-order
+  ipaddr_n_t dst_ip, <em>// destination IP in network-order</em>
+  port_n_t dst_port <em>// destination port in network-order</em>
 
 );</pre><br/>
 
