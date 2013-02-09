@@ -96,9 +96,12 @@ send: 74983 74949 p/s (74917 p/s avg); recv: 2150 2150 p/s (2148 p/s avg); hits:
 <br/>
 <p>ZMap also prints out informational messages during scanner configuration such as the following, which can be controlled with the <strong>verbosity</strong> argument.</p>
 <pre>
+Jan 29 00:46:17.114 [INFO] zmap: reading configuration from `../conf/basic.conf'
 Jan 29 00:46:17.116 [INFO] blacklist: '0.0.0.0/8'
 Jan 29 00:46:17.116 [INFO] blacklist: '10.0.0.0/8'
 Jan 29 00:46:17.116 [INFO] blacklist: '192.168.0.0/16'
+Jan 29 00:46:17.119 [INFO] scan: will send from 2 addresses (1.1.1.1 - 1.1.1.4)
+
 </pre>
 <br/>
 <p>ZMap also supports printing out a grep-able summary at the end of the scan, similar to below, which can be invoked with the <strong>summary</strong> flag.</p>
