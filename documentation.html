@@ -57,7 +57,7 @@
 								<dt>-I, --interface=name</dt><dd>Specify network interface to use (e.g. <b>eth1</b>)</dd>
 							</dl>
 							
-							<p><span class="label label-info">Heads Up!</span> One of the reasons that ZMap supports sending packets from multiple addresses and source ports is because this allows the scanner to embed small amounts of packet checksum data in these fields. This functionality helps the scanner separate legitimate responses from extraneous responses that may be received during scan runtime. If you scan from a single source port and single source address, ZMap has no ability of filtering out these extraneous responses.</p>	
+							<p><span class="label label-info">Heads Up!</span> One of the reasons that ZMap supports sending packets from multiple addresses and source ports is because this allows the scanner to embed small amounts of packet checksum data in these fields. This functionality helps the scanner separate legitimate responses from extraneous responses that may be received during scan runtime.</p>	
 																
 							<br/><h4>TCP SYN Scans</h4>
 							<p>When performing a TCP SYN scan, ZMap requires a single target port and supports specifying a range of source ports from which the scan will originate.</p>
@@ -330,12 +330,20 @@ int (*pckt_cb) (
 
 							<h4>Send Modules</h4>
 <p>Packets are constructed using <strong>send modules</strong> which allow abstracted packet creation and response classification. Each type of scan (e.g. TCP SYN scan or ICMP echo request scan) is implemented by developing and registering the necessary callbacks in a <code>send_module_t</code> struct:</p>
-<pre>
-struct send_module {
-  const char *name; <em>// how scan is invoked on command-line</em>
 
+<pre>
+typedef struct send_module {
+  
+  const char *name; <em>// how scan is invoked on command-line</em>
   size_t packet_length; <em>// how long is probe packet (must be static size)</em>
+
   const char *pcap_filter; <em>// PCAP filter for collecting responses</em>
+  size_t pcap_snaplen; <em>// maximum number of bytes for libpcap to capture</em>
+
+  uint8_t check_src_port; <em>// validate the source port the response is sent from</em>
+  uint8_t check_tcp_seqnum; <em>// validate TCP ack matches random probe seqnum</em>
+  uint8_t check_icmp_seqnum; <em>// validate ICMP seqnum matches probe seqnum</em>
+  uint8_t check_dst_port;
 
   setup_cb global_initialize; <em>// called once at scanner initialization</em>
   send_init_cb thread_initialize; <em>// called once for each thread packet buffer</em>
@@ -346,6 +354,17 @@ struct send_module {
   update_cb close; <em>// called at scanner termination</em>
   
   response_type_t responses[]; <em>// possible response classifications</em>
+
+} send_module_t;
+</pre>
+
+
+<pre>
+struct send_module {
+  const char *name; 
+  size_t packet_length; 
+  const char *pcap_filter; 
+
 
 } send_module_t;
 </pre>
