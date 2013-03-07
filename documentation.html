@@ -370,7 +370,7 @@ struct send_module {
 </pre>
 <br/><p>At scanner initialization, <code>global_initialize</code> is called once and can be utilized to perform any necessary global configuration or initialization. However, <code>global_initialize</code> does not have access to the packet buffer which is thread-specific. Instead, <code>thread_initialize</code> is called at the initialization of each sender thread and is provided with access to the buffer that will be used for constructing probe packets along with global source and destination values. This callback should be used to construct the host agonistic packet structure such that only specific values (e.g. destination host and checksum) need to be be updated for each host. For example, the ethernet header will not change between headers (minus checksum which is calculated in hardware by the NIC) and therefore can be defined ahead of time in order to reduce overhead at scan time.</p>
 
-<p>The <code>make_packet</code> callback is called for each host that is scanned to allow the <strong>scan module</strong> to update host specific values and is provided with port and IP address values (shown below). The send module must utilize these values instead of assigning their own or response packets will be discarded.</p>
+<p>The <code>make_packet</code> callback is called for each host that is scanned to allow the <strong>scan module</strong> to update host specific values and is provided with port and IP address values (shown below). The send module must utilize these values instead of assigning their own or response packets if they utilize scanner response verification.</p>
 <pre>int make_packet(
   
   void *buf, <em>// packet buffer</em>
@@ -379,7 +379,10 @@ struct send_module {
   port_n_t src_port, <em>// source port in network-order</em>
   
   ipaddr_n_t dst_ip, <em>// destination IP in network-order</em>
-  port_n_t dst_port <em>// destination port in network-order</em>
+  port_n_t dst_port, <em>// destination port in network-order</em>
+  
+  uint32_t tcp_seqnum, <em>// tcp sequence number</em>
+  uint16_t icmp_id <em>// ICMP id number</em>
 
 );</pre><br/>
 
