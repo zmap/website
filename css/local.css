@@ -64,7 +64,7 @@ margin-bottom:15px;
 }
 
 .cselogo {
-    padding-top:25px;
+    padding-top:15px;
     padding-left:125px;
 	padding-right:125px;	
 	padding-bottom:25px;
@@ -135,6 +135,10 @@ p.front {
     font-size:18px;
     line-height:25px;
     font-weight: 200;
+}
+
+p.indent {
+    padding-left: 50px;
 }
 
 li.front {
