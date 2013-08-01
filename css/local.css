@@ -35,8 +35,12 @@ body {
 }
 
 .title {
-margin-top:40px;
-margin-bottom:20px;
+margin-top:35px;
+margin-bottom:15px;
+}
+
+.nontitle {
+margin-bottom:15px;
 }
 
 .params {
@@ -59,6 +63,14 @@ margin-bottom:20px;
 	
 }
 
+.cselogo {
+    padding-top:25px;
+    padding-left:125px;
+	padding-right:125px;	
+	padding-bottom:25px;
+    
+}
+
 .homebox {
 
 	padding-top:10px;
@@ -66,6 +78,12 @@ margin-bottom:20px;
     margin-right: auto;
 	text-align: center;
 
+}
+
+.abstract2 {
+
+	padding-top:10px;
+	padding-left:25px;
 }
 
 .outbox {
@@ -95,3 +113,32 @@ IMG.displayed {
 .affix {
     top: 10px;
 }​
+
+p {
+  margin: 0 0 10px;
+}
+
+p.paperauthor {
+    margin-bottom:15px;
+    font-size:18px;
+    line-height:18px;
+}
+
+p.abstract {
+    margin-bottom:15px;
+    font-size:16px;
+    text-align:justify;
+}
+
+p.front {
+    margin-bottom:15px;
+    font-size:18px;
+    line-height:25px;
+    font-weight: 200;
+}
+
+li.front {
+    font-size:16px;
+    line-height:25px;
+    font-weight: 200;
+}

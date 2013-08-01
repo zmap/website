@@ -14,10 +14,10 @@
 		<script type="text/JavaScript" src="js/bootstrap.min.js"></script> 
 		<div class="navbar navbar-static-top navbar-inverse">
 		  <div class="navbar-inner">
-		    <a class="brand" href="index.html">ZMap · The Ultrafast Internet Scanner</a>
+		    <a class="brand" href="index.html">ZMap · The Internet Scanner</a>
 		    <ul class="nav pull-right">
-		      <li><a href="introduction.html">Introduction</a></li>
-					<li class="active"><a href="documentation.html">Documentation</a></li>
+					<li><a href="paper.html">Research Paper</a></li>
+		      <li class="active"><a href="documentation.html">Documentation</a></li>
 					<li><a href="download.html">Download</a></li>
 		    </ul>
 		  </div>
@@ -25,30 +25,10 @@
 		<div class="content">
 			<div class="container">
 				<div class="row-fluid">
-					<div class="span12 white-panel title">
-						<div class="titlecontent">
-							<h2>ZMap · Technical Documentation</h2>
-						</div>
-					</div>
-				</div>
-				<div class="row-fluid">
-					<div class="span2">
-						<ul class="white-nav nav nav-tabs nav-stacked">
-							<li><a href="#basic">Basic Usage</a></li>
-							<li><a href="#output">Results Output</a></li>
-							<li><a href="#address">Scan Order</a></li>
-							<li><a href="#blacklisting">Blacklisting</a></li>
-							<li><a href="#ratelimiting">Rate Limiting</a></li>
-							<li><a href="#ratelimiting">Sampling</a></li>
-							<li><a href="#multiple">Multiple Packets</a></li>
-							<li><a href="#advanced">Advanced Usage</a></li>
-							<li><a href="#extension">Extending ZMap</a></li>
-						</ul>
-						</div>
-					<div class="span10 white-panel">
+					<div class="span10 white-panel offset1 title">
 						<div class="content">
 							<a name="basic"></a> 
-							<h3>Basic Usage</h3>
+							<h3>ZMap · Documentation</h3>
 							<p>ZMap currently supports two types of scanning: TCP SYN scanning against a single target port and ICMP echo request (ping) scanning. For all types of scans, ZMap requires several parameters: source ip address and gateway MAC address. ZMap supports sending packets from multiple source IP addresses and in the case of TCP SYN scans, from multiple ports. Because ZMap utilizes a raw socket to send network packets and <b>libpcap</b> to collect responses, ZMap must be run as root or with <b>cap_net_raw</b> (recommended). In the case that you want packets sent through a non-default interface, this can be be set by providing the <strong>interface</strong> argument.</p> <p> Basic arguments:</p>
 							
 							<dl class="dl-horizontal params">

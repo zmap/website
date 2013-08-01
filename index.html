@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>zmap · the ultrafast internet scanner</title>
+		<title>ZMap · The Internet Scanner</title>
 		<meta zmap="description" context="some description should go here"/>
 		
 		<link href="css/bootstrap.min.css" rel="stylesheet"/>
@@ -12,10 +12,10 @@
 	<body>
 		<div class="navbar navbar-static-top navbar-inverse">
 		  <div class="navbar-inner">
-		    <a class="brand" href="index.html">ZMap · The Ultrafast Internet Scanner</a>
+		    <a class="brand" href="index.html">ZMap · The Internet Scanner</a>
 		    <ul class="nav pull-right">
-		      <li><a href="introduction.html">Introduction</a></li>
-					<li><a href="documentation.html">Documentation</a></li>
+					<li><a href="paper.html">Research Paper</a></li>
+		      <li><a href="documentation.html">Documentation</a></li>
 					<li><a href="download.html">Download</a></li>
 		    </ul>
 		  </div>
@@ -23,35 +23,50 @@
 		<div class="content">
 			<div class="container">
 				<div class="row-fluid">
-					<div class="span12 white-panel title">
+					<div class="offset1 span10 white-panel title">
 						<div class="hometitle">
-							<h2>ZMap · The Ultrafast Internet Scanner</h2>
-							<p class="lead">ZMap is a modular, open source network
-              scanner specifically architected to perform Internet-wide
-              scans and capable of comprehensively scanning the public IPv4 address space in forty minutes
-              on commodity desktop hardware and a gigabit Internet connection. [<a href="introduction.html">read more</a>]
+							<h3>ZMap · The Internet Scanner</h3>
+							<p class="front">ZMap is an open-source network scanner specifically architected to perform Internet-wide scans and capable of surveying the entire IPv4 address space in under 45 minutes on a single machine.</p>
+              <p class="front">ZMap allows researchers to .... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin varius dui eu mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean vitae risus mauris. Vivamus euismod diam odio, eu suscipit nunc interdum vel. Nullam ornare tellus in elit mattis pellentesque.</p> <p class="front"> Learn more in our <a href="paper.html">research paper</a> or <a href="download.html">download ZMap.</a></p>
 						</div>
 					</div>
 				</div>
+				
 				<div class="row-fluid">
-					<div class="span4 white-panel outbox">
-						<div class="homebox"><a href="documentation.html">
-							<img src="img/help.png" width="120" class="displayed">
-							<h3>Documentation</a></h3>
+					<div class="offset1 span10 white-panel nontitle">
+						<div class="hometitle">
+						  <h3>The Research Team</h3>
+							<p class="front">ZMap was developed by a team of computer scientists at the <a href="https://www.cse.umich.edu">University of Michigan</a>:
+							<ul class="authors">
+					            <li class="front"><a href="https://zakird.com">Zakir Durumeric</a>, Ph.D. Student, University of Michigan</li>
+					            <li class="front"><a href="https://ericw.us/trow/">Eric Wustrow</a>, Ph.D. Student, University of Michigan</li>
+					            <li class="front"><a href="https://jhalderm.com">J. Alex Halderman</a>, Assistant Professor, University of Michigan</li>
+					          </ul>
+					          <p class="front">The research team can be reached at <a href="mailto:zmap-team@umich.edu">zmap-team@umich.edu</a>.</p>
 						</div>
 					</div>
-					<div class="span4 white-panel outbox">
-						<div class="homebox"><a href="https://github.com/zmap/zmap">
-							<img src="img/octocat.png" width="145"  class="displayed">
-							<h3>View on Github</a></h3>
+				</div>
+				
+				
+				<div class="row-fluid">
+					<div class="offset1 span10 white-panel nontitle">
+						<div class="hometitle">
+							<h3>Neighborly Usage</h3>
+							<p class="front">While ZMap is a powerful tool for researchers, please keep in mind that by running ZMap, you are potentially scanning the <b>ENTIRE</b> public IPv4 address space and some users may not appreciate your packets. We encourage ZMap users to respect requests to stop scanning and to blacklist these networks from ongoing scanning.</p>
+							
+							<p class="front">Further, we encourage researchers to put up a website explaining that their scanning is non-malicious and information on how administrators can request their networks to be blacklisted.</p>
 						</div>
 					</div>
-					<div class="span4 white-panel outbox">
-						<div class="homebox"><a href="download.html">
-							<img src="img/download.png" width="120" class="displayed">
-							<h3>Download ZMap</a></h3>
-						</div>
+				</div>
+				
+				<div class="row-fluid">
+					<div class="offset1 span10 white-panel nontitle">
+					  <div class="cselogo">
+              <a href="https://www.cse.umich.edu"><img src="img/coe-cse-horz.png"></a>
+            </div>
 					</div>
+				</div>
+				
 				</div>
 			</div>
 		</div>
