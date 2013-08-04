@@ -59,7 +59,7 @@ margin-bottom:15px;
 .content {
 	padding-left:25px;
 	padding-right:30px;	
-	padding-bottom:35px;
+	padding-bottom:20px;
 	
 }
 
@@ -100,15 +100,41 @@ IMG.displayed {
 }
 
 .authors {
-    padding-top: 1px;
     padding-bottom: 1px;
 }
 
 .authors li {
     margin: 5px;
     margin-left: 30px;
-    padding-top: 2px;
+    padding-top: 0px;
 }
+
+.recommendations li {
+    margin: 5px;
+    margin-left: 50px;
+    padding-top: 2px;
+    font-size:17px;
+    line-height:25px;
+    font-weight: 200;
+}
+
+.recommendations {
+    padding-bottom: 5px;
+}
+
+.subsection li {
+    margin: 5px;
+    margin-left: 35px;
+    padding-top: 0px;
+    font-size:17px;
+    line-height:20px;
+    font-weight: 200;
+}
+
+.subsection {
+    padding-bottom: 5px;
+}
+
 
 .affix {
     top: 10px;
@@ -137,12 +163,30 @@ p.front {
     font-weight: 200;
 }
 
+p.indented {
+    padding-left: 50px;
+}
+
 p.indent {
     padding-left: 50px;
 }
 
-li.front {
-    font-size:16px;
+.indent {
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 20px;
+}
+
+
+li.section {
+    font-size:13px;
+    line-height:25px;
+    font-weight: 200;
+}
+
+p.section {
+    margin-bottom:8px;
+    font-size:18px;
     line-height:25px;
     font-weight: 200;
 }

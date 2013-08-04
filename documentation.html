@@ -22,14 +22,110 @@
 		    </ul>
 		  </div>
 		</div>
-		<div class="content">
-			<div class="container">
-				<div class="row-fluid">
+				<div class="row-fluid"> 
 					<div class="span10 white-panel offset1 title">
 						<div class="content">
-							<a name="basic"></a> 
-							<h3>ZMap · Documentation</h3>
-							<p>ZMap currently supports two types of scanning: TCP SYN scanning against a single target port and ICMP echo request (ping) scanning. For all types of scans, ZMap requires several parameters: source ip address and gateway MAC address. ZMap supports sending packets from multiple source IP addresses and in the case of TCP SYN scans, from multiple ports. Because ZMap utilizes a raw socket to send network packets and <b>libpcap</b> to collect responses, ZMap must be run as root or with <b>cap_net_raw</b> (recommended). In the case that you want packets sent through a non-default interface, this can be be set by providing the <strong>interface</strong> argument.</p> <p> Basic arguments:</p>
+						  <h3>ZMap Documentation</h3>
+						  <div class="container">
+						    <div class="row-fluid"> 
+						      <div class="span4 offset1">
+						        <p class="front"><b>1. <a href="#gettingstarted">Getting Started with ZMap</a></b></p>
+						        <p class="front"><b>2. <a href="#bestpractices">Scanning Best Practices</a></b></p>
+      							<p class="section"><b>3. <a href="#extendingzmap">Extending ZMap and Applications</a></b></p>
+      							<ol class="subsection">
+      							  <li><a href="writingmodules">Writing Probe and Output Modules</a></li>
+      							  <li><a href="#sampleapps">Included Sample ZMap Applications</a></li>
+      							  </ol>
+						      </div>
+						      <div class="span5">
+						        
+      							<p class="section"><b>4. <a href="">Command Line Documentation</a></b></p>
+      							<ol class="subsection">
+      							  <li><a href="">Basic Scan Configuration</a></li>
+      								<li><a href="">Sampling and Rate Limiting</a></li>
+      								<li><a href="">Scan Order and Address Selection</a></li>
+      								<li><a href="">Blacklisting and Whitelisting</a></li>
+      							  <li><a href="">Advanced Options</a></li>
+      							  </ol>
+
+						      </div>
+						    </div>
+						  </div>
+
+
+						</div>
+					</div>
+				</div>
+				</div>
+				<div class="row-fluid"> 
+					<div class="span10 white-panel offset1 nontitle">
+						<div class="content">
+						  <h3>Getting Started with ZMap</h3>
+              <p class="front">This section describes how to start using ZMap for the first time. If you have not already downloaded Zmap, we recommend installing the <a href="download.html">latest stable version</a>. Before performing any scans, we strongly encourage researchers to contact their local network administrators. By default, ZMap will utilize all available bandwidth at its disposal, which can inadvertently cause service disruptions for other users on your local network. We have also provided a list of <a href="#bestpractices">best practices</a> for researchers.</p>
+                
+                <p class="front">Out of the box, ZMap supports TCP SYN scanning against a single target port and ICMP echo request (ping) scanning. Unless specified otherwise, ZMap will perform a TCP SYN scan against the specified port at the maximum rate possible using the default network interface and gateway. A more conservative configuration that will scan 10,000 random addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
+                <div class="indent"><pre><b>$ zmap --bandwidth=10M --target-port=80 --max-targets=10000 --output-file=results.txt </b></pre></div>
+                <p class="front">If the scan started successfully, you will see status statements similar to the following:</p>
+                <div class="indent"><pre>0:01 0%; send: 10046 10.0 Kp/s (8.57 Kp/s avg); recv:  87 86 p/s (74 p/s avg); hits: 0.87%
+0:02 0%; send: 20046 10.0 Kp/s (9.23 Kp/s avg); recv: 174 86 p/s (80 p/s avg); hits: 0.87%
+0:03 0%; send: 30047 10.0 Kp/s (9.47 Kp/s avg); recv: 255 80 p/s (80 p/s avg); hits: 0.85%
+0:04 0%; send: 40047 10.0 Kp/s (9.60 Kp/s avg); recv: 344 88 p/s (82 p/s avg); hits: 0.86%</pre></div>
+                <p class="front">If you do not know the scan rate that your network can support, you may want to experiment with different scan rates or bandwidth limits to find the fastest rate that your network can support before you see decreased results. ZMap will output the list of distinct IP addresses that responded with a SYN ACK on port 80 as they are found, similar to the following. There are several additional formats for <a href="#">outputting results</a> as well as options for producing <a href="#">programmatically parseable scan statistics</a>.</p>
+                <div class="indent"><pre>115.237.116.119
+23.9.117.80
+207.118.204.141
+217.120.143.111
+50.195.22.82
+</pre></div>
+     <p class="front">In the previous examples, we did not specify any network related options. By default, ZMap will attempt to determine your server's default interface and route. If you are performing scans using a dedicated network interface or if ZMap cannot determine your default interface, it can be specified with <code>-i</code> or <code>--interface</code>. Similarly, source IP address(s) can be specified by supplying <code>-s</code> or <code>--source-ip</code> and the MAC address of your gateway can be specified with <code>-G</code> or <code>--gateway-mac</code>. Example: </p>
+     <div class="indent"><pre><b>$ zmap -B 10M -p 80 -n 10000 -i eth2 -S "1.2.3.4-1.2.3.6" -G "05:0b:cf:c7:0d:a1" -o results</b></pre></div>
+     
+     <p class="front">If you are attempting to troubleshoot scan related issues, there are several options to help debug. First, it is possible can perform a <a href="#dryrun">dry run scan</a> in order to see the packets that would be sent over the network by specifying the <code>--dryrun=n</code> flag. As well, it is possible to change the <a href="#verbosity">logging verbosity</a> by setting the <code>--verbosity</code> flag.
+    </p>   
+       <p class="front">If you find yourself specifying certain settings, such as your default gateway, every time you run ZMap, you can set these in <code>/etc/zmap/zmap.conf</code>, <code>~/.zmap.conf</code>, or create a custom configuration file that contains any command-line option. For example, if you created a configuration file with the following options:</p>
+     
+     <div class="indent"><pre>interface "eth2"
+source-ip 1.2.3.4-1.2.3.6
+gateway-mac 05:0b:cf:c7:0d:a1 # upstream gateway</pre></div>
+     
+     <p class="front">then the same scan as above could be executed as follows:</p>
+     <div class="indent"><pre><b>$ zmap -C zmap.conf -B 10M -p 80 -n 10000 -o results</b></pre></div>
+     
+     
+     
+					</div>
+				</div>
+				<div class="row-fluid"> 
+					<div class="span10 white-panel offset1 nontitle">
+						<div class="hometitle">
+						  <h3>Scanning Best Practices</h3>
+              <p class="front">
+                While ZMap is a powerful tool for researchers, please keep in mind that by running ZMap, you are potentially scanning the <b>ENTIRE</b> public IPv4 address space and some users may not appreciate your scanning. We offer these suggestions for other researchers conducting fast Internet-wide scans as guidelines for good Internet citizenship.</p>
+                <ol class="recommendations">
+                  <li class="">Coordinate closely with local network admins to
+                  reduce risks and handle inquiries</li>
+                  <li class="">Verify that scans will not overwhelm the local network or upstream provider</li>
+                  <li class="">Signal the benign nature of the scans in web pages
+                  and DNS entries of the source addresses</li>
+                  <li class="">Clearly explain the purpose and scope of the scans
+                  in all communications</li>
+                  <li class="">Provide a simple means of opting out, and honor
+                  requests promptly</li>
+                  <li class="">Conduct scans no larger or more frequent than is
+                  necessary for research objectives</li>
+                  <li class="">Spread scan traffic over time or source addresses
+                  when feasible</li>
+                </ol>
+                <p class="front">It should go without saying that scan
+                researchers should refrain from exploiting vulnerabilities or accessing protected resources, and should comply
+                with any special legal requirements in their jurisdictions.</p>
+					</div>
+				</div>
+				<div class="row-fluid"> 
+					<div class="span10 white-panel offset1 nontitle">
+						<div class="content">
+						  <h3>Command Line Documentation</h3>
+              <p> For all types of scans, ZMap requires several parameters: source ip address and gateway MAC address. ZMap supports sending packets from multiple source IP addresses and in the case of TCP SYN scans, from multiple ports. Because ZMap utilizes a raw socket to send network packets and <b>libpcap</b> to collect responses, ZMap must be run as root or with <b>cap_net_raw</b> (recommended). In the case that you want packets sent through a non-default interface, this can be be set by providing the <strong>interface</strong> argument.</p> <p> Basic arguments:</p>
 							
 							<dl class="dl-horizontal params">
 								<dt>-S, --source-ip=ip|range</dt><dd>Source address(es) for scan packets (e.g. <b>1.1.1.3-1.1.1.8</b>)</dd>
@@ -229,10 +325,9 @@ rst, 	14.234.179.115,	1.1.1.3, 443, 	50203, 0,	 1,	2013-01-25 14:58:49.386</pre>
 							<br/>
 							<a name="multiple"></a> 
 							<h3>Sending Multiple Packets</h3>
-							<p>ZMap supports sending multiple packets to each host through two options <strong>packet-streams</strong> and <strong>ident-packets</strong>. When multiple packet streams are used, slightly different packets (differing in source address or source port) are sent to each host and if a host receives these multiple packets, it will open a connection for each packet. In the case of identical packets, a distinct packet will be sent multiple times to the same host. If a host received multiple identical packets, these often be treated as duplicates and only a single connection will be opened.</p>
+							<p>ZMap supports sending multiple packets to each host by setting </p>
 			
 							<dl class="dl-horizontal params">
-							  <dt>-u, --packet-streams=n</dt><dd>The number of unique packets sent to an IP address</dd>
 							  <dt>-p, --ident-packets=n</dt><dd>The number of times each particular scan packet is sent</dd>
 							</dl>
 							<br/>
@@ -252,137 +347,154 @@ rst, 	14.234.179.115,	1.1.1.3, 443, 	50203, 0,	 1,	2013-01-25 14:58:49.386</pre>
 							<dl class="dl-horizontal params">
 								<dt>-n, --sender-threads</dt><dd>Threads used to send packets (default=`1')</dd>
 							</dl><br/>
-							<a name="extension"></a> 
-							<h3>Extending ZMap</h3>
-							<p>ZMap can be extended to support different types of scanning through <strong>send modules</strong> and additional types of results output through <strong>output modules</strong>. Registered send and output modules can be listed through the command-line interface:</p>
-							<dl class="dl-horizontal params">
-								<dt>-L, --list-output-modules</dt><dd>Lists installed output modules</dd>
-								<dt>-l, --list-scan-types</dt><dd>Lists available scan types</dd>
-							</dl><br/>
-							<h4>Output Modules</h4>
-							<p>ZMap output and post-processing can be extended by implementing and registering <strong>output modules</strong> with the scanner. Output modules receive a callback for every received response packet. While the default provided modules provide simple output, these modules are also capable of performing additional post-processing (e.g. keeping track of duplicates or outputting numbers in terms of AS instead of IP address)</p><br/>
-							
-<p>Output modules are created by defining a new output_module struct and registering it in <a href="#">output_modules.c</a>:</p>
-
-<pre>struct output_module {
-	
-    const char *name; <em>// how is output module referenced in the CLI</em>
-    unsigned update_interval; <em>// how often is update called in seconds</em>
-
-    setup_cb init;  <em>// called at scanner initialization</em>
-    update_cb start; <em>// called at the beginning of scanner</em>
-    update_cb update; <em>// called every update_interval seconds</em>
-    update_cb close; <em>// called at scanner termination</em>
-
-    send_cb synsend; <em>// called when a probe packet is sent</em>
-    pckt_cb success_ip; <em>// called when a successful response is received</em>
-    pckt_cb other_ip; <em>// called when any other responses are received</em>
-	
-} output_module_t;</pre><br/>
-	
-<p>Output modules must have a name which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>send module</strong>. The <code>other_ip</code> callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <code>pckt_cb</code> definition:</p>
-
-<pre>
-int (*pckt_cb) (
-
-    ipaddr_n_t saddr, <em>// IP address of scanned host in network-order</em>
-    ipaddr_n_t daddr, <em>// destination IP address in network-order </em>
-
-    port_n_t sport, <em>// port of scanned host in network-order</em>
-    port_n_t dport, <em>// destination port in network-order</em>
-
-    struct timeval* recv_at, <em>// timeval of when response was received</em>
-    const char* response_type, <em>// send-module classification of packet</em>
-
-    int is_repeat, <em>// {0: first response from host, 1: subsequent responses}</em>
-    int in_cooldown, <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
-
-    const u_char* packet, <em>// pointer to raw packet struct</em>
-    size_t packet_len <em>// length of raw packet</em>
-    
-);
-</pre><br/>
-	
-<p>An output module can also register callbacks to be executed at scanner initialization (tasks such as opening an output file), start of the scan (such as documenting blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
-<pre>int (*update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre>
-<p>which are defined in <a href="#">state.h</a>. An example is available at <a href="#">src/output_modules/module_extended_file.c</a>.</p>
-<br/>
-
-							<h4>Send Modules</h4>
-<p>Packets are constructed using <strong>send modules</strong> which allow abstracted packet creation and response classification. Each type of scan (e.g. TCP SYN scan or ICMP echo request scan) is implemented by developing and registering the necessary callbacks in a <code>send_module_t</code> struct:</p>
-
-<pre>
-typedef struct send_module {
-  
-  const char *name; <em>// how scan is invoked on command-line</em>
-  size_t packet_length; <em>// how long is probe packet (must be static size)</em>
-
-  const char *pcap_filter; <em>// PCAP filter for collecting responses</em>
-  size_t pcap_snaplen; <em>// maximum number of bytes for libpcap to capture</em>
-
-  uint8_t check_src_port; <em>// validate the source port the response is sent from</em>
-  uint8_t check_tcp_seqnum; <em>// validate TCP ack matches random probe seqnum</em>
-  uint8_t check_icmp_seqnum; <em>// validate ICMP seqnum matches probe seqnum</em>
-  uint8_t check_dst_port;
-
-  setup_cb global_initialize; <em>// called once at scanner initialization</em>
-  send_init_cb thread_initialize; <em>// called once for each thread packet buffer</em>
-  make_packet_cb make_packet; <em>// called once per host to update packet</em>
-  
-  print_packet_cb print_packet; <em>// called per packet if in dry-run mode</em>
-  classify_packet_cb classify_packet; <em>// called by receiver to classify response</em>
-  update_cb close; <em>// called at scanner termination</em>
-  
-  response_type_t responses[]; <em>// possible response classifications</em>
-
-} send_module_t;
-</pre>
-
-
-<pre>
-struct send_module {
-  const char *name; 
-  size_t packet_length; 
-  const char *pcap_filter; 
-
-
-} send_module_t;
-</pre>
-<br/><p>At scanner initialization, <code>global_initialize</code> is called once and can be utilized to perform any necessary global configuration or initialization. However, <code>global_initialize</code> does not have access to the packet buffer which is thread-specific. Instead, <code>thread_initialize</code> is called at the initialization of each sender thread and is provided with access to the buffer that will be used for constructing probe packets along with global source and destination values. This callback should be used to construct the host agonistic packet structure such that only specific values (e.g. destination host and checksum) need to be be updated for each host. For example, the ethernet header will not change between headers (minus checksum which is calculated in hardware by the NIC) and therefore can be defined ahead of time in order to reduce overhead at scan time.</p>
-
-<p>The <code>make_packet</code> callback is called for each host that is scanned to allow the <strong>scan module</strong> to update host specific values and is provided with port and IP address values (shown below). The send module must utilize these values instead of assigning their own or response packets if they utilize scanner response verification.</p>
-<pre>int make_packet(
-  
-  void *buf, <em>// packet buffer</em>
-  
-  ipaddr_n_t src_ip, <em>// source IP in network-order</em>
-  port_n_t src_port, <em>// source port in network-order</em>
-  
-  ipaddr_n_t dst_ip, <em>// destination IP in network-order</em>
-  port_n_t dst_port, <em>// destination port in network-order</em>
-  
-  uint32_t tcp_seqnum, <em>// tcp sequence number</em>
-  uint16_t icmp_id <em>// ICMP id number</em>
-
-);</pre><br/>
-
-<p>Scan modules must also define <code>pcap_filter</code> and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>classify_packet</code> function will be called for every packet that fulfills this PCAP filter and passes basic ZMap validation.  As part of writing the send module, you will need to register possible responses, similar to the following:</p>
-  
-<pre>static response_type_t responses[] = {
-	{
-		.is_success = 1,	
-		.name = "synack"
-	},
-	{
-		.is_success = 0,
-		.name = "rst"
-	}
-};
-</pre><br/><p>The classify function should accept a packet buffer and return a const response_type_t pointer to one of these responses upon receiving the packet. This classification will later be used as part of determining the scan output.</p>
-
-							
 					</div>
 				</div>
+				
+				
+				
+				
+				<div class="row-fluid"> 
+					<div class="span10 white-panel offset1 nontitle">
+						<div class="content">
+						  <h3>Sample ZMap Applications</h3>
+						  <p>We have included several sample applications with ZMap</p>
+             
+					</div>
+				</div>
+				
+								<div class="row-fluid"> 
+        					<div class="span10 white-panel offset1 nontitle">
+        						<div class="content">
+        						  <h3>Extending ZMap</h3>
+        							<p>ZMap can be extended to support different types of scanning through <strong>probe modules</strong> and additional types of results output through <strong>output modules</strong>. Registered probe and output modules can be listed through the command-line interface:</p>
+        							<dl class="dl-horizontal params">
+        								<dt>-L, --list-output-modules</dt><dd>Lists installed output modules</dd>
+        								<dt>-l, --list-scan-types</dt><dd>Lists available scan types</dd>
+        							</dl><br/>
+                      <h4>Output Modules</h4>
+        							<p>ZMap output and post-processing can be extended by implementing and registering <strong>output modules</strong> with the scanner. Output modules receive a callback for every received response packet. While the default provided modules provide simple output, these modules are also capable of performing additional post-processing (e.g. keeping track of duplicates or outputting numbers in terms of AS instead of IP address)</p><br/>
+
+        <p>Output modules are created by defining a new output_module struct and registering it in <a href="#">output_modules.c</a>:</p>
+
+        <pre>struct output_module {
+
+            const char *name; <em>// how is output module referenced in the CLI</em>
+            unsigned update_interval; <em>// how often is update called in seconds</em>
+
+            setup_cb init;  <em>// called at scanner initialization</em>
+            update_cb start; <em>// called at the beginning of scanner</em>
+            update_cb update; <em>// called every update_interval seconds</em>
+            update_cb close; <em>// called at scanner termination</em>
+
+            send_cb synsend; <em>// called when a probe packet is sent</em>
+            pckt_cb success_ip; <em>// called when a successful response is received</em>
+            pckt_cb other_ip; <em>// called when any other responses are received</em>
+
+        } output_module_t;</pre><br/>
+
+        <p>Output modules must have a name which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>send module</strong>. The <code>other_ip</code> callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <code>pckt_cb</code> definition:</p>
+
+        <pre>
+        int (*pckt_cb) (
+
+            ipaddr_n_t saddr, <em>// IP address of scanned host in network-order</em>
+            ipaddr_n_t daddr, <em>// destination IP address in network-order </em>
+
+            port_n_t sport, <em>// port of scanned host in network-order</em>
+            port_n_t dport, <em>// destination port in network-order</em>
+
+            struct timeval* recv_at, <em>// timeval of when response was received</em>
+            const char* response_type, <em>// send-module classification of packet</em>
+
+            int is_repeat, <em>// {0: first response from host, 1: subsequent responses}</em>
+            int in_cooldown, <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
+
+            const u_char* packet, <em>// pointer to raw packet struct</em>
+            size_t packet_len <em>// length of raw packet</em>
+
+        );
+        </pre><br/>
+
+        <p>An output module can also register callbacks to be executed at scanner initialization (tasks such as opening an output file), start of the scan (such as documenting blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
+        <pre>int (*update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre>
+        <p>which are defined in <a href="#">state.h</a>. An example is available at <a href="#">src/output_modules/module_extended_file.c</a>.</p>
+        <br/>
+
+        <h4>Probe Modules</h4>
+        <p>Packets are constructed using <strong>send modules</strong> which allow abstracted packet creation and response classification. Each type of scan (e.g. TCP SYN scan or ICMP echo request scan) is implemented by developing and registering the necessary callbacks in a <code>send_module_t</code> struct:</p>
+
+        <pre>
+        typedef struct send_module {
+
+          const char *name; <em>// how scan is invoked on command-line</em>
+          size_t packet_length; <em>// how long is probe packet (must be static size)</em>
+
+          const char *pcap_filter; <em>// PCAP filter for collecting responses</em>
+          size_t pcap_snaplen; <em>// maximum number of bytes for libpcap to capture</em>
+
+          uint8_t check_src_port; <em>// validate the source port the response is sent from</em>
+          uint8_t check_tcp_seqnum; <em>// validate TCP ack matches random probe seqnum</em>
+          uint8_t check_icmp_seqnum; <em>// validate ICMP seqnum matches probe seqnum</em>
+          uint8_t check_dst_port;
+
+          setup_cb global_initialize; <em>// called once at scanner initialization</em>
+          send_init_cb thread_initialize; <em>// called once for each thread packet buffer</em>
+          make_packet_cb make_packet; <em>// called once per host to update packet</em>
+
+          print_packet_cb print_packet; <em>// called per packet if in dry-run mode</em>
+          classify_packet_cb classify_packet; <em>// called by receiver to classify response</em>
+          update_cb close; <em>// called at scanner termination</em>
+
+          response_type_t responses[]; <em>// possible response classifications</em>
+
+        } send_module_t;
+        </pre>
+
+
+        <pre>
+        struct send_module {
+          const char *name; 
+          size_t packet_length; 
+          const char *pcap_filter; 
+
+
+        } send_module_t;
+        </pre>
+        <br/><p>At scanner initialization, <code>global_initialize</code> is called once and can be utilized to perform any necessary global configuration or initialization. However, <code>global_initialize</code> does not have access to the packet buffer which is thread-specific. Instead, <code>thread_initialize</code> is called at the initialization of each sender thread and is provided with access to the buffer that will be used for constructing probe packets along with global source and destination values. This callback should be used to construct the host agonistic packet structure such that only specific values (e.g. destination host and checksum) need to be be updated for each host. For example, the ethernet header will not change between headers (minus checksum which is calculated in hardware by the NIC) and therefore can be defined ahead of time in order to reduce overhead at scan time.</p>
+
+        <p>The <code>make_packet</code> callback is called for each host that is scanned to allow the <strong>scan module</strong> to update host specific values and is provided with port and IP address values (shown below). The send module must utilize these values instead of assigning their own or response packets if they utilize scanner response verification.</p>
+        <pre>int make_packet(
+
+          void *buf, <em>// packet buffer</em>
+
+          ipaddr_n_t src_ip, <em>// source IP in network-order</em>
+          port_n_t src_port, <em>// source port in network-order</em>
+
+          ipaddr_n_t dst_ip, <em>// destination IP in network-order</em>
+          port_n_t dst_port, <em>// destination port in network-order</em>
+
+          uint32_t tcp_seqnum, <em>// tcp sequence number</em>
+          uint16_t icmp_id <em>// ICMP id number</em>
+
+        );</pre><br/>
+
+        <p>Scan modules must also define <code>pcap_filter</code> and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>classify_packet</code> function will be called for every packet that fulfills this PCAP filter and passes basic ZMap validation.  As part of writing the send module, you will need to register possible responses, similar to the following:</p>
+
+        <pre>static response_type_t responses[] = {
+        	{
+        		.is_success = 1,	
+        		.name = "synack"
+        	},
+        	{
+        		.is_success = 0,
+        		.name = "rst"
+        	}
+        };
+        </pre><br/><p>The classify function should accept a packet buffer and return a const response_type_t pointer to one of these responses upon receiving the packet. This classification will later be used as part of determining the scan output.</p>
+        					</div>
+        				</div>
+
+				</div>  
 			</div>
 			</div>
 		</div>
