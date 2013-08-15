@@ -321,44 +321,40 @@ parseable scan statistics</a>.</p>
 
         <div class="indent"><pre>struct output_module {
 
-            const char *name; <em>// how is output module referenced in the CLI</em>
-            unsigned update_interval; <em>// how often is update called in seconds</em>
+            const char          *name;           <em>// how is output module referenced in the CLI</em>
+            unsigned            update_interval; <em>// how often is update called in seconds</em>
 
-            setup_cb init;  <em>// called at scanner initialization</em>
-            update_cb start; <em>// called at the beginning of scanner</em>
-            update_cb update; <em>// called every update_interval seconds</em>
-            update_cb close; <em>// called at scanner termination</em>
+            output_init_cb      init;            <em>// called at scanner initialization</em>
+            output_update_cb    start;           <em>// called at the beginning of scanner</em>
+            output_update_cb    update;          <em>// called every update_interval seconds</em>
+            output_update_cb    close;           <em>// called at scanner termination</em>
 
-            send_cb synsend; <em>// called when a probe packet is sent</em>
-            pckt_cb success_ip; <em>// called when a successful response is received</em>
-            pckt_cb other_ip; <em>// called when any other responses are received</em>
+            output_packet_cb    success_ip;      <em>// called when a successful response is received</em>
+            output_packet_cb    other_ip;        <em>// called when any other responses are received</em>
 
         } output_module_t;</pre></div>
 
-        <p>Output modules must have a name, which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>probe module</strong>. The <code>other_ip</code> callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <code>pckt_cb</code> definition:</p>
+        <p>Output modules must have a name, which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>probe module</strong>. The <code>other_ip</code> callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <code>output_packet_cb</code> definition:</p>
 
         <div class="indent"><pre>
-int (*pckt_cb) (
+int (*output_packet_cb) (
 
-            ipaddr_n_t saddr, <em>// IP address of scanned host in network-order</em>
-            ipaddr_n_t daddr, <em>// destination IP address in network-order </em>
+            ipaddr_n_t    saddr,         <em>// IP address of scanned host in network-order</em>
+            ipaddr_n_t    daddr,         <em>// destination IP address in network-order </em>
 
-            port_n_t sport, <em>// port of scanned host in network-order</em>
-            port_n_t dport, <em>// destination port in network-order</em>
+            const char*   response_type, <em>// send-module classification of packet</em>
 
-            struct timeval* recv_at, <em>// timeval of when response was received</em>
-            const char* response_type, <em>// send-module classification of packet</em>
+            int           is_repeat,     <em>// {0: first response from host, 1: subsequent responses}</em>
+            int           in_cooldown,   <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
 
-            int is_repeat, <em>// {0: first response from host, 1: subsequent responses}</em>
-            int in_cooldown, <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
-
-            const u_char* packet, <em>// pointer to raw packet struct</em>
-            size_t packet_len <em>// length of raw packet</em>
+            const u_char* packet,        <em>// pointer to <code>struct iphdr</code> of IP packet</em>
+            size_t        packet_len     <em>// length of packet in bytes</em>
+ 
         );
         </pre></div>
 
         <p>An output module can also register callbacks to be executed at scanner initialization (tasks such as opening an output file), start of the scan (tasks such as documenting blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
-        <div class="indent"><pre>int (*update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre></div>
+        <div class="indent"><pre>int (*output_update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre></div>
         <p>which are defined in <a href="#">state.h</a>. An example is available at <a href="#">src/output_modules/module_extended_file.c</a>.</p>
         <br/>
 
