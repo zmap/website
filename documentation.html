@@ -295,8 +295,8 @@ parseable scan statistics</a>.</p>
 						<p>Now you should be able to build the forge-socket ZMap example program. To run it, you must use the <b>extended_file</b>
 						ZMap <a href="#outputmodule">output module</a>:</p>
 	
-                         <div class="indent"><pre><b>
-$ zmap -p 80 -N 1000 -B 10M -O extended_file -o - | \
+                         <div class="indent"><pre>
+<b>$ zmap -p 80 -N 1000 -B 10M -O extended_file -o - | \
     ./forge-socket -c 500 -d ./http-req &gt; ./http-banners.out</b></pre></div>
 
 						<p>See the README in <code>examples/forge-socket</code> for more details.</p>
