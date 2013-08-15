@@ -9,6 +9,19 @@
 		<link href="css/bootstrap-responsive.min.css" rel="stylesheet"/>
 		<link href="css/local.css" rel="stylesheet"/>
 	</head>
+<script type="text/javascript">
+  var _gauges = _gauges || [];
+  (function() {
+    var t   = document.createElement('script');
+    t.type  = 'text/javascript';
+    t.async = true;
+    t.id    = 'gauges-tracker';
+    t.setAttribute('data-site-id', '51f73359108d7b36f5000203');
+    t.src = '//secure.gaug.es/track.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t, s);
+  })();
+</script>
 	<body>
 		<script type="text/JavaScript" src="js/jquery.min.js"></script> 
 		<script type="text/JavaScript" src="js/bootstrap.min.js"></script> 
@@ -80,7 +93,7 @@ addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
 0% (1h50m left); send: 39676 535 Kp/s (555 Kp/s avg); recv: 1663 220 p/s (232 p/s avg); hits: 0.04%
 0% (1h50m left); send: 45372 570 Kp/s (557 Kp/s avg); recv: 1890 226 p/s (232 p/s avg); hits: 0.04%</pre></div>
 
-<p class="front">These updates provide information about the current state of the scan and are of the following form: %-complete (est time remaining); packets-sent curr-send-rate (avg-sed-rate); recv: packets-recv recv-rate (avg-recv-rate); hits: hit-rate </p>
+<p class="front">These updates provide information about the current state of the scan and are of the following form: %-complete (est time remaining); packets-sent curr-send-rate (avg-send-rate); recv: packets-recv recv-rate (avg-recv-rate); hits: hit-rate </p>
 
                 <p class="front">If you do not know the scan rate that your
 network can support, you may want to experiment with different scan rates or
@@ -88,7 +101,7 @@ bandwidth limits to find the fastest rate that your network can support before
 you see decreased results.</p>
 
 <p class="front">By default, ZMap will output the list of distinct IP addresses
-that responded with a SYN ACK on port 80 as they are found, similar to the
+that responded with a SYN ACK as they are found, similar to the
 following. There are several additional formats for <a href="#output">outputting
 results</a> as well as options for producing <a href="#verbosity">programmatically
 parseable scan statistics</a>.</p>
@@ -101,10 +114,13 @@ parseable scan statistics</a>.</p>
 </pre></div>
 
 
-<p class="front">We strongly encourage you to use a <a href="#blacklisting">blacklist file</a>, to exclude both reserved/unallocated IP space (e.g. multicast, RFC1918), as well as networks that request to be excluded from your scans. If you find yourself specifying certain settings, such as your bandwidth or <a href="#blacklisting">blacklist file</a> every time you run ZMap, you can set these in a <a href="#config">configuration file</a>.</p>
+<p class="front">We strongly encourage you to use a <a href="#blacklisting">blacklist file</a>, to exclude both reserved/unallocated IP space (e.g. multicast, RFC1918), as well as networks that request to be excluded from your scans. By default, ZMap will utilize a simple blacklist file containing reserved and unallocated addresses located at <code>/etc/zmap/blacklist.conf</code>. If you find yourself specifying certain settings, such as your maximum bandwidth or <a href="#blacklisting">blacklist file</a> every time you run ZMap, you can specify these in <code>/etc/zmap/zmap.conf</code> or use a custom <a href="#config">configuration file</a>.</p>
 
      <p class="front">If you are attempting to troubleshoot scan related issues, there are several options to help debug. First, it is possible can perform a <a href="#dryrun">dry run scan</a> in order to see the packets that would be sent over the network by adding the <code>--dryrun</code> flag. As well, it is possible to change the <a href="#verbosity">logging verbosity</a> by setting the <code>--verbosity=n</code> flag.
     </p>   
+
+<p class="front">
+</p>
 
        <p class="front">
      
@@ -222,19 +238,13 @@ parseable scan statistics</a>.</p>
            <div class="content">
              <a name="applications"></a>
 	     <h3>Sample Applications</h3>
-	  <p>ZMap is designed for initiating contact with a large number of hosts, and finding ones
-                          that respond positively. However, most applications of ZMap will also have a second stage,
-                          where additional processing or communication is performed on each of the hosts that responded.
-                          For example, we might use the <code>tcp_synscan</code> probe module to find
-                          hosts listening on port 80, and in a second stage, connect to each of those hosts, send a simple
-                          GET request, and observe their response. What operations are performed in this second stage
-                          are application specific. For example, you might want to fetch SSL certificates instead, or
-                          test for other application and implementation-specific signatures.</p>
+	  	<p>ZMap is designed for initiating contact with a large number of hosts and finding ones
+                          that respond positively. However, we realize that many users will want to perform follow-up processing, such as performing an application level handshake. For example, users who perform a TCP SYN scan on port 80 might want to perform a simple GET request and users who scan port 443 may be interested in completeing a TLS handshake.</p>
 
                          <a name="banner-grab"></a>
                          <h4>Banner Grab</h4>
 
-                         <p>We have included a sample application, <code>banner-grab</code>, with ZMap that enables users
+                         <p>We have included a sample application, banner-grab, with ZMap that enables users
                          to receive messages from listening TCP servers. Banner-grab connects to the provided servers,
                          optionally sends a message, and prints out the first message received from the server. This tool
                          can be used to fetch banners such as HTTP server responses to specific commands, telnet login
