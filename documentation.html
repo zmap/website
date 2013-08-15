@@ -342,30 +342,21 @@ int (*pckt_cb) (
           const char *pcap_filter; <em>// PCAP filter for collecting responses</em>
           size_t pcap_snaplen; <em>// maximum number of bytes for libpcap to capture</em>
 
-          uint8_t check_src_port; <em>// validate the source port the response is sent from</em>
-          uint8_t check_tcp_seqnum; <em>// validate TCP ack matches random probe seqnum</em>
-          uint8_t check_icmp_seqnum; <em>// validate ICMP seqnum matches probe seqnum</em>
-          uint8_t check_dst_port;
+          uint8_t port_args; <em>// set to 1 if ZMap requires a <code>--target-port</code> be specified by the user</em>
 
-          setup_cb global_initialize; <em>// called once at scanner initialization</em>
-          send_init_cb thread_initialize; <em>// called once for each thread packet buffer</em>
-          make_packet_cb make_packet; <em>// called once per host to update packet</em>
+          probe_global_init_cb     global_initialize; <em>// called once at scanner initialization</em>
+          probe_thread_init_cb     thread_initialize; <em>// called once for each thread packet buffer</em>
+          probe_make_packet_cb     make_packet;       <em>// called once per host to update packet</em>
+          probe_validate_packet_cb validate_packet;   <em>// called once per received packet, 
+                                                      // return 0 if packet is invalid,
+                                                      // non-zero otherwise.</em>
 
-          print_packet_cb print_packet; <em>// called per packet if in dry-run mode</em>
-          classify_packet_cb classify_packet; <em>// called by receiver to classify response</em>
-          update_cb close; <em>// called at scanner termination</em>
+          probe_print_packet_cb    print_packet;      <em>// called per packet if in dry-run mode</em>
+          probe_classify_packet_cb classify_packet;   <em>// called by receiver to classify response</em>
+          probe_close_cb           close;             <em>// called at scanner termination</em>
 
-          response_type_t responses[]; <em>// possible response classifications</em>
+          response_type_t *responses; <em>// possible response classifications</em>
 
-        } send_module_t;
-        </pre>
-
-
-        <pre>
-        struct send_module {
-          const char *name; 
-          size_t packet_length; 
-          const char *pcap_filter; 
         } send_module_t;
         </pre>
 
@@ -385,26 +376,27 @@ int (*pckt_cb) (
 
         <p>The <code>make_packet</code> callback is called for each host that
         is scanned to allow the <strong>probe module</strong> to update host specific
-        values and is provided with port and IP address values (shown below). The probe
-        module must utilize these values instead of assigning their own or response
-        packets if they utilize scanner response verification.</p>
+        values and is provided with IP address values, an opaque validation string,
+		and probe number (shown below). The probe module is responsible for placing
+		as much of the verification string into the probe, in such a way that when
+		a valid response is returned by a server, the probe module can verify that
+		it is present. For example, for a TCP SYN scan, the tcp_synscan probe module
+		can use the TCP source port and sequence number to store the validation string.
+		Response packets (SYN+ACKs) will contain the expected values in the destination
+		port and acknowledgement number.</p>
+
 
         <pre>int make_packet(
-
-          void *buf, <em>// packet buffer</em>
-
+          void *packetbuf, <em>// packet buffer</em>
           ipaddr_n_t src_ip, <em>// source IP in network-order</em>
-          port_n_t src_port, <em>// source port in network-order</em>
-
           ipaddr_n_t dst_ip, <em>// destination IP in network-order</em>
-          port_n_t dst_port, <em>// destination port in network-order</em>
-
-          uint32_t tcp_seqnum, <em>// tcp sequence number</em>
-          uint16_t icmp_id <em>// ICMP id number</em>
-
+          uint32_t  *validation, </em>// validation string to place in probe</em>
+          int       probe_num    </em>// if sending multiple probes per host,
+                                 // this will be which probe number for this
+                                 // host we are currently sending</em>
         );</pre><br/>
 
-        <p>Scan modules must also define <code>pcap_filter</code> and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>classify_packet</code> function will be called for every packet that fulfills this PCAP filter and passes basic ZMap validation.  As part of writing the send module, you will need to register possible responses, similar to the following:</p>
+        <p>Scan modules must also define <code>pcap_filter</code>, <code>validate_packet</code>, and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>validate_packet</code> function will be called for every packet that fulfills this PCAP filter. If the validation returns non-zero, the <code>classify_packet</code> function will be called, and return one of several responses pre-defined by the probe module. You will need to register possible responses, similar to the following:</p>
 
         <pre>static response_type_t responses[] = {
         	{
