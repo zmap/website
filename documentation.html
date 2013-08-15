@@ -252,7 +252,7 @@ parseable scan statistics</a>.</p>
 
                          <p>This example finds 1000 servers listening on port 80, and sends a simple GET request to each,
                          storing their base-64 encoded responses in http-banners.out</p>
-                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -o - | ./banner-grab-tcp -c 500 -d ./http-req &gt; results</b></pre></div>
+                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -o - | ./banner-grab-tcp -p 80 -c 500 -d ./http-req &gt; results</b></pre></div>
                          <p>For more details on using <code>banner-grab</code>, see the README file in <code>examples/banner-grab</code>.</p>
 
                          <p><span class="label label-info">Heads Up!</span>
@@ -266,6 +266,38 @@ parseable scan statistics</a>.</p>
                          to increase the maximum file descriptors per process). These parameters will of course
                          be dependent on your server performance, and hit-rate; we encourage developers to experiment
                          with small samples before running a large scan.</p>
+
+                         <a name="forge-socket"></a>
+                         <h4>Forge Socket</h4>
+
+						<p>We have also included a form of banner-grab, called forge-socket, that reuses the SYN-ACK
+						sent from the server for the connection that ultimately fetches the banner. In <code>banner-grab-tcp</code>,
+						ZMap sends a SYN to each server, and listening servers respond with a SYN+ACK. The ZMap host's kernel recieves
+						this, and sends a RST, as no active connection is associated with that packet. The banner-grab program must
+						then create a new TCP connection to the same server to fetch data from it.</p>
+
+						<p>In forge-socket, we utilize a kernel module by the same name, that allows us to create a connection
+						with arbitrary TCP parameters. This enables us to surpress the kernel's RST packet, and instead
+						create a socket that will reuse the SYN+ACK's parameters, and send and receive data through this socket
+						as we would any normally connected socket.</p>
+
+						<p>To use forge-socket, you will need the forge-socket kernel module, available from
+						<a href="https://github.com/ewust/forge_socket/">github</a>. You should <code>git clone git@github.com:ewust/forge_socket.git</code>
+						in the ZMap root source directory, and then <code>cd</code> into the forge_socket directory, and run <code>make</code>.
+						Install the kernel module with <code>insmod forge_socket.ko</code> as root.</p>
+
+						<p>You must also tell the kernel not to send RST packets. An easy way to disable RST packets system wide is
+						to use <b>iptables</b>. <code>iptables -A OUTPUT -p tcp -m tcp --tcp-flgas RST,RST RST,RST -j DROP</code> as root will
+						do this, though you may also add an optional <code>--dport X</code> to limit this to the port (X) you are scanning.
+						To remove this after your scan completes, you can run <code>iptables -D OUTPUT -p tcp -m tcp --tcp-flags RST,RST RST,RST -j DROP</code> 
+						as root. </p>
+		
+						<p>Now you should be able to build the forge-socket ZMap example program. To run it, you must use the <b>extended_file</b>
+						ZMap <a href="#outputmodule">output module</a>:</p>
+	
+                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -O extended_file -o - | ./forge-socket -c 500 -d ./http-req &gt; ./http-banners.out</b></pre></div>
+
+						<p>See the README in <code>examples/forge-socket</code> for more details.</p>
              
 					</div>
 				</div>
@@ -352,30 +384,21 @@ int (*pckt_cb) (
           const char *pcap_filter; <em>// PCAP filter for collecting responses</em>
           size_t pcap_snaplen; <em>// maximum number of bytes for libpcap to capture</em>
 
-          uint8_t check_src_port; <em>// validate the source port the response is sent from</em>
-          uint8_t check_tcp_seqnum; <em>// validate TCP ack matches random probe seqnum</em>
-          uint8_t check_icmp_seqnum; <em>// validate ICMP seqnum matches probe seqnum</em>
-          uint8_t check_dst_port;
+          uint8_t port_args; <em>// set to 1 if ZMap requires a <code>--target-port</code> be specified by the user</em>
 
-          setup_cb global_initialize; <em>// called once at scanner initialization</em>
-          send_init_cb thread_initialize; <em>// called once for each thread packet buffer</em>
-          make_packet_cb make_packet; <em>// called once per host to update packet</em>
+          probe_global_init_cb     global_initialize; <em>// called once at scanner initialization</em>
+          probe_thread_init_cb     thread_initialize; <em>// called once for each thread packet buffer</em>
+          probe_make_packet_cb     make_packet;       <em>// called once per host to update packet</em>
+          probe_validate_packet_cb validate_packet;   <em>// called once per received packet, 
+                                                      // return 0 if packet is invalid,
+                                                      // non-zero otherwise.</em>
 
-          print_packet_cb print_packet; <em>// called per packet if in dry-run mode</em>
-          classify_packet_cb classify_packet; <em>// called by receiver to classify response</em>
-          update_cb close; <em>// called at scanner termination</em>
+          probe_print_packet_cb    print_packet;      <em>// called per packet if in dry-run mode</em>
+          probe_classify_packet_cb classify_packet;   <em>// called by receiver to classify response</em>
+          probe_close_cb           close;             <em>// called at scanner termination</em>
 
-          response_type_t responses[]; <em>// possible response classifications</em>
+          response_type_t *responses; <em>// possible response classifications</em>
 
-        } send_module_t;
-        </pre>
-
-
-        <pre>
-        struct send_module {
-          const char *name; 
-          size_t packet_length; 
-          const char *pcap_filter; 
         } send_module_t;
         </pre>
 
@@ -395,26 +418,27 @@ int (*pckt_cb) (
 
         <p>The <code>make_packet</code> callback is called for each host that
         is scanned to allow the <strong>probe module</strong> to update host specific
-        values and is provided with port and IP address values (shown below). The probe
-        module must utilize these values instead of assigning their own or response
-        packets if they utilize scanner response verification.</p>
+        values and is provided with IP address values, an opaque validation string,
+		and probe number (shown below). The probe module is responsible for placing
+		as much of the verification string into the probe, in such a way that when
+		a valid response is returned by a server, the probe module can verify that
+		it is present. For example, for a TCP SYN scan, the tcp_synscan probe module
+		can use the TCP source port and sequence number to store the validation string.
+		Response packets (SYN+ACKs) will contain the expected values in the destination
+		port and acknowledgement number.</p>
+
 
         <pre>int make_packet(
-
-          void *buf, <em>// packet buffer</em>
-
+          void *packetbuf, <em>// packet buffer</em>
           ipaddr_n_t src_ip, <em>// source IP in network-order</em>
-          port_n_t src_port, <em>// source port in network-order</em>
-
           ipaddr_n_t dst_ip, <em>// destination IP in network-order</em>
-          port_n_t dst_port, <em>// destination port in network-order</em>
-
-          uint32_t tcp_seqnum, <em>// tcp sequence number</em>
-          uint16_t icmp_id <em>// ICMP id number</em>
-
+          uint32_t  *validation, </em>// validation string to place in probe</em>
+          int       probe_num    </em>// if sending multiple probes per host,
+                                 // this will be which probe number for this
+                                 // host we are currently sending</em>
         );</pre><br/>
 
-        <p>Scan modules must also define <code>pcap_filter</code> and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>classify_packet</code> function will be called for every packet that fulfills this PCAP filter and passes basic ZMap validation.  As part of writing the send module, you will need to register possible responses, similar to the following:</p>
+        <p>Scan modules must also define <code>pcap_filter</code>, <code>validate_packet</code>, and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>validate_packet</code> function will be called for every packet that fulfills this PCAP filter. If the validation returns non-zero, the <code>classify_packet</code> function will be called, and return one of several responses pre-defined by the probe module. You will need to register possible responses, similar to the following:</p>
 
         <pre>static response_type_t responses[] = {
         	{
@@ -721,15 +745,8 @@ need to manually adjust your send-rate to reduce packet drops and incorrect resu
 							  <dt>-P, --probes=n</dt><dd>The number of unique probes to send to each IP (default=1)</dd>
 							</dl>
 							<br/>
-							
-
-
 				</div>
-				</div>
-				
-	
-
-
+			</div>
 			</div>
 			</div>
 		</div>
