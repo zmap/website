@@ -372,30 +372,31 @@ int (*output_packet_cb) (
         <p>Each type of scan is implemented by developing and registering the necessary callbacks in a <code>send_module_t</code> struct:</p>
 
         <div class="indent"><pre>
-        typedef struct send_module {
+typedef struct probe_module {
 
-          const char *name; <em>// how scan is invoked on command-line</em>
-          size_t packet_length; <em>// how long is probe packet (must be static size)</em>
-
-          const char *pcap_filter; <em>// PCAP filter for collecting responses</em>
-          size_t pcap_snaplen; <em>// maximum number of bytes for libpcap to capture</em>
-
-          uint8_t port_args; <em>// set to 1 if ZMap requires a <code>--target-port</code> be specified by the user</em>
-
-          probe_global_init_cb     global_initialize; <em>// called once at scanner initialization</em>
-          probe_thread_init_cb     thread_initialize; <em>// called once for each thread packet buffer</em>
-          probe_make_packet_cb     make_packet;       <em>// called once per host to update packet</em>
-          probe_validate_packet_cb validate_packet;   <em>// called once per received packet, 
-                                                      // return 0 if packet is invalid,
-                                                      // non-zero otherwise.</em>
-
-          probe_print_packet_cb    print_packet;      <em>// called per packet if in dry-run mode</em>
-          probe_classify_packet_cb classify_packet;   <em>// called by receiver to classify response</em>
-          probe_close_cb           close;             <em>// called at scanner termination</em>
-
-          response_type_t *responses; <em>// possible response classifications</em>
-
-        } send_module_t;
+    const char               *name;             <em>// how scan is invoked on command-line</em>
+    size_t                   packet_length;     <em>// how long is probe packet (must be static size)</em>
+    
+    const char               *pcap_filter;      <em>// PCAP filter for collecting responses</em>
+    size_t                   pcap_snaplen;      <em>// maximum number of bytes for libpcap to capture</em>
+    
+    uint8_t                  port_args;         <em>// set to 1 if ZMap requires a <code>--target-port</code> be
+                                                // specified by the user</em>
+    
+    probe_global_init_cb     global_initialize; <em>// called once at scanner initialization</em>
+    probe_thread_init_cb     thread_initialize; <em>// called once for each thread packet buffer</em>
+    probe_make_packet_cb     make_packet;       <em>// called once per host to update packet</em>
+    probe_validate_packet_cb validate_packet;   <em>// called once per received packet, 
+                                                // return 0 if packet is invalid,
+                                                // non-zero otherwise.</em>
+    
+    probe_print_packet_cb    print_packet;      <em>// called per packet if in dry-run mode</em>
+    probe_classify_packet_cb classify_packet;   <em>// called by receiver to classify response</em>
+    probe_close_cb           close;             <em>// called at scanner termination</em>
+    
+    response_type_t          *responses;        <em>// possible response classifications</em>
+    
+} probe_module_t;
         </pre>
 
         <br/><p>At scanner initialization, <code>global_initialize</code> is
