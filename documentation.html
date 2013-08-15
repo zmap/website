@@ -339,17 +339,16 @@ parseable scan statistics</a>.</p>
         <div class="indent"><pre>
 int (*output_packet_cb) (
 
-            ipaddr_n_t    saddr,         <em>// IP address of scanned host in network-order</em>
-            ipaddr_n_t    daddr,         <em>// destination IP address in network-order </em>
-
-            const char*   response_type, <em>// send-module classification of packet</em>
-
-            int           is_repeat,     <em>// {0: first response from host, 1: subsequent responses}</em>
-            int           in_cooldown,   <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
-
-            const u_char* packet,        <em>// pointer to <code>struct iphdr</code> of IP packet</em>
-            size_t        packet_len     <em>// length of packet in bytes</em>
- 
+    ipaddr_n_t    saddr,         <em>// IP address of scanned host in network-order</em>
+    ipaddr_n_t    daddr,         <em>// destination IP address in network-order </em>
+    
+    const char*   response_type, <em>// send-module classification of packet</em>
+    
+    int           is_repeat,     <em>// {0: first response from host, 1: subsequent responses}</em>
+    int           in_cooldown,   <em>// {0: not in cooldown state, 1: scanner in cooldown state}</em>
+    
+    const u_char* packet,        <em>// pointer to <code>struct iphdr</code> of IP packet</em>
+    size_t        packet_len     <em>// length of packet in bytes</em> 
         );
         </pre></div>
 
@@ -425,29 +424,33 @@ typedef struct probe_module {
 		port and acknowledgement number.</p>
 
 
-        <pre>int make_packet(
-          void *packetbuf, <em>// packet buffer</em>
-          ipaddr_n_t src_ip, <em>// source IP in network-order</em>
-          ipaddr_n_t dst_ip, <em>// destination IP in network-order</em>
-          uint32_t  *validation, </em>// validation string to place in probe</em>
-          int       probe_num    </em>// if sending multiple probes per host,
-                                 // this will be which probe number for this
-                                 // host we are currently sending</em>
-        );</pre><br/>
+        <div class="indent"><pre>
+int make_packet(
+    void        *packetbuf,  <em>// packet buffer</em>
+    ipaddr_n_t  src_ip,      <em>// source IP in network-order</em>
+    ipaddr_n_t	dst_ip,      <em>// destination IP in network-order</em>
+    uint32_t    *validation, </em>// validation string to place in probe</em>
+    int         probe_num    </em>// if sending multiple probes per host,
+                             // this will be which probe number for this
+                             // host we are currently sending</em>
+        );</pre></div><br/>
 
         <p>Scan modules must also define <code>pcap_filter</code>, <code>validate_packet</code>, and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>validate_packet</code> function will be called for every packet that fulfills this PCAP filter. If the validation returns non-zero, the <code>classify_packet</code> function will be called, and return one of several responses pre-defined by the probe module. You will need to register possible responses, similar to the following:</p>
 
-        <pre>static response_type_t responses[] = {
-        	{
-        		.is_success = 1,	
-        		.name = "synack"
-        	},
-        	{
-        		.is_success = 0,
-        		.name = "rst"
-        	}
-        };
-        </pre><br/><p>The classify function should accept a packet buffer and return a const response_type_t pointer to one of these responses upon receiving the packet. This classification will later be used as part of determining the scan output.</p>
+        <div class="indent"><pre>
+static response_type_t responses[] = {
+    {
+        .is_success = 1,	
+        .name = "synack"
+    },
+    {
+        .is_success = 0,
+        .name = "rst"
+    }
+};
+</pre></div><br/>
+
+<p>The classify function should accept a packet buffer and return a const response_type_t pointer to one of these responses upon receiving the packet. This classification will later be used as part of determining the scan output.</p>
         					</div>
         				</div>
 
