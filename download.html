@@ -28,7 +28,7 @@
 						<div class="hometitle">
 							<a name="stable"></a> 
 							<h3>Downloading ZMap</h3>
-							<p class="front">The latest stable release of ZMap is version 1.4.0, which can be downloaded at <b><a href="https://github.com/zakird/pyad/tarball/0.4.10">zmap.0.4.10.tar.gz</a></b>.  </p>
+							<p class="front">The latest stable release of ZMap is version TK, which can be downloaded at <b><a href="TK">zmap.TK.tar.gz</a></b>.</p>
 							
 							<p class="front">ZMap is hosted on GitHub at <a href="https://github.com/zmap/zmap">https://github.com/zmap/zmap</a>. The latest bleeding-edge version of ZMap can cloned from the git repository at <code>git://github.com/zmap/zmap.git</code>.</p> <p class="front">Issues should be reported on the <a href="https://github.com/zmap/zmap/issues">Github Issue Tracker</a> or sent to our team at <a href="">zmap-team@umich.edu</a>.
 							</div>
@@ -38,11 +38,11 @@
     					<div class="hometitle">
 							<a name="build"></a>
 							<h3>Building and Installing ZMap</h3>
-							<p class="front">ZMap is developed for use on Linux and can be built with most recent versions of gcc. ZMap requires <a href="http://gmplib.org">GMP</a> and <a href="http://http://www.tcpdump.org/">libpcap</a>. Hiredis is also required for <a href="http://redis.io/">Redis</a> support. These can be downloaded as follows:</p>
-							<p class="front indented">Debian or Ubuntu: <code>sudo apt-get install libgmp10 libgmp3-dev libpcap0.8-dev</code></p>
-							<p class="front indented">Fedora, Red Hat Enterprise Linux, or CentOS: <code>sudo yum install gmp gmp-devel libpcap-devel</code> </p> 
-							
-							<p class="front">Once these requirements have been installed, ZMap can be installed by running <code>make</code> and <code>sudo make install</code>.
+							<p class="front">ZMap is developed for use on Linux and can be built with most recent versions of gcc. ZMap requires <a href="http://gmplib.org">GMP</a>, <a href="http://http://www.tcpdump.org/">libpcap</a>, and <a href="http://www.gnu.org/software/gengetopt/gengetopt.html">Gengetopt</a>. These can be installed as follows:</p>
+							<p class="front indented">Debian or Ubuntu: <code>sudo apt-get install libgmp3-dev libpcap-dev gengetopt</code></p>
+							<p class="front indented">Fedora, Red Hat Enterprise Linux, or CentOS: <code>sudo yum install gmp gmp-devel libpcap-devel gengetopt</code> </p> 							
+							<p class="front">Once these requirements have been installed, ZMap can be installed by running <code>cd src; make</code> and <code>sudo make install</code>.
+							<p class="front"><a href="http://redis.io/">Redis</a> support is not enabled by default.  If you want to use ZMap with Redis, you will first need to install Hiredis.   Then, rebuild ZMap with the command <code>make REDIS=true</code>.</p>
 							
 							<br/>
 

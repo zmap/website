@@ -52,35 +52,35 @@
                                   <li><a href="#ratelimiting">Rate Limiting and Sampling</a></li>
                                   <li><a href="#multiple">Sending Multiple Probes</a></li>
                                 </ol>
-						      </div>
-						    </div>
-						  </div>
-				</div>
-				</div>
-				<div class="row-fluid"> 
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			</div>
+			<div class="row-fluid"> 
 					<div class="span10 white-panel offset1 nontitle">
 						<div class="content">
                          <a name="gettingstarted"></a>
 						  <h3>Getting Started with ZMap</h3>
 
                           <p class="front">
-While ZMap is a powerful tool for researchers, please keep in mind that by running ZMap, you are potentially scanning the <b>ENTIRE</b> IPv4 address space
-at over 1.4 million packets per second. Before performing even small scans, we encourage users to contact their local network administrators and consult our list of <a href="#bestpractices">scanning best practices</a>.</p>
+ZMap is designed to perform comprehensive scans of the IPv4 address space or large portions of it. While ZMap is a powerful tool for researchers, please keep in mind that by running ZMap, you are potentially scanning the <b>ENTIRE</b> IPv4 address space at over 1.4 million packets per second. Before performing even small scans, we encourage users to contact their local network administrators and consult our list of <a href="#bestpractices">scanning best practices</a>.</p>
 
                 <p class="front">By default, ZMap will perform a TCP SYN scan on the specified
-port at the maximum rate possible using the default network interface and
-gateway. A more conservative configuration that will scan 10,000 random
+port at the maximum rate possible. A more conservative configuration that will scan 10,000 random
 addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
 
                 <div class="indent"><pre><b>$ zmap --bandwidth=10M --target-port=80 --max-targets=10000 --output-file=results.txt </b></pre></div>
                 <p class="front">Or more concisely specified as:</p>
                 <div class="indent"><pre><b>$ zmap -B 10M -p 80 -n 10000 -o results.txt</b></pre></div>
-                <p class="front">If the scan started successfully, you will see status statements similar to the following:</p>
+                <p class="front">If the scan started successfully, ZMap will output status updates every one second similar to the following:</p>
 <div class="indent"><pre>
-0:01 13%; send: 10000 done (13.3 Kp/s avg); recv: 160 159 p/s (143 p/s avg); hits: 1.60%
-0:02 24%; send: 10000 done (13.3 Kp/s avg); recv: 161 0 p/s (76 p/s avg); hits: 1.61%
-0:03 36%; send: 10000 done (13.3 Kp/s avg); recv: 161 0 p/s (51 p/s avg); hits: 1.61%
-0:04 47%; send: 10000 done (13.3 Kp/s avg); recv: 161 0 p/s (39 p/s avg); hits: 1.61%</pre></div>
+0% (1h51m left); send: 28777 562 Kp/s (560 Kp/s avg); recv: 1192 248 p/s (231 p/s avg); hits: 0.04%
+0% (1h51m left); send: 34320 554 Kp/s (559 Kp/s avg); recv: 1442 249 p/s (234 p/s avg); hits: 0.04%
+0% (1h50m left); send: 39676 535 Kp/s (555 Kp/s avg); recv: 1663 220 p/s (232 p/s avg); hits: 0.04%
+0% (1h50m left); send: 45372 570 Kp/s (557 Kp/s avg); recv: 1890 226 p/s (232 p/s avg); hits: 0.04%</pre></div>
+
+<p class="front">These updates provide information about the current state of the scan and are of the following form: %-complete (est time remaining); packets-sent curr-send-rate (avg-sed-rate); recv: packets-recv recv-rate (avg-recv-rate); hits: hit-rate </p>
 
                 <p class="front">If you do not know the scan rate that your
 network can support, you may want to experiment with different scan rates or
@@ -242,7 +242,7 @@ parseable scan statistics</a>.</p>
 
                          <p>This example finds 1000 servers listening on port 80, and sends a simple GET request to each,
                          storing their base-64 encoded responses in http-banners.out</p>
-                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -o - | ./banner-grab-tcp -c 500 -d ./http-req &gt; ./http-banners.out</b></pre></div>
+                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -o - | ./banner-grab-tcp -c 500 -d ./http-req &gt; results</b></pre></div>
                          <p>For more details on using <code>banner-grab</code>, see the README file in <code>examples/banner-grab</code>.</p>
 
                          <p><span class="label label-info">Heads Up!</span>
@@ -515,7 +515,7 @@ summary
 
 <br/>
 <p>ZMap also prints out informational messages during scanner configuration such as the following, which can be controlled with the <code>--verbosity</code> argument.</p>
-<pre>
+<div class="indent"><pre>
 Aug 11 16:16:12.813 [INFO] zmap: started
 Aug 11 16:16:12.817 [DEBUG] zmap: no interface provided. will use eth0
 Aug 11 16:17:03.971 [DEBUG] cyclic: primitive root: 3489180582
@@ -524,10 +524,10 @@ Aug 11 16:17:03.975 [DEBUG] blacklist: 3717595507 addresses allowed to be scanne
 Aug 11 16:17:03.975 [DEBUG] send: will send from 1 address on 28233 source ports
 Aug 11 16:17:03.975 [DEBUG] send: using bandwidth 10000000 bits/s, rate set to 14880 pkt/s
 Aug 11 16:17:03.985 [DEBUG] recv: thread started
-</pre>
+</pre></div>
 <br/>
 <p>ZMap also supports printing out a grep-able summary at the end of the scan, similar to below, which can be invoked with the <code>--summary</code> flag.</p>
-<pre>
+<div class="indent"><pre>
 cnf	target-port				443
 cnf	source-port-range-begin			32768
 cnf	source-port-range-end			61000
@@ -556,7 +556,7 @@ exc	rst-received-unique			141901021
 exc	rst-received-total			166779002
 adv	source-port-secret			37952
 adv	permutation-gen				4215763218
-</pre>
+</pre></div>
 <br/>
 <!--
 <p>Verbosity Arguments:</p>
