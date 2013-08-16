@@ -700,13 +700,13 @@ synack, 23.72.138.74, 10.0.0.9, 80, 33480, 810393698, 486476355, 0, 0,2013-08-15
 	
 <p>Blacklist files should be formatted with a single network prefix in <a href="http://en.wikipedia.org/wiki/CIDR_notation">CIDR notation</a> per line. Comments are allowed using the <code>#</code> character. Example:</p>
 						
-<pre>
+<div class="indent"><pre>
 0.0.0.0/8           # reserved
 10.0.0.0/8          # RFC 1918
 192.168.0.0/16      # RFC 1918
 172.16.0.0/12       # RFC 1918
 224.0.0.0/3         # multicast/future use
-169.254.0.0/16      # link local addresses</pre><br/>
+169.254.0.0/16      # link local addresses</pre></div>
 							<p><span class="label label-info">Heads Up!</span> If you are looking to scan only a random portion of the internet, checkout <a href="#ratelimiting">Sampling</a>, instead of using whitelisting and blacklisting.</p>	
 							<br/>
 
@@ -737,7 +737,8 @@ need to manually adjust your send-rate to reduce packet drops and incorrect resu
 							<p>For example, if you wanted to scan the same one million hosts on the Internet for multiple scans, you could set a predetermined seed and cap the number of scanned hosts similar to the following:</p>
 							<div class="indent"><pre><b>zmap -p 443 -s 3 -n 1000000 -o results</b></pre></div>
 							<p>In order to determine which one million hosts were going to be scanned, you could run the scan in dry-run mode which will print out the packets that would be sent instead of performing the actual scan.</p>
-							<div class="indent"><pre><b>zmap -p 443 -s 3 -n 1000000 --dryrun | grep daddr | awk -F'daddr: ' '{print $2}' | sed 's/ |.*//;' </b></pre></div>
+							<div class="indent"><pre><b>zmap -p 443 -s 3 -n 1000000 --dryrun | grep daddr
+	| awk -F'daddr: ' '{print $2}' | sed 's/ |.*//;' </b></pre></div>
 							<br/>
 
 
