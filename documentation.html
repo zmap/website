@@ -519,7 +519,7 @@ port range when executing ZMap, with the <code>-s</code> flag (e.g. <code>-s '50
 							<br/>
 
 <a name="udp"></a>
-<h4>UDP Data Scans</h4>
+<h4>UDP Datagram Scans</h4>
 	<p>ZMap additionally supports UDP probes, where it will send out an arbitrary UDP datagram to each host, and receive either UDP or ICMP Unreachable responses. Currently, the datagram payload is set in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/probe_modules/module_udp.c#L29">probe_modules/module_udp.c</a>, and must be NULL-terminated. In the futurue, we will support arbitrary, command-line provided data payloads for UDP.</p>
 
 		<div class="indent"><pre><b> $ zmap --probe-module=udp -p 53 -N 100 -o -</b></pre></div>
