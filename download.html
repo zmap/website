@@ -51,9 +51,9 @@
     					<div class="hometitle">
 							<a name="build"></a>
 							<h3>Building and Installing ZMap</h3>
-							<p class="front">ZMap is developed for use on Linux and can be built with most recent versions of gcc. ZMap requires <a href="http://gmplib.org">GMP</a>, <a href="http://http://www.tcpdump.org/">libpcap</a>, and <a href="http://www.gnu.org/software/gengetopt/gengetopt.html">Gengetopt</a>. These can be installed as follows:</p>
-							<p class="front indented">Debian or Ubuntu: <code>sudo apt-get install libgmp3-dev libpcap-dev gengetopt</code></p>
-							<p class="front indented">Fedora, Red Hat Enterprise Linux, or CentOS: <code>sudo yum install gmp gmp-devel libpcap-devel gengetopt</code> </p> 							
+							<p class="front">ZMap is developed for use on Linux and can be built with most recent versions of gcc. ZMap requires <a href="http://gmplib.org">GMP</a> and <a href="http://http://www.tcpdump.org/">libpcap</a>. These can be installed as follows:</p>
+							<p class="front indented">Debian or Ubuntu: <code>sudo apt-get install libgmp3-dev libpcap-dev</code></p>
+							<p class="front indented">Fedora, Red Hat Enterprise Linux, or CentOS: <code>sudo yum install gmp gmp-devel libpcap-devel</code> </p> 							
 							<p class="front">Once these requirements have been installed, ZMap can be installed by running <code>cd src; make</code> and <code>sudo make install</code>.
 							<p class="front"><a href="http://redis.io/">Redis</a> support is not enabled by default.  If you want to use ZMap with Redis, you will first need to install Hiredis.   Then, rebuild ZMap with the command <code>make REDIS=true</code>.</p>
 							
