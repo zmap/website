@@ -99,6 +99,21 @@ IMG.displayed {
 
 }
 
+.paper {
+    padding-bottom: 5px;
+    list-style-type: none;
+}
+
+.paper li {
+    margin: 0px;
+    margin-left: 30px;
+    padding-bottom: 10px;
+    font-size:16px;
+    line-height:25px;
+    font-weight: 220;
+}
+
+
 .authors {
     padding-bottom: 1px;
 }
