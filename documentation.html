@@ -318,7 +318,7 @@ parsable scan statistics</a>.</p>
                       <h4>Output Modules</h4>
         							<p>ZMap output and post-processing can be extended by implementing and registering <strong>output modules</strong> with the scanner. Output modules receive a callback for every received response packet. While the default provided modules provide simple output, these modules are also capable of performing additional post-processing (e.g. tracking duplicates or outputting numbers in terms of AS instead of IP address)</p><br/>
 
-        <p>Output modules are created by defining a new output_module struct and registering it in <a href="#">output_modules.c</a>:</p>
+        <p>Output modules are created by defining a new output_module struct and registering it in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/output_modules/output_modules.c">output_modules.c</a>:</p>
 
         <div class="indent"><pre>
 struct output_module {
@@ -355,7 +355,7 @@ int (*output_packet_cb) (
 
         <p>An output module can also register callbacks to be executed at scanner initialization (tasks such as opening an output file), start of the scan (tasks such as documenting blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
         <div class="indent"><pre>int (*output_update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre></div>
-        <p>which are defined in <a href="#">state.h</a>. An example is available at <a href="#">src/output_modules/module_extended_file.c</a>.</p>
+        <p>which are defined in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/output_modules/output_modules.h">output_modules.h</a>. An example is available at <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/output_modules/module_extended_file.c">src/output_modules/module_extended_file.c</a>.</p>
         <br/>
 
 	<a name="probemodule"></a>
