@@ -31,6 +31,7 @@
 		    <ul class="nav pull-right">
 					<li><a href="paper.html">Research Paper</a></li>
 		      <li class="active"><a href="documentation.html">Documentation</a></li>
+		        <li><a href="projects.html">Projects</a></li>
 					<li><a href="download.html">Download</a></li>
 		    </ul>
 		  </div>
@@ -516,6 +517,13 @@ port range when executing ZMap, with the <code>-s</code> flag (e.g. <code>-s '50
 	<p>While ZMap performs TCP SYN scans by default, it also supports ICMP echo request scans in which an ICMP echo request packet is sent to each host and the type of ICMP response received in reply is denoted. An ICMP scan can be performed by selecting the <strong>icmp_echoscan</strong> scan module similar to the following:</p>
 							<div class="indent"><pre><b> $ zmap --probe-module=icmp_echoscan</b></pre></div>
 							<br/>
+
+<a name="udp"></a>
+<h4>UDP Data Scans</h4>
+	<p>ZMap additionally supports UDP probes, where it will send out an arbitrary UDP datagram to each host, and receive either UDP or ICMP Unreachable responses. Currently, the datagram payload is set in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/probe_modules/module_udp.c#L29">probe_modules/module_udp.c</a>, and must be NULL-terminated. In the futurue, we will support arbitrary, command-line provided data payloads for UDP.</p>
+
+		<div class="indent"><pre><b> $ zmap --probe-module=udp -p 53 -N 100 -o -</b></pre></div>
+
 
 
                             <a name="config"></a>
