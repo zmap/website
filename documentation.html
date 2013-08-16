@@ -251,7 +251,7 @@ parseable scan statistics</a>.</p>
 
                          <p>This example finds 1000 servers listening on port 80, and sends a simple GET request to each,
                          storing their base-64 encoded responses in http-banners.out</p>
-                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -o - | ./banner-grab-tcp -p 80 -c 500 -d ./http-req &gt; results</b></pre></div>
+                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -o - | ./banner-grab-tcp -p 80 -c 500 -d ./http-req &gt; out</b></pre></div>
                          <p>For more details on using <code>banner-grab</code>, see the README file in <code>examples/banner-grab</code>.</p>
 
                          <p><span class="label label-info">Heads Up!</span>
@@ -294,7 +294,9 @@ parseable scan statistics</a>.</p>
 						<p>Now you should be able to build the forge-socket ZMap example program. To run it, you must use the <b>extended_file</b>
 						ZMap <a href="#outputmodule">output module</a>:</p>
 	
-                         <div class="indent"><pre><b>$ zmap -p 80 -N 1000 -B 10M -O extended_file -o - | ./forge-socket -c 500 -d ./http-req &gt; ./http-banners.out</b></pre></div>
+                         <div class="indent"><pre>
+<b>$ zmap -p 80 -N 1000 -B 10M -O extended_file -o - | \
+    ./forge-socket -c 500 -d ./http-req &gt; ./http-banners.out</b></pre></div>
 
 						<p>See the README in <code>examples/forge-socket</code> for more details.</p>
              
@@ -371,7 +373,6 @@ int (*output_packet_cb) (
 
         <div class="indent"><pre>
 typedef struct probe_module {
-
     const char               *name;             <em>// how scan is invoked on command-line</em>
     size_t                   packet_length;     <em>// how long is probe packet (must be static size)</em>
     
@@ -644,24 +645,30 @@ output module; see <a href="#extending">Writing Output Modules</a> for informati
 								
 								<h4>Simple File</h4>
 								<p>The simple file module will produce an output file containing only the unique IP addresses that responded successfully (e.g. SYNACK packet for TCP SYN scan). Example:
-<pre>115.237.116.119
+<div class="indent"><pre>115.237.116.119
 23.9.117.80
 207.118.204.141
 217.120.143.111
 50.195.22.82
 31.6.64.244
 145.216.89.22
-68.171.59.173</pre>						<br/>
+68.171.59.173</pre></div><br/>
+
+
 								<h4>Extended File</h4>
 								<p>The extended file module will produce a detailed record of all responses received from the scan:</p>
-<pre>type,	saddr,		daddr,	 sport, dport, cooldown, rpt,	timestamp
-synack,	12.32.45.67,	1.1.1.3, 443,	55834, 0,	 0, 	2013-01-25 14:58:43.833
-rst,	119.220.213.46,	1.1.1.2, 443,	38424, 0,	 0,	2013-01-25 14:58:43.845
-rst, 	119.220.213.46,	1.1.1.2, 443,	38424, 0,	 1,	2013-01-25 14:58:43.849
-rst, 	189.64.129.255,	1.1.1.3, 443,	39083, 0,	 1,	2013-01-25 14:58:49.381
-synack,	117.197.21.208,	1.1.1.2, 443,	44826, 0,	 1,	2013-01-25 14:58:49.381
-rst, 	209.145.67.159,	1.1.1.3, 443,	56190, 0,	 1,	2013-01-25 14:58:49.386
-rst, 	14.234.179.115,	1.1.1.3, 443, 	50203, 0,	 1,	2013-01-25 14:58:49.386</pre><br/>
+<div class="indent"><pre>
+response, saddr, daddr, sport, dport, seq, ack, in_cooldown, is_repeat, timestamp
+synack, 159.174.153.144, 10.0.0.9, 80, 40555, 3050964427, 3515084203, 0, 0,2013-08-15 18:55:47.681
+rst, 141.209.175.1, 10.0.0.9, 80, 40136, 0, 3272553764, 0, 0,2013-08-15 18:55:47.683
+rst, 72.36.213.231, 10.0.0.9, 80, 56642, 0, 2037447916, 0, 0,2013-08-15 18:55:47.691
+rst, 148.8.49.150, 10.0.0.9, 80, 41672, 0, 1135824975, 0, 0,2013-08-15 18:55:47.692
+rst, 50.165.166.206, 10.0.0.9, 80, 38858, 0, 535206863, 0, 0,2013-08-15 18:55:47.694
+rst, 65.55.203.135, 10.0.0.9, 80, 50008, 0, 4071709905, 0, 0,2013-08-15 18:55:47.700
+synack, 50.57.166.186, 10.0.0.9, 80, 60650, 2813653162, 993314545, 0, 0,2013-08-15 18:55:47.704
+synack, 152.75.208.114, 10.0.0.9, 80, 52498, 460383682, 4040786862, 0, 0,2013-08-15 18:55:47.707
+synack, 23.72.138.74, 10.0.0.9, 80, 33480, 810393698, 486476355, 0, 0,2013-08-15 18:55:47.710
+</pre></div><br/>
 								<h4>Redis</h4>
 <p>The redis output module allows addresses to be added to a Redis queue instead of being saved to file which ultimately allows ZMap to be incorporated with post processing tools.</p
   

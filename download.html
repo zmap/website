@@ -21,6 +21,7 @@
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(t, s);
   })();
+<<<<<<< HEAD
   </script>
 </head>
 
@@ -88,8 +89,7 @@
 
               <p class="front"><a href="http://redis.io/">Redis</a> support is not
               enabled by default. If you want to use ZMap with Redis, you will first need
-              to install Hiredis. Then, rebuild ZMap with the command <code>make
-              REDIS=true</code>.</p><br />
+              to install Hiredis. Then, rebuild ZMap with the command <code>make REDIS=true</code>. If you don't want to run ZMap as root, you can give the binary permission to use the raw network with <code>setcap cap_net_raw=ep /usr/local/sbin/zmap</code></p><br/>
             </div>
           </div>
         </div>
