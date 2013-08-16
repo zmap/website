@@ -104,7 +104,7 @@ you see decreased results.</p>
 that responded with a SYN ACK as they are found, similar to the
 following. There are several additional formats for <a href="#output">outputting
 results</a> as well as options for producing <a href="#verbosity">programmatically
-parseable scan statistics</a>.</p>
+parsable scan statistics</a>.</p>
 
                 <div class="indent"><pre>115.237.116.119
 23.9.117.80
@@ -238,7 +238,7 @@ parseable scan statistics</a>.</p>
              <a name="applications"></a>
 	     <h3>Sample Applications</h3>
 	  	<p>ZMap is designed for initiating contact with a large number of hosts and finding ones
-                          that respond positively. However, we realize that many users will want to perform follow-up processing, such as performing an application level handshake. For example, users who perform a TCP SYN scan on port 80 might want to perform a simple GET request and users who scan port 443 may be interested in completeing a TLS handshake.</p>
+                          that respond positively. However, we realize that many users will want to perform follow-up processing, such as performing an application level handshake. For example, users who perform a TCP SYN scan on port 80 might want to perform a simple GET request and users who scan port 443 may be interested in completing a TLS handshake.</p>
 
                          <a name="banner-grab"></a>
                          <h4>Banner Grab</h4>
@@ -271,12 +271,12 @@ parseable scan statistics</a>.</p>
 
 						<p>We have also included a form of banner-grab, called forge-socket, that reuses the SYN-ACK
 						sent from the server for the connection that ultimately fetches the banner. In <code>banner-grab-tcp</code>,
-						ZMap sends a SYN to each server, and listening servers respond with a SYN+ACK. The ZMap host's kernel recieves
+						ZMap sends a SYN to each server, and listening servers respond with a SYN+ACK. The ZMap host's kernel receives
 						this, and sends a RST, as no active connection is associated with that packet. The banner-grab program must
 						then create a new TCP connection to the same server to fetch data from it.</p>
 
 						<p>In forge-socket, we utilize a kernel module by the same name, that allows us to create a connection
-						with arbitrary TCP parameters. This enables us to surpress the kernel's RST packet, and instead
+						with arbitrary TCP parameters. This enables us to suppress the kernel's RST packet, and instead
 						create a socket that will reuse the SYN+ACK's parameters, and send and receive data through this socket
 						as we would any normally connected socket.</p>
 
@@ -405,9 +405,9 @@ typedef struct probe_module {
         <code>thread_initialize</code> is called at the initialization of each sender
         thread and is provided with access to the buffer that will be used for
         constructing probe packets along with global source and destination values.
-        This callback should be used to construct the host agonistic packet structure
+        This callback should be used to construct the host agnostic packet structure
         such that only specific values (e.g. destination host and checksum) need to be
-        be updated for each host. For example, the ethernet header will not change
+        be updated for each host. For example, the Ethernet header will not change
         between headers (minus checksum which is calculated in hardware by the NIC) and
         therefore can be defined ahead of time in order to reduce overhead at scan
         time.</p>
@@ -499,7 +499,7 @@ responses that may be received during scan runtime.</p>
                             <p><span class="label
 label-warning">Warning!</span> ZMap relies on the Linux kernel to respond to
 SYN/ACK packets with RST packets in order to close connections opened by the
-scanner. This occurs because ZMap sends packets at the ethernet layer in order
+scanner. This occurs because ZMap sends packets at the Ethernet layer in order
 to reduce overhead otherwise incurred in the kernel from tracking open TCP
 connections and performing route lookups. As such, if you have a firewall rule
 that tracks established connections such as a netfilter rule similar to
@@ -545,7 +545,7 @@ summary
 							<a name="verbosity"></a>
 							<h3>Verbosity</h3>
 							<p>There are several types of on-screen output that ZMap produces. By default, ZMap will print out basic progress information similar to the following every 1 second. This can be disabled by setting the <code>--quiet</code> flag.</p>
-							<pre>0:01 12%; send: 10000 done (15.1 Kp/s avg); recv: 144 143 p/s (141 p/s avg); drops: 0 p/s (0 p/s avg); hits: 1.44%</pre>
+							<div class="indent"><pre>0:01 12%; send: 10000 done (15.1 Kp/s avg); recv: 144 143 p/s (141 p/s avg); hits: 1.44%</pre></div>
 
 <br/>
 <p>ZMap also prints out informational messages during scanner configuration such as the following, which can be controlled with the <code>--verbosity</code> argument.</p>
@@ -716,7 +716,7 @@ synack, 23.72.138.74, 10.0.0.9, 80, 33480, 810393698, 486476355, 0, 0,2013-08-15
 
                             <p>By default, ZMap will scan at the fastest rate
 that your network adaptor supports. In our experiences on commodity hardware,
-this is generally around 95-98% of the theoretical speed of gigabit ethernet,
+this is generally around 95-98% of the theoretical speed of gigabit Ethernet,
 which may be faster than your upstream provider can handle. ZMap will <b>not</b>
 automatically adjust its send-rate based on your upstream provider.  You may
 need to manually adjust your send-rate to reduce packet drops and incorrect results.</p>
