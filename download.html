@@ -56,6 +56,8 @@
 							<p class="front indented">Fedora, Red Hat Enterprise Linux, or CentOS: <code>sudo yum install gmp gmp-devel libpcap-devel gengetopt</code> </p> 							
 							<p class="front">Once these requirements have been installed, ZMap can be installed by running <code>cd src; make</code> and <code>sudo make install</code>.
 							<p class="front"><a href="http://redis.io/">Redis</a> support is not enabled by default.  If you want to use ZMap with Redis, you will first need to install Hiredis.   Then, rebuild ZMap with the command <code>make REDIS=true</code>.</p>
+
+							<p class="front">If you don't want to run ZMap as root, you can give the binary permission to use the raw network with <code>setcap cap_net_raw=ep /usr/local/sbin/zmap</code>.
 							
 							<br/>
 
