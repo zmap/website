@@ -59,6 +59,7 @@
                                 <ol class="subsection">
                                   <li><a href="#tcp_synscan">TCP SYN Probe Module</a></li>
                                   <li><a href="#icmp_echoscan">ICMP Echo Probe Module</a></li>
+                                  <li><a href="#udp">UDP Probe Module</a></li>
                                   <li><a href="#config">Configuration Files</a></li>
                                   <li><a href="#verbosity">Verbosity</a></li>
                                   <li><a href="#output">Results Output</a></li>
@@ -520,7 +521,7 @@ port range when executing ZMap, with the <code>-s</code> flag (e.g. <code>-s '50
 
 <a name="udp"></a>
 <h4>UDP Datagram Scans</h4>
-	<p>ZMap additionally supports UDP probes, where it will send out an arbitrary UDP datagram to each host, and receive either UDP or ICMP Unreachable responses. Currently, the datagram payload is set in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/probe_modules/module_udp.c#L29">probe_modules/module_udp.c</a>, and must be NULL-terminated. In the futurue, we will support arbitrary, command-line provided data payloads for UDP.</p>
+	<p>ZMap additionally supports UDP probes, where it will send out an arbitrary UDP datagram to each host, and receive either UDP or ICMP Unreachable responses. Currently, the datagram payload is set in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/probe_modules/module_udp.c#L29">probe_modules/module_udp.c</a>, and must be NULL-terminated. In the future, we will support command-line provided data payloads for UDP.</p>
 
 		<div class="indent"><pre><b> $ zmap --probe-module=udp -p 53 -N 100 -o -</b></pre></div>
 
