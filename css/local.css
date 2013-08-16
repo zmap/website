@@ -156,6 +156,15 @@ p.abstract {
     text-align:justify;
 }
 
+p.fronttop {
+    margin-top:15px;
+    margin-bottom:15px;
+    font-size:18px;
+    line-height:25px;
+    font-weight: 200;
+}
+
+
 p.front {
     margin-bottom:15px;
     font-size:18px;
