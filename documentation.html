@@ -476,8 +476,7 @@ synack, 23.72.138.74, 10.0.0.9, 80, 33480, 810393698, 486476355, 0, 0,2013-08-15
 
 							<a name="blacklisting"></a> 
 							<h3>Blacklisting and Whitelisting</h3>
-							<p>ZMap supports both blacklisting and whitelisting network prefixes. If ZMap is not provided with blacklist or whitelist parameters, ZMap will scan all IPv4 address (including local, reserved, and multicast addresses). If a blacklist file is specified, network prefixes in the blacklisted segments will not be scanned; if a whitelist file is provided, only network prefixes in the whitelist file will be scanned. A whitelist and blacklist file can be used in coordination. Whitelist and blacklist files can be specified on the command-line as follows:</p>
-
+							<p>ZMap supports both blacklisting and whitelisting network prefixes. If ZMap is not provided with blacklist or whitelist parameters, ZMap will scan all IPv4 addresses (including local, reserved, and multicast addresses). If a blacklist file is specified, network prefixes in the blacklisted segments will not be scanned; if a whitelist file is provided, only network prefixes in the whitelist file will be scanned. A whitelist and blacklist file can be used in coordination; the blacklist has priority over the whitelist (e.g. if you have whitelisted 10.0.0.0/8 and blacklisted 10.1.0.0/16, then 10.1.0.0/16 will not be scanned). Whitelist and blacklist files can be specified on the command-line as follows:</p>
 <dl class="dl-horizontal params">
   <dt>-b, --blacklist-file=path</dt><dd>File of subnets to blacklist in CIDR notation, e.g. 192.168.0.0/16</dd>
 	<dt>-w, --whitelist-file=path</dt><dd>File of subnets to limit scan to in CIDR notation, e.g. 192.168.0.0/16</dd>
@@ -486,13 +485,35 @@ synack, 23.72.138.74, 10.0.0.9, 80, 33480, 810393698, 486476355, 0, 0,2013-08-15
 <p>Blacklist files should be formatted with a single network prefix in <a href="http://en.wikipedia.org/wiki/CIDR_notation">CIDR notation</a> per line. Comments are allowed using the <code>#</code> character. Example:</p>
 						
 <div class="indent"><pre>
-0.0.0.0/8           # reserved
-10.0.0.0/8          # RFC 1918
-192.168.0.0/16      # RFC 1918
-172.16.0.0/12       # RFC 1918
-224.0.0.0/3         # multicast/future use
-169.254.0.0/16      # link local addresses</pre></div>
-							<p><span class="label label-info">Heads Up!</span> If you are looking to scan only a random portion of the internet, checkout <a href="#ratelimiting">Sampling</a>, instead of using whitelisting and blacklisting.</p>	
+# From IANA IPv4 Special-Purpose Address Registry
+# http://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
+# Updated 2013-05-22
+
+0.0.0.0/8           # RFC1122: "This host on this network"
+10.0.0.0/8          # RFC1918: Private-Use
+100.64.0.0/10       # RFC6598: Shared Address Space
+127.0.0.0/8         # RFC1122: Loopback
+169.254.0.0/16      # RFC3927: Link Local
+172.16.0.0/12       # RFC1918: Private-Use
+192.0.0.0/24        # RFC6890: IETF Protocol Assignments
+192.0.2.0/24        # RFC5737: Documentation (TEST-NET-1)
+192.88.99.0/24      # RFC3068: 6to4 Relay Anycast
+192.168.0.0/16      # RFC1918: Private-Use
+192.18.0.0/15       # RFC2544: Benchmarking
+198.51.100.0/24     # RFC5737: Documentation (TEST-NET-2)
+203.0.113.0/24      # RFC5737: Documentation (TEST-NET-3)
+240.0.0.0/4         # RFC1112: Reserved
+255.255.255.255/32  # RFC0919: Limited Broadcast
+
+# From IANA Multicast Address Space Registry
+# http://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml
+# Updated 2013-06-25
+
+224.0.0.0/4         # RFC5771: Multicast/Reserved
+</pre></div>
+
+<p>If you are looking to scan only a random portion of the internet, checkout <a href="#ratelimiting">Sampling</a>, instead of using whitelisting and blacklisting.</p>
+<p><span class="label label-info">Heads Up!</span> The default ZMap configuration uses the blacklist file at <code>/etc/zmap/blacklist.conf</code>, which contains locally scoped address space and reserved IP ranges. The default configuration can be changed by editing <code>/etc/zmap/zmap.conf</code>.</p>	
 							<br/>
 
 
