@@ -691,21 +691,22 @@ need to manually adjust your send-rate to reduce packet drops and incorrect resu
         <p>Output modules are created by defining a new output_module struct and registering it in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/output_modules/output_modules.c">output_modules.c</a>:</p>
 
         <div class="indent"><pre>
-struct output_module {
-	const char          *name;           <em>// how is output module referenced in the CLI</em>
-	unsigned            update_interval; <em>// how often is update called in seconds</em>
+typedef struct output_module {
+    const char          *name;           <em>// how is output module referenced in the CLI</em>
+    unsigned            update_interval; <em>// how often is update called in seconds</em>
 	
-	output_init_cb      init;            <em>// called at scanner initialization</em>
-	output_update_cb    start;           <em>// called at the beginning of scanner</em>
-	output_update_cb    update;          <em>// called every update_interval seconds</em>
-	output_update_cb    close;           <em>// called at scanner termination</em>
+    output_init_cb      init;            <em>// called at scanner initialization</em>
+    output_update_cb    start;           <em>// called at the beginning of scanner</em>
+    output_update_cb    update;          <em>// called every update_interval seconds</em>
+    output_update_cb    close;           <em>// called at scanner termination</em>
 	
-	output_packet_cb    success_ip;      <em>// called when a successful response is received</em>
-	output_packet_cb    other_ip;        <em>// called when any other responses are received</em>
+    output_packet_cb    process_ip;      <em>// called when a response is received</em>
 
+    const char          *helptext;       <em>// Printed when --list-output-modules is called</em>
+  
 } output_module_t;</pre></div>
 
-        <p>Output modules must have a name, which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>probe module</strong>. The <code>other_ip</code> callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <code>output_packet_cb</code> definition:</p>
+        <p>Output modules must have a name, which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The process_ip callback is called for every response packet that is received and passed through the output filter by the current <strong>probe module</strong>. The response may or may not be considered a success (e.g. it could be a TCP RST). These callbacks must define functions that match the <code>output_packet_cb</code> definition:</p>
 
         <div class="indent"><pre>
 int (*output_packet_cb) (
