@@ -88,6 +88,11 @@ addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
                 <div class="indent"><pre><b>$ zmap --bandwidth=10M --target-port=80 --max-targets=10000 --output-file=results.csv </b></pre></div>
                 <p class="front">Or more concisely specified as:</p>
                 <div class="indent"><pre><b>$ zmap -B 10M -p 80 -n 10000 -o results.csv</b></pre></div>
+				
+                <p class="front">ZMap can also be used to scan specific subnets or CIDR blocks. For example, to scan only 10.0.0.0/8 and 192.168.0.0/16 on port 80, run:</p>
+
+                <div class="indent"><pre>zmap -p 80 -o results.csv 10.0.0.0/8 192.168.0.0/16</pre></div>
+				
                 <p class="front">If the scan started successfully, ZMap will output status updates every one second similar to the following:</p>
 <div class="indent"><pre>
 0% (1h51m left); send: 28777 562 Kp/s (560 Kp/s avg); recv: 1192 248 p/s (231 p/s avg); hits: 0.04%
@@ -102,20 +107,12 @@ addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
                 scan rates or bandwidth limits to find the fastest rate that
                 your network can support before you see decreased results.</p>
 
-                <p class="front">Instead of scanning the entire Internet,
-                specific networks and IPs can be specified in CIDR block
-                notation, and ZMap will limit its scan to those
-                addresses. For example, to scan only 10.0.0.0/8 and 192.168.0.0/16 on port 80, run:</p>
-
-                <div class="indent"><pre>zmap -p 80 10.0.0.0/8 192.168.0.0/16 -o results.csv</pre></div>
-
                 <p class="front">By default, ZMap will output the list of
-                distinct IP addresses that responded with a SYN ACK as they
-                are found, similar to the following. There are several
-                additional formats for <a href="#output">outputting
+                distinct IP addresses that responded successfully (e.g. with a SYN ACK packet) similar to the following. There are several
+                additional formats (e.g. JSON and Redis) for <a href="#output">outputting
                 results</a> as well as options for producing <a
                 href="#verbosity">programmatically parsable scan
-                statistics</a>. Addditionally, extra <a href="#outputfields">output fields</a> can be specified and the results can be filtered using an <a href="#outputfilter">output filter</a>.</p>
+                statistics</a>. As wells, additional <a href="#outputfields">output fields</a> can be specified and the results can be filtered using an <a href="#outputfilter">output filter</a>.</p>
 
                 <div class="indent"><pre>115.237.116.119
 23.9.117.80
@@ -442,7 +439,7 @@ timestamp-str   string: timestamp of when response arrived in ISO8601 format.
 timestamp-ts       int: timestamp of when response arrived in seconds since Epoch
 timestamp-us       int: microsecond part of timestamp (e.g. microseconds since 'timestamp-ts')</code></pre></div>
 
-                <p>To select which fields to output, any combination of the output fields can be specified as a comma-separated list using the <code>--output-fields=fields</code> or <code>-f</code> flags.</p>
+                <p>To select which fields to output, any combination of the output fields can be specified as a comma-separated list using the <code>--output-fields=fields</code> or <code>-f</code> flags. Example:</p>
 
 <div class="indent"><pre>
 $ zmap -p 80 -f "response,saddr,daddr,sport,seq,ack,in_cooldown,is_repeat,timestamp" -o output.csv
@@ -486,7 +483,7 @@ synack, 152.75.208.114, 10.0.0.9, 80, 52498, 460383682, 4040786862, 0, 0,2013-08
 synack, 23.72.138.74, 10.0.0.9, 80, 33480, 810393698, 486476355, 0, 0,2013-08-15 18:55:47.710
 </pre></div><br/>
 
-								<h4>Redis</h4>
+				<h4>Redis</h4>
                 <p>The redis output module allows addresses to be added to a
                 Redis queue instead of being saved to file which ultimately
                 allows ZMap to be incorporated with post processing tools.</p>
