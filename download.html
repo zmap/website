@@ -60,7 +60,7 @@
 
             <p class="front">Issues should be reported on the <a href=
             "https://github.com/zmap/zmap/issues">Github Issue Tracker</a> or sent to our
-            team at <a href="">zmap-team@umich.edu</a>.</p>
+            team at <a href="mailto:zmap-team@umich.edu">zmap-team@umich.edu</a>.</p>
           </div>
         </div>
 
@@ -71,26 +71,34 @@
 
               <h3>Building and Installing ZMap</h3>
 
-              <p class="front">ZMap is developed for use on Linux on 64-bit systems and can be built with
-              most recent versions of gcc. ZMap requires <a href=
+              <p class="front">ZMap is developed for use on Linux on 32-bit and 64-bit systems and can be built with
+              most recent versions of gcc and the CMake build system. ZMap requires <a href=
               "http://gmplib.org">GMP</a>, <a href=
-              "http://http://www.tcpdump.org/">libpcap</a>, and <a href=
-              "http://www.gnu.org/software/gengetopt/gengetopt.html">Gengetopt</a>. These
+              "http://www.tcpdump.org/">libpcap</a>, <a href=
+              "http://www.gnu.org/software/gengetopt/gengetopt.html">Gengetopt</a>,
+              <a href="http://byaccj.sourceforge.net">byacc</a>, and
+              <a href="http://flex.sourceforge.net">flex</a>. These
               can be installed as follows:</p>
 
               <p class="front indented">Debian or Ubuntu: <code>sudo apt-get install
-              libgmp3-dev libpcap-dev gengetopt</code></p>
+              libgmp3-dev libpcap-dev gengetopt byacc flex</code></p>
 
               <p class="front indented">Fedora, Red Hat Enterprise Linux, or CentOS:
-              <code>sudo yum install gmp gmp-devel libpcap-devel gengetopt</code></p>
+              <code>sudo yum install gmp gmp-devel libpcap-devel gengetopt byacc flex</code></p>
 
               <p class="front">Once these requirements have been installed, ZMap can be
-              installed by running <code>cd src; make</code> and <code>sudo make
+              installed by running <code>cmake -DENABLE_HARDENING=ON</code> followed by <code>make</code> and <code>sudo make
               install</code>.</p>
 
-              <p class="front"><a href="http://redis.io/">Redis</a> support is not
-              enabled by default. If you want to use ZMap with Redis, you will first need
-              to install Hiredis. Then, rebuild ZMap with the command <code>make REDIS=true</code>. If you don't want to run ZMap as root, you can give the binary permission to use the raw network with <code>setcap cap_net_raw=ep /usr/local/sbin/zmap</code></p><br/>
+              <p class="front"><a href="http://redis.io/">Redis</a> support is
+              not enabled by default. If you want to use ZMap with Redis, you
+              will first need to install Hiredis. Then, rebuild ZMap with the
+              command <code>cmake -DWITH_REDIS=ON</code>. If you don't want to
+              run ZMap as root, you can give the binary permission to use the
+              raw network with <code>setcap cap_net_raw=ep
+              /usr/local/sbin/zmap</code></p><br/>
+
+              <p class="front">JSON support is not enabled by default. If you want to output to JSON, install <a href="https://github.com/json-c/json-c">JSON-C</a>. Then rebuild ZMap with <code>cmake -DWITH_JSON=ON</code>.</p>
             </div>
           </div>
         </div>

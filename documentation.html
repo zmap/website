@@ -86,9 +86,14 @@ ZMap is designed to perform comprehensive scans of the IPv4 address space or lar
 port at the maximum rate possible. A more conservative configuration that will scan 10,000 random
 addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
 
-                <div class="indent"><pre><b>$ zmap --bandwidth=10M --target-port=80 --max-targets=10000 --output-file=results.txt </b></pre></div>
+                <div class="indent"><pre><b>$ zmap --bandwidth=10M --target-port=80 --max-targets=10000 --output-file=results.csv </b></pre></div>
                 <p class="front">Or more concisely specified as:</p>
-                <div class="indent"><pre><b>$ zmap -B 10M -p 80 -n 10000 -o results.txt</b></pre></div>
+                <div class="indent"><pre><b>$ zmap -B 10M -p 80 -n 10000 -o results.csv</b></pre></div>
+				
+                <p class="front">ZMap can also be used to scan specific subnets or CIDR blocks. For example, to scan only 10.0.0.0/8 and 192.168.0.0/16 on port 80, run:</p>
+
+                <div class="indent"><pre>zmap -p 80 -o results.csv 10.0.0.0/8 192.168.0.0/16</pre></div>
+				
                 <p class="front">If the scan started successfully, ZMap will output status updates every one second similar to the following:</p>
 <div class="indent"><pre>
 0% (1h51m left); send: 28777 562 Kp/s (560 Kp/s avg); recv: 1192 248 p/s (231 p/s avg); hits: 0.04%
@@ -99,15 +104,16 @@ addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
 <p class="front">These updates provide information about the current state of the scan and are of the following form: %-complete (est time remaining); packets-sent curr-send-rate (avg-send-rate); recv: packets-recv recv-rate (avg-recv-rate); hits: hit-rate </p>
 
                 <p class="front">If you do not know the scan rate that your
-network can support, you may want to experiment with different scan rates or
-bandwidth limits to find the fastest rate that your network can support before
-you see decreased results.</p>
+                network can support, you may want to experiment with different
+                scan rates or bandwidth limits to find the fastest rate that
+                your network can support before you see decreased results.</p>
 
-<p class="front">By default, ZMap will output the list of distinct IP addresses
-that responded with a SYN ACK as they are found, similar to the
-following. There are several additional formats for <a href="#output">outputting
-results</a> as well as options for producing <a href="#verbosity">programmatically
-parsable scan statistics</a>.</p>
+                <p class="front">By default, ZMap will output the list of
+                distinct IP addresses that responded successfully (e.g. with a SYN ACK packet) similar to the following. There are several
+                additional formats (e.g. JSON and Redis) for <a href="#output">outputting
+                results</a> as well as options for producing <a
+                href="#verbosity">programmatically parsable scan
+                statistics</a>. As wells, additional <a href="#outputfields">output fields</a> can be specified and the results can be filtered using an <a href="#outputfilter">output filter</a>.</p>
 
                 <div class="indent"><pre>115.237.116.119
 23.9.117.80
@@ -195,7 +201,7 @@ parsable scan statistics</a>.</p>
           <dt>-T, --sender-threads=n</dt>       <dd>Threads used to send packets (default=1)</dd>
           <dt>-P, --probes=n</dt>               <dd>Number of probes to send to each IP (default=1)</dd>
           <dt>-d, --dryrun</dt>                 <dd>Print out each packet to stdout instead of sending it (useful for debugging)</dd>
-        </dl> 
+        </dl>
 
         <h4>Network Options</h4>
 
@@ -206,21 +212,28 @@ parsable scan statistics</a>.</p>
           <dt>-i, --interface=name</dt>         <dd>Network interface to use</dd>
         </dl>
 
-        <h4>Module Options</h4>
+        <h4>Probe Options</h4>
 
-        <p>ZMap allows users to specify and write their own modules for use with ZMap. ZMap supports two types of modules:
-        <a href="#probemodule">Probe modules</a> and <a href="#outputmodule">output modules</a>. Probe modules are responsible for
-        generating probe packets to send, and classifying responses from hosts. Output modules are responsible for displaying or storing
-        results as they are produced during a scan.</p>
+        <p>ZMap allows users to specify and write their own <a href="#probemodule">probe modules</a> for use with ZMap. Probe modules are responsible for generating probe packets to send, and processing responses from hosts.</p>
 
         <dl class="dl-horizontal params">
+          <dt>--list-probe-modules</dt>         <dd>List available probe modules (e.g. tcp_synscan)</dd>
           <dt>-M, --probe-module=name</dt>      <dd>Select <a href="#probemodule">probe module</a> (default=tcp_synscan)</dd>
-          <dt>-O, --output-module=name</dt>     <dd>Select <a href="#outputmodule">output module</a> (default=simple_file)</dd>
           <dt>--probe-args=args</dt>            <dd>Arguments to pass to probe module</dd>
-          <dt>--output-args=args</dt>           <dd>Arguments to pass to output module</dd>
-          <dt>--list-output-modules</dt>        <dd>List available output modules (e.g. tcp_synscan)</dd>
-          <dt>--list-probe-modules</dt>		<dd>List available probe modules (e.g. extended_file)</dd>
+          <dt>--list-output-fields</dt>         <dd>List the fields the selected probe module can send to the output module</dd>
         </dl>
+
+        <h4>Output Options</h4>
+
+        <p>ZMap allows users to specify and write their own <a href="#outputmodule">output modules</a> for use with ZMap. Output modules are responsible for processing the fieldsets returned by the probe module, and outputing them to the user. Users can specify output fields, and write filters over the output fields.</p>
+
+        <dl class="dl-horizontal params">
+          <dt>--list-output-modules</dt>        <dd>List available output modules (e.g. tcp_synscan)</dd>
+          <dt>-O, --output-module=name</dt>     <dd>Select <a href="#outputmodule">output module</a> (default=csv)</dd>
+          <dt>--output-args=args</dt>           <dd>Arguments to pass to output module</dd>
+          <dt>-f, --output-fields=fields</dt>   <dd>Comma-separated list of fields to output</dd>
+          <dt>--output-filter</dt>              <dd>Specify an <a href="#outputfilter">output filter</a> over the fields defined by the <a href="#probemodule">probe module</a></dd>
+        </dl> 
 
         <h4>Additional Options</h4>
         <dl class="dl-horizontal params">
@@ -378,71 +391,86 @@ adv	source-port-secret			37952
 adv	permutation-gen				4215763218
 </pre></div>
 <br/>
-<!--
-<p>Verbosity Arguments:</p>
-<dl class="dl-horizontal params">
-	<dt>-q, --quiet</dt><dd>Do not print update regular status updates</dd>
-	<dt>-g, --summary</dt><dd>Provide a greppable summary at the end of the scan</dd>
-	<dt>-v, --verbosity=n</dt><dd>Level of output detail (n=0-5; 5 is most verbose)</dd>
-	<dt>-h, --help</dt><dd>Print help and exit</dd>
-	<dt>-V, --version</dt><dd>Print version and exit</dd>
-</dl>
-<br/>
--->
 
-<!--
-							<a name="dryrun"></a>
-							<h4>Dry-Run Mode</h4>
-							<p>Dry-run mode allows you test your configuration and find what packets will be sent without creating any traffic.</p> <dl class="dl-horizontal params">
-								<dt>-d, --dryrun</dt><dd>Don't send actual packets</dd>
-							</dl>
-							
-							<p>Instead of sending any traffic, ZMap will produce an output similar to the following:</p>
-											
-<pre>tcp { source: 46870 | dest: 443 | seq: 15587922 | checksum: 2520973312 }
-ip { saddr: 1.1.1.4 | daddr: 98.28.28.36 | checksum: 910295040 }
-eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }
----------------------------------------------------------------------------------
-tcp { source: 52413 | dest: 443 | seq: 15587922 | checksum: 1787953152 }
-ip { saddr: 1.1.1.4 | daddr: 114.144.33.186 | checksum: 540540928 }
-eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }
----------------------------------------------------------------------------------
-tcp { source: 38524 | dest: 443 | seq: 15587922 | checksum: 3076063232 }
-ip { saddr: 1.1.1.4 | daddr: 177.175.204.20 | checksum: 918421504 }
-eth { shost: 00:8b:24:d4:5b:f3 | dhost: b4:23:f9:28:fa:2d }</pre><br/>
--->
+
 							<a name="output"></a> 
 							<h3>Results Output</h3>
 
 
-                                <p>ZMap can produce results in several formats
-through the use of output modules. ZMap currently supports three output
-formats: <strong>simple-file</strong>, <strong>extended-file</strong>, and
-<strong>redis</strong> (if built with redis support). By default, ZMap will
-return results in the simple-file format and if no output file is specified,
-ZMap will not produce specific results. It is also possible to write your own
-output module; see <a href="#extending">Writing Output Modules</a> for information.</p>
-								
-								<dl class="dl-horizontal params">
-									<dt>-o, --output-file=p</dt><dd>File to write list of live IPs to</dd>
-								  <dt>-O, --output-module=p</dt><dd>Invoke a custom output module</dd>
-									<dt>--list-output-modules</dt><dd>Lists available output modules</dd>
-								</dl><br/>
-								
-								<h4>Simple File</h4>
-								<p>The simple file module will produce an output file containing only the unique IP addresses that responded successfully (e.g. SYNACK packet for TCP SYN scan). Example:
-<div class="indent"><pre>115.237.116.119
-23.9.117.80
-207.118.204.141
-217.120.143.111
-50.195.22.82
-31.6.64.244
-145.216.89.22
-68.171.59.173</pre></div><br/>
+              <p>ZMap can produce results in several formats through the use
+of <b>output modules</b>. By default, ZMap only supports <b>csv</b> output,
+however support for <b>redis</b> and <b>json</b> can be compiled in. The
+results sent to these output modules may be filtered using an <strong>output
+filter</strong>. The fields the output module writes are specified by the
+user. By default, ZMap will return results in csv format and if no output file
+is specified, ZMap will not produce specific results. It is also possible to
+write your own output module; see <a href="#extending">Writing Output
+Modules</a> for information.</p>
 
+                <dl class="dl-horizontal params">
+                  <dt>-o, --output-file=p</dt><dd>File to write output to</dd>
+                  <dt>-O, --output-module=p</dt><dd>Invoke a custom output module</dd>
+                  <dt>-f, --output-fields=p</dt><dd>Comma-separated list of fields to output</dd>
+                  <dt>--output-filter=filter</dt><dd>Specify an output filter over fields for a given probe</dd>
+                  <dt>--list-output-modules</dt><dd>Lists available output modules</dd>
+                  <dt>--list-output-fields</dt><dd>List available output fields for a given probe</dd>
+                </dl><br/>
 
-								<h4>Extended File</h4>
-								<p>The extended file module will produce a detailed record of all responses received from the scan:</p>
+                <a name="outputfields"></a>
+                <h4>Output Fields</h4>
+                <p>ZMap has a variety of fields it can output beyond IP address. These fields can be viewed for a given probe module by running with the <code>--list-output-fields</code> flag.</p>
+
+<div class="indent"><pre><code>$ zmap --probe-module="tcp_synscan" --list-output-fields
+saddr           string: source IP address of response
+saddr-raw          int: network order integer form of source IP address
+daddr           string: destination IP address of response
+daddr-raw          int: network order integer form of destination IP address
+ipid               int: IP identification number of response
+ttl                int: time-to-live of response packet
+sport              int: TCP source port
+dport              int: TCP destination port
+seqnum             int: TCP sequence number
+acknum             int: TCP acknowledgement number
+window             int: TCP window
+classification  string: packet classification
+success            int: is response considered success
+repeat             int: is response a repeat response from host
+cooldown           int: Was response received during the cooldown period
+timestamp-str   string: timestamp of when response arrived in ISO8601 format.
+timestamp-ts       int: timestamp of when response arrived in seconds since Epoch
+timestamp-us       int: microsecond part of timestamp (e.g. microseconds since 'timestamp-ts')</code></pre></div>
+
+                <p>To select which fields to output, any combination of the output fields can be specified as a comma-separated list using the <code>--output-fields=fields</code> or <code>-f</code> flags. Example:</p>
+
+<div class="indent"><pre>
+$ zmap -p 80 -f "response,saddr,daddr,sport,seq,ack,in_cooldown,is_repeat,timestamp" -o output.csv
+</pre></div>                
+
+                <a name="outputfilter"></a>
+                <h4>Filtering Output</h4>
+
+                <p>Results generated by a probe module can be filtered before being passed to the output module. Filters are defined over the output fields of a probe module. Filters are written in a simple filtering language, similar to SQL, and are passed to ZMap using the <strong>--output-filter</strong> option. Output filters are commonly used to filter out duplicate results, or to only pass only sucessful responses to the output module.</p>
+
+                <p>Filter expressions are of the form <code>&lt;fieldname&gt; &lt;operation&gt; &lt;value&gt;</code>. The type of <code>&lt;value&gt;</code> must be either a string or unsigned integer literal, and match the type of <code>&lt;fieldname&gt;</code>. The valid operations for integer comparisons are <code>= !=, &lt;, &gt;, &lt;=, &gt;=</code>. The operations for string comparisons are <code>=, !=</code>. The <code>--list-output-fields</code> flag will print what fields and types are available for the selected probe module, and then exit.</p>
+
+                <p>Compound filter expressions may be constructed by combining filter expressions using parenthesis to specify order of operations, the <code>&amp;&amp;</code> (logical AND) and <code>||</code> (logical OR) operators.</p>
+
+                <h5>Examples</h5>
+
+                <p>Write a filter for only successful, non-duplicate responses</p>
+<pre><code>--output-filter="success = 1 &amp;&amp; repeat = 0"</code></pre>
+
+                <p>Filter for packets that have classification RST and a TTL greater than 10, or for packets with classification SYNACK</p>
+
+<pre><code>--output-filter="(classification = rst &amp;&amp; ttl > 10) || classification = synack"</code></pre>
+
+                <br />
+
+								<h4>CSV</h4>
+								<p>The csv module will produce a comma-separated value file of the output fields requested. For example, the following command produces the following CSV in a file called <code>output.csv</code>.</p>
+<div class="indent"><pre>
+$ zmap -p 80 -f "response,saddr,daddr,sport,seq,ack,in_cooldown,is_repeat,timestamp" -o output.csv
+</pre></div>
 <div class="indent"><pre>
 response, saddr, daddr, sport, dport, seq, ack, in_cooldown, is_repeat, timestamp
 synack, 159.174.153.144, 10.0.0.9, 80, 40555, 3050964427, 3515084203, 0, 0,2013-08-15 18:55:47.681
@@ -455,11 +483,31 @@ synack, 50.57.166.186, 10.0.0.9, 80, 60650, 2813653162, 993314545, 0, 0,2013-08-
 synack, 152.75.208.114, 10.0.0.9, 80, 52498, 460383682, 4040786862, 0, 0,2013-08-15 18:55:47.707
 synack, 23.72.138.74, 10.0.0.9, 80, 33480, 810393698, 486476355, 0, 0,2013-08-15 18:55:47.710
 </pre></div><br/>
-								<h4>Redis</h4>
-<p>The redis output module allows addresses to be added to a Redis queue instead of being saved to file which ultimately allows ZMap to be incorporated with post processing tools.</p
+
+				<h4>Redis</h4>
+                <p>The redis output module allows addresses to be added to a
+                Redis queue instead of being saved to file which ultimately
+                allows ZMap to be incorporated with post processing tools.</p>
   
-  <p> <span class="label label-info">Heads Up!</span> ZMap does not build with Redis support by default. If you are building ZMap from source, you can build with Redis support by running <code>make REDIS=true</code>.</p>
-														<br/>
+                <p> <span class="label label-info">Heads Up!</span> ZMap does not build with
+                Redis support by default. If you are building ZMap from source, you can
+                build with Redis support by running CMake with
+                <code>-DWITH_REDIS=ON</code>.</p>
+
+                <br />
+
+                <h4>JSON</h4>
+                <p>The JSON output module operates similar to the CSV module,
+                except it writes output in JSON format to a file. The JSON
+                file can then be easily imported into other programs that can
+                read JSON.</p>
+
+                <p> <span class="label label-info">Heads Up!</span> ZMap does
+                not build with JSON support by default. If you are building
+                ZMap from source, you can build with JSON support by running
+                CMake with <code>-DWITH_JSON=ON</code>.</p>
+
+								<br/>
 
 
 <!--
@@ -651,21 +699,22 @@ need to manually adjust your send-rate to reduce packet drops and incorrect resu
         <p>Output modules are created by defining a new output_module struct and registering it in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/output_modules/output_modules.c">output_modules.c</a>:</p>
 
         <div class="indent"><pre>
-struct output_module {
-	const char          *name;           <em>// how is output module referenced in the CLI</em>
-	unsigned            update_interval; <em>// how often is update called in seconds</em>
+typedef struct output_module {
+    const char          *name;           <em>// how is output module referenced in the CLI</em>
+    unsigned            update_interval; <em>// how often is update called in seconds</em>
 	
-	output_init_cb      init;            <em>// called at scanner initialization</em>
-	output_update_cb    start;           <em>// called at the beginning of scanner</em>
-	output_update_cb    update;          <em>// called every update_interval seconds</em>
-	output_update_cb    close;           <em>// called at scanner termination</em>
+    output_init_cb      init;            <em>// called at scanner initialization</em>
+    output_update_cb    start;           <em>// called at the beginning of scanner</em>
+    output_update_cb    update;          <em>// called every update_interval seconds</em>
+    output_update_cb    close;           <em>// called at scanner termination</em>
 	
-	output_packet_cb    success_ip;      <em>// called when a successful response is received</em>
-	output_packet_cb    other_ip;        <em>// called when any other responses are received</em>
+    output_packet_cb    process_ip;      <em>// called when a response is received</em>
 
+    const char          *helptext;       <em>// Printed when --list-output-modules is called</em>
+  
 } output_module_t;</pre></div>
 
-        <p>Output modules must have a name, which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The success_ip callback is called for every response packet that is received and is classified as a success (e.g. TCP SYN/ACK or ICMP echo response) by the current <strong>probe module</strong>. The <code>other_ip</code> callback is called whenever a non-successful, but valid response (e.g. TCP RST or ICMP route unreachable) is received. These callbacks must define functions that match the <code>output_packet_cb</code> definition:</p>
+        <p>Output modules must have a name, which is how they are referenced on the command-line and generally implement <code>success_ip</code> and oftentimes <code>other_ip</code> callback. The process_ip callback is called for every response packet that is received and passed through the output filter by the current <strong>probe module</strong>. The response may or may not be considered a success (e.g. it could be a TCP RST). These callbacks must define functions that match the <code>output_packet_cb</code> definition:</p>
 
         <div class="indent"><pre>
 int (*output_packet_cb) (
@@ -685,7 +734,7 @@ int (*output_packet_cb) (
 
         <p>An output module can also register callbacks to be executed at scanner initialization (tasks such as opening an output file), start of the scan (tasks such as documenting blacklisted addresses), during regular intervals during the scan (tasks such as progress updates), and close (tasks such as closing any open file descriptors). These callbacks are provided with complete access to the scan configuration and current state:</p>
         <div class="indent"><pre>int (*output_update_cb)(struct state_conf*, struct state_send*, struct state_recv*);</pre></div>
-        <p>which are defined in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/output_modules/output_modules.h">output_modules.h</a>. An example is available at <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/output_modules/module_extended_file.c">src/output_modules/module_extended_file.c</a>.</p>
+        <p>which are defined in <a href="https://github.com/zmap/zmap/blob/master/src/output_modules/output_modules.h">output_modules.h</a>. An example is available at <a href="https://github.com/zmap/zmap/blob/master/src/output_modules/module_csv.c">src/output_modules/module_csv.c</a>.</p>
         <br/>
 
 	<a name="probemodule"></a>
@@ -720,10 +769,11 @@ typedef struct probe_module {
                                                 // non-zero otherwise.</em>
     
     probe_print_packet_cb    print_packet;      <em>// called per packet if in dry-run mode</em>
-    probe_classify_packet_cb classify_packet;   <em>// called by receiver to classify response</em>
+    probe_classify_packet_cb process_packet;   <em>// called by receiver to classify response</em>
     probe_close_cb           close;             <em>// called at scanner termination</em>
-    
-    response_type_t          *responses;        <em>// possible response classifications</em>
+
+    fielddef_t               *fields           <em>// Definitions of the fields specific to this module</em>
+    int                      numfields         <em>// Number of fields</em>
     
 } probe_module_t;
         </pre></div>
@@ -765,22 +815,33 @@ int make_packet(
                              // host we are currently sending</em>
 );</pre></div><br/>
 
-        <p>Scan modules must also define <code>pcap_filter</code>, <code>validate_packet</code>, and <code>classify_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>validate_packet</code> function will be called for every packet that fulfills this PCAP filter. If the validation returns non-zero, the <code>classify_packet</code> function will be called, and return one of several responses pre-defined by the probe module. You will need to register possible responses, similar to the following:</p>
+        <p>Scan modules must also define <code>pcap_filter</code>, <code>validate_packet</code>, and <code>process_packet</code>. Only packets that match the PCAP filter will be considered by the scanner. For example, in the case of a TCP SYN scan, we only want to investigate TCP SYN/ACK or TCP RST packets and would utilize a filter similar to <code>tcp && tcp[13] & 4 != 0 || tcp[13] == 18</code>. The <code>validate_packet</code> function will be called for every packet that fulfills this PCAP filter. If the validation returns non-zero, the <code>process_packet</code> function will be called, and will populate a fieldset using fields defined in <code>fields</code> with data from the packet. For example, the following code processes a packet for the TCP synscan probe module.</p>
+
+
 
         <div class="indent"><pre>
-static response_type_t responses[] = {
-    {
-        .is_success = 1,	
-        .name = "synack"
-    },
-    {
-        .is_success = 0,
-        .name = "rst"
+void synscan_process_packet(const u_char *packet, uint32_t len, fieldset_t *fs)
+{
+    struct iphdr *ip_hdr = (struct iphdr *)&packet[sizeof(struct ethhdr)];
+    struct tcphdr *tcp = (struct tcphdr*)((char *)ip_hdr 
+            + (sizeof(struct iphdr)));
+
+    fs_add_uint64(fs, "sport", (uint64_t) ntohs(tcp->source)); 
+    fs_add_uint64(fs, "dport", (uint64_t) ntohs(tcp->dest));
+    fs_add_uint64(fs, "seqnum", (uint64_t) ntohl(tcp->seq));
+    fs_add_uint64(fs, "acknum", (uint64_t) ntohl(tcp->ack_seq));
+    fs_add_uint64(fs, "window", (uint64_t) ntohs(tcp->window));
+
+    if (tcp->rst) { // RST packet
+        fs_add_string(fs, "classification", (char*) "rst", 0);
+        fs_add_uint64(fs, "success", 0);
+    } else { // SYNACK packet
+        fs_add_string(fs, "classification", (char*) "synack", 0);
+        fs_add_uint64(fs, "success", 1);
     }
-};
+}
 </pre></div><br/>
 
-<p>The classify function should accept a packet buffer and return a const response_type_t pointer to one of these responses upon receiving the packet. This classification will later be used as part of determining the scan output.</p>
         					</div>
         				</div>
 
