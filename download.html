@@ -71,8 +71,12 @@
 
               <h3>Building and Installing ZMap</h3>
 
-              <p class="front">ZMap is developed for use on Linux on 32-bit and 64-bit systems and can be built with
-              most recent versions of gcc and the CMake build system. ZMap requires <a href=
+              <p class="front">ZMap is architected for Linux based systems and can be built with
+			  most recent versions of gcc and the CMake build system. On Fedora systems, ZMap can be installed
+			  through Yum: <code>sudo yum install zmap</code> and through pacman on Arch Linux: <code>pacman -S zmap</code>.
+			  The bleeding-edge version on <a href="https://github.com/zmap/zmap">Github</a> supports Mac OS; v1.1.1 does not.</p>
+
+			  <p class="front">On other systems, ZMap requires <a href=
               "http://gmplib.org">GMP</a>, <a href=
               "http://www.tcpdump.org/">libpcap</a>, <a href=
               "http://www.gnu.org/software/gengetopt/gengetopt.html">Gengetopt</a>,
@@ -83,8 +87,16 @@
               <p class="front indented">Debian or Ubuntu: <code>sudo apt-get install
               libgmp3-dev libpcap-dev gengetopt byacc flex</code></p>
 
-              <p class="front indented">Fedora, Red Hat Enterprise Linux, or CentOS:
+              <p class="front indented">Red Hat Enterprise Linux or CentOS:
               <code>sudo yum install gmp gmp-devel libpcap-devel gengetopt byacc flex</code></p>
+
+			  <p class="front indented">Mac OS:
+
+			  <code>brew install cmake gmp gengetopt json-c byacc libdnet</code>
+				  
+			or
+
+			<code>	  sudo port install gmp libdnet byacc flex gengetopt cmake</code>
 
               <p class="front">Once these requirements have been installed, ZMap can be
               installed by running <code>cmake -DENABLE_HARDENING=ON</code> followed by <code>make</code> and <code>sudo make
@@ -96,9 +108,11 @@
               command <code>cmake -DWITH_REDIS=ON</code>. If you don't want to
               run ZMap as root, you can give the binary permission to use the
               raw network with <code>setcap cap_net_raw=ep
-              /usr/local/sbin/zmap</code></p><br/>
+              /usr/local/sbin/zmap</code></p>
 
-              <p class="front">JSON support is not enabled by default. If you want to output to JSON, install <a href="https://github.com/json-c/json-c">JSON-C</a>. Then rebuild ZMap with <code>cmake -DWITH_JSON=ON</code>.</p>
+	  <p class="front">Similarly, JSON support is not enabled by default. If you want to output to JSON, install <a href="https://github.com/json-c/json-c">JSON-C</a>. Then rebuild ZMap with <code>cmake -DWITH_JSON=ON</code>. Installing json-c from source requires git and autotools to be available. For
+	  more information on how to install JSON-C, see
+	  <a href="http://github.com/json-c/json-">http://github.com/json-c/json-c</a>.</p>
             </div>
           </div>
         </div>
