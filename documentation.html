@@ -198,6 +198,10 @@ addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
           <dt>-c, --cooldown-time=secs</dt>     <dd>How long to continue receiving after sending has completed (default=8)<dd>
           <dt>-e, --seed=n</dt>                 <dd>Seed used to select address permutation. Use this if you want to
                                                 scan addresses in the same order for multiple ZMap runs.</dd>
+          <dt>--shards=n</dt>                   <dd>Split the scan up into N shards/partitions among different instances
+                                                    of zmap (default=1). When sharding, <code>--seed</code> is required</dd>
+          <dt>--shard=n</dt>                    <dd>Set which shard to scan (default=0). Shards are indexed in the range [0, N),
+                                                    where N is the total number of shards. When sharding <code>--seed</code> is required.</dd>
           <dt>-T, --sender-threads=n</dt>       <dd>Threads used to send packets (default=1)</dd>
           <dt>-P, --probes=n</dt>               <dd>Number of probes to send to each IP (default=1)</dd>
           <dt>-d, --dryrun</dt>                 <dd>Print out each packet to stdout instead of sending it (useful for debugging)</dd>
