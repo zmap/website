@@ -315,10 +315,58 @@ port range when executing ZMap, with the <code>-s</code> flag (e.g. <code>-s '50
 
 <a name="udp"></a>
 <h4>UDP Datagram Scans</h4>
-	<p>ZMap additionally supports UDP probes, where it will send out an arbitrary UDP datagram to each host, and receive either UDP or ICMP Unreachable responses. Currently, the datagram payload is set in <a href="https://github.com/zmap/zmap/blob/v1.0.0/src/probe_modules/module_udp.c#L29">probe_modules/module_udp.c</a>, and must be NULL-terminated. In the future, we will support command-line provided data payloads for UDP.</p>
+	<p>ZMap additionally supports UDP probes, where it will send out an arbitrary UDP datagram to each host, and receive either UDP or ICMP Unreachable responses. ZMap supports four different methods of setting the UDP payload through the --probe-args command-line option. These are 'text' for ASCII-printable payloads, 'hex' for hexadecimal payloads set on the command-line, 'file' for payloads contained in an external file, and 'template' for payloads that require dynamic field generation. In order to obtain the UDP response, make sure that you specify 'data' as one of the fields to report with the -f option.
+  </p><br/>
 
-		<div class="indent"><pre><b> $ zmap --probe-module=udp -p 53 -N 100 -o -</b></pre></div>
+  <p>The example below will send the two bytes 'ST', a PCAnwywhere 'status' request, to UDP port 5632.</p><br/>
 
+		<div class="indent"><pre><b> $ zmap -M udp -p 5632 --probe-args=text:ST -N 100 -f saddr,data -o -</b></pre></div>
+
+  <p>The example below will send the byte '0x02', a SQL Server 'client broadcast' request, to UDP port 1434.</p><br/>
+
+    <div class="indent"><pre><b> $ zmap -M udp -p 1434 --probe-args=hex:02 -N 100 -f saddr,data -o -</b></pre></div>
+
+  <p>The example below will send a NetBIOS status request to UDP port 137. This uses a payload file that is included with the ZMap distribution.</p><br/>
+
+    <div class="indent"><pre><b> $ zmap -M udp -p 1434 --probe-args=file:netbios_137.pkt -N 100 -f saddr,data -o -</b></pre></div>
+
+  <p>The example below will send a SIP 'OPTIONS' request to UDP port 5060. This uses a template file that is included with the ZMap distribution.</p><br/>
+    <div class="indent"><pre><b> $ zmap -M udp -p 1434 --probe-args=file:sip_options.tpl -N 100 -f saddr,data -o -</b></pre></div>
+
+  <p>UDP payload templates are still experimental. You may encounter crashes when more using more than one send thread (-T) and there is a significant decrease in performance compared to static payloads. A template is simply a payload file that contains one or more field specifiers enclosed in a ${} sequence. Some protocols, notably SIP, require the payload to reflect the source and destination of the packet. Other protocols, such as portmapper and DNS, contain fields that should be randomized per request or risk being dropped by multi-homed systems scanned by ZMap.</p><br/>
+
+  <p>The payload template below will send a SIP OPTIONS request to every destination:</p>
+    <div class="indent">
+<pre><b>OPTIONS sip:${RAND_ALPHA=8}@${DADDR} SIP/2.0
+Via: SIP/2.0/UDP ${SADDR}:${SPORT};branch=${RAND_ALPHA=6}.${RAND_DIGIT=10};rport;alias
+From: sip:${RAND_ALPHA=8}@${SADDR}:${SPORT};tag=${RAND_DIGIT=8}
+To: sip:${RAND_ALPHA=8}@${DADDR}
+Call-ID: ${RAND_DIGIT=10}@${SADDR}
+CSeq: 1 OPTIONS
+Contact: sip:${RAND_ALPHA=8}@${SADDR}:${SPORT}
+Content-Length: 0
+Max-Forwards: 20
+User-Agent: ${RAND_ALPHA=8}
+Accept: text/plain
+</b></pre></div>
+
+<p>In the example above, note that line endings are \r\n and the end of this request must contain \r\n\r\n for most SIP implementations to correcly process it. A working example is included in the examples/udp-payloads directory of the ZMap source tree (sip_options.tpl).</p>
+
+<p>The following template fields are currently implemented:</p>
+<ul>
+<li><b>SADDR</b>: Source IP address in dotted-quad format</li>
+<li><b>SADDR_N</b>: Source IP address in network byte order</li>
+<li><b>DADDR</b>: Source IP address in dotted-quad format</li>
+<li><b>DADDR_N</b>: Source IP address in network byte order</li>
+<li><b>SPORT</b>: Source port in ascii format</li>
+<li><b>SPORT_N</b>: Source port in network byte order</li>
+<li><b>DPORT</b>: Source port in ascii format</li>
+<li><b>DPORT_N</b>: Source port in network byte order</li>
+<li><b>RAND_BYTE</b>: Random bytes (0-255), length specified with =(length) parameter</li>
+<li><b>RAND_DIGIT</b>: Random digits from 0-9, length specified with =(length) parameter</li>
+<li><b>RAND_ALPHA</b>: Random mixed-case letters from A-Z, length specified with =(length) parameter</li>
+<li><b>RAND_ALPHANUM</b>: Random mixed-case letters from A-Z and digits from 0-9, length specified with =(length) parameter</li>
+</ul></br>
 
 
                             <a name="config"></a>
