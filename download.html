@@ -51,14 +51,13 @@
 
             <h3>Installing the Latest ZMap Release</h3>
 
-            <p class="front">The latest stable release of ZMap is version 1.2.0 and supports Linux, Mac OS, and BSD. It can be installed through the built-in package managers on the following operating systems:</p>
+            <p class="front">The latest stable release of ZMap is version 1.2.1 and supports Linux, Mac OS, and BSD. It can be installed through the built-in package managers on the following operating systems:</p>
 
 		<p class="front indented">Debian or Ubuntu: <code>sudo apt-get install zmap</code></p>
 		<p class="front indented">Fedora, CentOS, and RHEL: <code>sudo yum install zmap</code></p>
 		<p class="front indented">Arch Linux: <code>sudo pacman -s zmap</code></p>
 		<p class="front indented">Gentoo: <code>sudo emerge zmap</code></p>
 		<p class="front indented">Mac OS (brew): <code>brew install zmap</code></p>
-		<p class="front indented">Mac OS (port): <code>sudo port install zmap</code></p>
 
         <p class="front"> ZMap is hosted on GitHub at <a href=
               "https://github.com/zmap/zmap">https://github.com/zmap/zmap</a>. Issues should be reported on the <a href=
@@ -77,7 +76,7 @@
               <h3>Building ZMap from Source</h3>
               <p class="front">The latest
               bleeding-edge version of ZMap can cloned from the git repository at
-              <code>git://github.com/zmap/zmap.git</code>. The latest stable release can also be downloaded at <a href="https://github.com/zmap/zmap/archive/v1.2.0.tar.gz">v1.2.0.tar.gz</a>.
+              <code>git://github.com/zmap/zmap.git</code>. The latest stable release can also be downloaded at <a href="https://github.com/zmap/zmap/archive/v1.2.1.tar.gz">v1.2.1.tar.gz</a>.
 			  
 			   </p> <p class="front">ZMap can be built from source with most recent versions of gcc and the CMake build system. If you are building from source, you will also need the following libraries: <a href=
               "http://gmplib.org">GMP</a>, <a href=
@@ -102,7 +101,7 @@
 			<code>	  sudo port install gmp libdnet byacc flex gengetopt cmake</code>
 
               <p class="front">Once these requirements have been installed, ZMap can be
-              installed by running <code>cmake -DENABLE_HARDENING=ON</code> followed by <code>make</code> and <code>sudo make
+              installed by running <code>cmake -DENABLE_DEVELOPMENT=OFF</code> followed by <code>make</code> and <code>sudo make
               install</code>.</p>
 
               <p class="front"><a href="http://redis.io/">Redis</a> support is
