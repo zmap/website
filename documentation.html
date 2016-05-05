@@ -331,7 +331,7 @@ port range when executing ZMap, with the <code>-s</code> flag (e.g. <code>-s '50
     <div class="indent"><pre><b> $ zmap -M udp -p 1434 --probe-args=file:netbios_137.pkt -N 100 -f saddr,data -o -</b></pre></div>
 
   <p>The example below will send a SIP 'OPTIONS' request to UDP port 5060. This uses a template file that is included with the ZMap distribution.</p><br/>
-    <div class="indent"><pre><b> $ zmap -M udp -p 1434 --probe-args=file:sip_options.tpl -N 100 -f saddr,data -o -</b></pre></div>
+    <div class="indent"><pre><b> $ zmap -M udp -p 1434 --probe-args=template:sip_options.tpl -N 100 -f saddr,data -o -</b></pre></div>
 
   <p>UDP payload templates are still experimental. You may encounter crashes when more using more than one send thread (-T) and there is a significant decrease in performance compared to static payloads. A template is simply a payload file that contains one or more field specifiers enclosed in a ${} sequence. Some protocols, notably SIP, require the payload to reflect the source and destination of the packet. Other protocols, such as portmapper and DNS, contain fields that should be randomized per request or risk being dropped by multi-homed systems scanned by ZMap.</p><br/>
 
