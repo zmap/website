@@ -125,7 +125,7 @@ addresses on port 80 at a maximum 10 Mbps can be run as follows:</p>
 
 <p class="front">We strongly encourage you to use a <a href="#blacklisting">blacklist file</a>, to exclude both reserved/unallocated IP space (e.g. multicast, RFC1918), as well as networks that request to be excluded from your scans. By default, ZMap will utilize a simple blacklist file containing reserved and unallocated addresses located at <code>/etc/zmap/blacklist.conf</code>. If you find yourself specifying certain settings, such as your maximum bandwidth or <a href="#blacklisting">blacklist file</a> every time you run ZMap, you can specify these in <code>/etc/zmap/zmap.conf</code> or use a custom <a href="#config">configuration file</a>.</p>
 
-     <p class="front">If you are attempting to troubleshoot scan related issues, there are several options to help debug. First, it is possible can perform a <a href="#dryrun">dry run scan</a> in order to see the packets that would be sent over the network by adding the <code>--dryrun</code> flag. As well, it is possible to change the <a href="#verbosity">logging verbosity</a> by setting the <code>--verbosity=n</code> flag.
+     <p class="front">If you are attempting to troubleshoot scan related issues, there are several options to help debug. First, it is possible to perform a <a href="#dryrun">dry run scan</a> in order to see the packets that would be sent over the network by adding the <code>--dryrun</code> flag. As well, it is possible to change the <a href="#verbosity">logging verbosity</a> by setting the <code>--verbosity=n</code> flag.
     </p>   
 
 <p class="front">
