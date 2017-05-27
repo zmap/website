@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="img/favicon.ico">
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+    <title>The ZMap Project</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/local.css">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">The ZMap Project</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+          <li><a href="project.html">The Project</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="https://scans.io">Data Repository</a></li>
+          <li><a href="https://censys.io">Censys Search Engine</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+	<div class="header">
+      <div class="container" style="padding-top: 10px">
+        <div class="row">
+          <div class="col-md-12 header">
+            <h1>About the Project</h1>
+          </div>
+        </div>
+      </div>
+	</div>
+    <div class="container page">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-12">
+			<p>The ZMap Project started at the University of Michigan in 2013, but has since grown into a larger open source community that maintains a collection of tools that support large-scale Internet measurement. Much of the development around these tools happens at the University of Michigan, University of Illinois Urbana-Champaign, UC Berkeley, and Rapid7. The core team can be reached at <a href="mailto:zmap-team@umich.edu">zmap-team@umich.edu</a>.</p>
+
+			<p class="last">There have been several papers published along the way about the tools:</p>
+
+	 <div class="row">
+        <div class="col-md-10 papers">
+			<h3><a href="https://zmap.io/paper.html">ZMap: Fast Internet-Wide Scanning and its Security Applications</a></h3>
+			<p>Zakir Durumeric, Eric Wustrow, and J. Alex Halderman<br/>
+			<i>22nd USENIX Security Symposium</i>, August 2013</p>
+
+			<p class="abstract">Internet-wide network scanning has numerous
+			security applications, including exposing new vulnerabilities and
+			tracking the adoption of defensive mechanisms, but probing the
+			entire public address space with existing tools is both difficult
+			and slow. We introduce ZMap, a modular, open-source network scanner
+			specifically architected to perform Internet-wide scans and capable
+			of surveying the entire IPv4 address space in under 45 minutes from
+			user space on a single machine, approaching the theoretical maximum
+			speed of gigabit Ethernet. We present the scanner architecture,
+			experimentally characterize its performance and accuracy, and
+			explore the security implications of high speed Internet-scale
+			network surveys, both offensive and defensive. We also discuss best
+			practices for good Internet citizenship when performing
+			Internet-wide surveys, informed by our own experiences conducting a
+			long-term research survey over the past year.</p>
+
+			<h3><a href="https://jhalderm.com/pub/papers/zmap10gig-woot14.pdf">Zippier ZMap: Internet-Wide Scanning at 10 Gbps</a></h3>
+			<p>David Adrian, Zakir Durumeric, Gulshan Singh, and J. Alex Halderman<br/>
+			USENIX Workshop on Offensive Technologies (WOOT), August 2014</p>
+
+			<p class="abstract">We introduce optimizations to the ZMap network
+			scanner that achieve a 10-fold increase in maximum scan rate. By
+			parallelizing address generation, introducing an improved
+			blacklisting algorithm, and using zero-copy NIC access, we drive
+			ZMap to nearly the maximum throughput of 10 gigabit Ethernet,
+			almost 15 million probes per second.  With these changes, ZMap can
+			comprehensively scan for a single TCP port across the entire public
+			IPv4 address space in 4.5 minutes given adequate upstream
+			bandwidth.  We consider the implications of such rapid scanning for
+			both defenders and attackers, and we briefly discuss a range of
+			potential applications.</p>
+
+
+			<h3><a href="https://jhalderm.com/pub/papers/censys-ccs15.pdf">A Search Engine Backed by Internet-Wide Scanning</a></h3>
+			<p>Zakir Durumeric, David Adrian, Ariana Mirian, Michael Bailey, J. Alex Halderman<br/>
+			22nd ACM Conference on Computer and Communications Security (CCS'15)</p>
+
+			<p class="abstract">Fast Internet-wide scanning has opened new
+			avenues for security research, ranging from uncovering widespread
+			vulnerabilities in random number generators to tracking the
+			evolving impact of Heartbleed. However, this technique still
+			requires significant effort: even simple questions, such as, "What
+			models of embedded devices prefer CBC ciphers?", require developing
+			an application scanner, manually identifying and tagging devices,
+			negotiating with network administrators, and responding to abuse
+			complaints. In this paper, we introduce Censys, a public search
+			engine and data processing facility backed by data collected from
+			ongoing Internet-wide scans. Designed to help researchers answer
+			security-related questions, Censys supports full-text searches on
+			protocol banners and querying a wide range of derived fields (e.g.,
+			443.https.cipher). It can identify specific vulnerable devices and
+			networks and generate statistical reports on broad usage patterns
+			and trends. Censys returns these results in sub-second time,
+			dramatically reducing the effort of understanding the hosts that
+			comprise the Internet. We present the search engine architecture
+			and experimentally evaluate its performance. We also explore
+			Censys's applications and show how recent questions become simple
+			to answer.</p>
+
+		</div>
+	 </div>
+
+
+
+
+     <hr>
+		</div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8">
+      <footer>
+        <p>&copy; 2017 The ZMap Team</p>
+      </footer>
+      </div>
+	  </div>
+    </div> <!-- /container -->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+		crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+var _gauges = _gauges || [];
+(function() {
+  var t   = document.createElement('script');
+  t.type  = 'text/javascript';
+  t.async = true;
+  t.id    = 'gauges-tracker';
+  t.setAttribute('data-site-id', '51f73359108d7b36f5000203');
+  t.src = '//secure.gaug.es/track.js';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(t, s);
+})();
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,132 @@
+
+.icon-bar {
+	background-color: #9d9d9d !important;
+}
+
+.navbar-toggle {
+	border-color: #9d9d9d !important;
+	background-color: #212d3b;
+}
+
+.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
+	border-color: #9d9d9d !important;
+	background-color: #212d3b;
+	color: #fff
+}
+
+p {
+    font-family: LatoLatinWeb, LatoWeb, Lato, sans-serif;
+    font-size: 13pt;
+    line-height: 24px;
+    padding-top: 7px;
+    padding-bottom: 8px;
+}
+
+.jumbotron h1 {
+    font-family: LatoLatinWeb, LatoWeb, Lato, sans-serif;
+    font-size: 35pt !important;
+    line-height: 20px;
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.jumbotron p {
+    font-family: LatoLatinWeb, LatoWeb, Lato, sans-serif;
+    line-height: 30px !important;
+}
+
+.projects h2 {
+    font-family: LatoLatinWeb, LatoWeb, Lato, sans-serif;
+    font-size: 22pt;
+    line-height: 20px;
+    color: #34495e
+}
+
+.projects a {
+    color: #34495e
+}
+
+
+.paper a {
+    color: #34495e
+}
+
+.header {
+    padding-top: 20px;
+    background-color: #34495e !important;
+    color: #fff;
+    padding-bottom: 7px;
+}
+
+.header p {
+    line-height: 24px;
+}
+
+.header h1 {
+    font-family: LatoLatinWeb, LatoWeb, Lato, sans-serif;
+    font-size: 22pt !important;
+    text-align: center
+}
+.jumbotron {
+     background-color: #34495e !important;
+     color: #fff !important;
+}
+
+img {
+    display: block;
+    margin: auto;
+}
+
+.navbar-inverse {
+    font-family: LatoLatinWeb, LatoWeb, Lato, sans-serif;
+    background-color: #212d3b;
+    border-style: none !important;
+    color: #fff !important;
+}
+
+.page {
+    padding-top: 20px;
+}
+
+.page p {
+    margin-bottom: 0px;
+}
+
+.last {
+    padding-bottom: 0px;
+}
+
+.paper li {
+    margin: 0px;
+    margin-left: 30px;
+    padding-bottom: 15px;
+    font-size:16px;
+    line-height:20px;
+    font-weight: 220;
+}
+
+.paper {
+    padding-bottom: 15px;
+    list-style-type: none;
+}
+
+.abstract {
+    font-size: 15px;
+    padding-top: -10px;
+}
+
+.papers h3 {
+    font-size: 20px;
+    margin-bottom: 0px;
+}
+
+.papers p {
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.papers a {
+    color: #34495e
+}
+
+
