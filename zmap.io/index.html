@@ -4,20 +4,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="img/favicon.ico">
+    <meta name="description" content="The ZMap Project is a collection of open source tools that enable researchers to perform large-scale studies of the hosts and services that compose the public Internet.">
+    <meta name="keywords" content="zmap zgrab zdns ztag zlint zschema zbrowse zcrypto">
+    <link rel="icon" href="favicon.ico">
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
 
     <title>The ZMap Project</title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/local.css">
   </head>
-
   <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -31,21 +29,19 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-          <li><a href="project.html">The Project</a></li>
+          <li><a href="project.html">History</a></li>
           <li><a href="research.html">Research</a></li>
-          <li><a href="https://scans.io">Data Repository</a></li>
-          <li><a href="https://censys.io">Censys Search Engine</a></li>
+          <li><a href="https://scans.io">Scans.IO</a></li>
+          <li><a href="https://censys.io">Censys</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
-
     <div class="jumbotron" >
       <div class="container" style="padding-top: 50px">
         <div class="row">
           <div class="col-md-4">
-            <img src="img/sqlogo.png" alt="ZMap Logo" style="width:250px"></img>
+            <img src="static/img/sqlogo.png" alt="ZMap Logo" style="width:250px"></img>
           </div>
           <div class="col-md-7">
             <h1>The ZMap Project</h1>
@@ -135,20 +131,13 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 		integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
 		crossorigin="anonymous"></script>
-    <script src="js/bootstrap.min.js"></script>
-
-    <script type="text/javascript">
-var _gauges = _gauges || [];
-(function() {
-  var t   = document.createElement('script');
-  t.type  = 'text/javascript';
-  t.async = true;
-  t.id    = 'gauges-tracker';
-  t.setAttribute('data-site-id', '51f73359108d7b36f5000203');
-  t.src = '//secure.gaug.es/track.js';
-  var s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(t, s);
-})();
+    <script src="static/js/bootstrap.min.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116194376-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-116194376-1');
     </script>
   </body>
 </html>

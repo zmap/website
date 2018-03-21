@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="img/favicon.ico">
+    <link rel="icon" href="favicon.ico">
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/local.css">
+    <link rel="stylesheet" href="static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="static/css/local.css">
 
     <title>The ZMap Project</title>
 
@@ -198,22 +198,15 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 		integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
 		crossorigin="anonymous"></script>
-    <script src="js/bootstrap.min.js"></script>
-
-
-    <script type="text/javascript">
-var _gauges = _gauges || [];
-(function() {
-  var t   = document.createElement('script');
-  t.type  = 'text/javascript';
-  t.async = true;
-  t.id    = 'gauges-tracker';
-  t.setAttribute('data-site-id', '51f73359108d7b36f5000203');
-  t.src = '//secure.gaug.es/track.js';
-  var s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(t, s);
-})();
+    <script src="static/js/bootstrap.min.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116194376-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-116194376-1');
     </script>
+
   </body>
 </html>
 

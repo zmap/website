@@ -1,0 +1,19 @@
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /(index.html)?
+  static_files: zmap.io/index.html
+  upload: zmap.io/index.html
+  secure: always
+
+- url: /static/*
+  static_dir: zmap.io/static
+  secure: always
+
+- url: /(.*)
+  mime_type: text/html
+  static_files: zmap.io/\1.html
+  upload: zmap.io/(.*)
+  secure: always
