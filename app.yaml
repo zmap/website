@@ -17,6 +17,11 @@ handlers:
   upload: zmap.io/paper.pdf
   secure: always
 
+- url: /paper.html
+  static_files: zmap.io/paper.html
+  upload: zmap.io/paper.html
+  secure: always
+
 - url: /(.*)
   mime_type: text/html
   static_files: zmap.io/\1.html

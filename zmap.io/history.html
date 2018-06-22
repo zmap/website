@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The ZMap Project is a collection of open source tools that enable researchers to perform large-scale studies of the hosts and services that compose the public Internet.">
+    <meta name="description" content="The ZMap Project is a collection of open source tools that enable researchers to perform large-scale studies of Internet connected hosts and services.">
     <link rel="icon" href="favicon.ico">
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
     <title>The ZMap Project</title>
@@ -28,15 +28,15 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-          <li><a href="/history">History</a></li>
-          <li><a href="/research">Research</a></li>
-          <li><a href="https://scans.io">Scans.IO</a></li>
-          <li><a href="https://censys.io">Censys</a></li>
+            <li><a href="/history">History</a></li>
+            <li><a href="/research">Research</a></li>
+            <li><a href="https://scans.io">Scans.IO</a></li>
+            <li><a href="https://censys.io">Censys</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-	<div class="header">
+    <div class="header">
       <div class="container" style="padding-top: 10px">
         <div class="row">
           <div class="col-md-12 header">
@@ -44,141 +44,136 @@
           </div>
         </div>
       </div>
-	</div>
+    </div>
     <div class="container page">
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-12">
-			<p>The ZMap Project started at the University of Michigan in 2013, but has since grown into a larger open source community that maintains a collection of tools that support large-scale Internet measurement. The core team can be reached at <a href="mailto:team@zmap.io">team@zmap.io</a>.</p>
+          <p>The ZMap Project started at the University of Michigan in 2013, but has since grown into a larger open source community that maintains a collection of tools that support large-scale Internet measurement. The core team can be reached at <a href="mailto:team@zmap.io">team@zmap.io</a>.</p>
+          <p class="last">We have published several papers that describe how ZMap tools are architected:</p>
 
-			<p class="last">We have published several papers that describe how ZMap tools are architected:</p>
+          <div class="row">
+            <div class="col-md-10 papers">
+              <h3><a href="https://zmap.io/paper.pdf">ZMap: Fast Internet-Wide Scanning and its Security Applications</a></h3>
+              <p>Zakir Durumeric, Eric Wustrow, and J. Alex Halderman<br/>
+              22nd USENIX Security Symposium, August 2013</p>
 
-	 <div class="row">
-        <div class="col-md-10 papers">
-			<h3><a href="https://zmap.io/paper.html">ZMap: Fast Internet-Wide Scanning and its Security Applications</a></h3>
-			<p>Zakir Durumeric, Eric Wustrow, and J. Alex Halderman<br/>
-			22nd USENIX Security Symposium, August 2013</p>
+              <p class="abstract">Internet-wide network scanning has numerous
+              security applications, including exposing new vulnerabilities and
+              tracking the adoption of defensive mechanisms, but probing the
+              entire public address space with existing tools is both difficult
+              and slow. We introduce ZMap, a modular, open-source network scanner
+              specifically architected to perform Internet-wide scans and capable
+              of surveying the entire IPv4 address space in under 45 minutes from
+              user space on a single machine, approaching the theoretical maximum
+              speed of gigabit Ethernet. We present the scanner architecture,
+              experimentally characterize its performance and accuracy, and
+              explore the security implications of high speed Internet-scale
+              network surveys, both offensive and defensive. We also discuss best
+              practices for good Internet citizenship when performing
+              Internet-wide surveys, informed by our own experiences conducting a
+              long-term research survey over the past year.</p>
 
-			<p class="abstract">Internet-wide network scanning has numerous
-			security applications, including exposing new vulnerabilities and
-			tracking the adoption of defensive mechanisms, but probing the
-			entire public address space with existing tools is both difficult
-			and slow. We introduce ZMap, a modular, open-source network scanner
-			specifically architected to perform Internet-wide scans and capable
-			of surveying the entire IPv4 address space in under 45 minutes from
-			user space on a single machine, approaching the theoretical maximum
-			speed of gigabit Ethernet. We present the scanner architecture,
-			experimentally characterize its performance and accuracy, and
-			explore the security implications of high speed Internet-scale
-			network surveys, both offensive and defensive. We also discuss best
-			practices for good Internet citizenship when performing
-			Internet-wide surveys, informed by our own experiences conducting a
-			long-term research survey over the past year.</p>
+              <h3><a href="https://jhalderm.com/pub/papers/zmap10gig-woot14.pdf">Zippier ZMap: Internet-Wide Scanning at 10 Gbps</a></h3>
+              <p>David Adrian, Zakir Durumeric, Gulshan Singh, and J. Alex Halderman<br/>
+              USENIX Workshop on Offensive Technologies (WOOT), August 2014</p>
 
-			<h3><a href="https://jhalderm.com/pub/papers/zmap10gig-woot14.pdf">Zippier ZMap: Internet-Wide Scanning at 10 Gbps</a></h3>
-			<p>David Adrian, Zakir Durumeric, Gulshan Singh, and J. Alex Halderman<br/>
-			USENIX Workshop on Offensive Technologies (WOOT), August 2014</p>
+              <p class="abstract">We introduce optimizations to the ZMap network
+              scanner that achieve a 10-fold increase in maximum scan rate. By
+              parallelizing address generation, introducing an improved
+              blacklisting algorithm, and using zero-copy NIC access, we drive
+              ZMap to nearly the maximum throughput of 10 gigabit Ethernet,
+              almost 15 million probes per second.  With these changes, ZMap can
+              comprehensively scan for a single TCP port across the entire public
+              IPv4 address space in 4.5 minutes given adequate upstream
+              bandwidth.  We consider the implications of such rapid scanning for
+              both defenders and attackers, and we briefly discuss a range of
+              potential applications.</p>
 
-			<p class="abstract">We introduce optimizations to the ZMap network
-			scanner that achieve a 10-fold increase in maximum scan rate. By
-			parallelizing address generation, introducing an improved
-			blacklisting algorithm, and using zero-copy NIC access, we drive
-			ZMap to nearly the maximum throughput of 10 gigabit Ethernet,
-			almost 15 million probes per second.  With these changes, ZMap can
-			comprehensively scan for a single TCP port across the entire public
-			IPv4 address space in 4.5 minutes given adequate upstream
-			bandwidth.  We consider the implications of such rapid scanning for
-			both defenders and attackers, and we briefly discuss a range of
-			potential applications.</p>
+              <h3><a href="https://jhalderm.com/pub/papers/censys-ccs15.pdf">A Search Engine Backed by Internet-Wide Scanning</a></h3>
+              <p>Zakir Durumeric, David Adrian, Ariana Mirian, Michael Bailey, J. Alex Halderman<br/>
+              22nd ACM Conference on Computer and Communications Security (CCS'15)</p>
 
+              <p class="abstract">Fast Internet-wide scanning has opened new
+              avenues for security research, ranging from uncovering widespread
+              vulnerabilities in random number generators to tracking the
+              evolving impact of Heartbleed. However, this technique still
+              requires significant effort: even simple questions, such as, "What
+              models of embedded devices prefer CBC ciphers?", require developing
+              an application scanner, manually identifying and tagging devices,
+              negotiating with network administrators, and responding to abuse
+              complaints. In this paper, we introduce Censys, a public search
+              engine and data processing facility backed by data collected from
+              ongoing Internet-wide scans. Designed to help researchers answer
+              security-related questions, Censys supports full-text searches on
+              protocol banners and querying a wide range of derived fields (e.g.,
+              443.https.cipher). It can identify specific vulnerable devices and
+              networks and generate statistical reports on broad usage patterns
+              and trends. Censys returns these results in sub-second time,
+              dramatically reducing the effort of understanding the hosts that
+              comprise the Internet. We present the search engine architecture
+              and experimentally evaluate its performance. We also explore
+              Censys's applications and show how recent questions become simple
+              to answer.</p>
 
-			<h3><a href="https://jhalderm.com/pub/papers/censys-ccs15.pdf">A Search Engine Backed by Internet-Wide Scanning</a></h3>
-			<p>Zakir Durumeric, David Adrian, Ariana Mirian, Michael Bailey, J. Alex Halderman<br/>
-			22nd ACM Conference on Computer and Communications Security (CCS'15)</p>
+              <h3><a href="https://zakird.com/papers/zlint.pdf">Tracking Certificate Misissuance in the Wild</a></h3>
+              <p>Deepak Kumar, Zhengping Wang, Matthew Hyder, Joseph Dickinson, Gabrielle Beck, David Adrian,
+              Joshua Mason, Zakir Durumeric, J. Alex Halderman, Michael Bailey<br/>
+              IEEE Symposium on Security and Privacy ("Oakland"), May 2018</p>
 
-			<p class="abstract">Fast Internet-wide scanning has opened new
-			avenues for security research, ranging from uncovering widespread
-			vulnerabilities in random number generators to tracking the
-			evolving impact of Heartbleed. However, this technique still
-			requires significant effort: even simple questions, such as, "What
-			models of embedded devices prefer CBC ciphers?", require developing
-			an application scanner, manually identifying and tagging devices,
-			negotiating with network administrators, and responding to abuse
-			complaints. In this paper, we introduce Censys, a public search
-			engine and data processing facility backed by data collected from
-			ongoing Internet-wide scans. Designed to help researchers answer
-			security-related questions, Censys supports full-text searches on
-			protocol banners and querying a wide range of derived fields (e.g.,
-			443.https.cipher). It can identify specific vulnerable devices and
-			networks and generate statistical reports on broad usage patterns
-			and trends. Censys returns these results in sub-second time,
-			dramatically reducing the effort of understanding the hosts that
-			comprise the Internet. We present the search engine architecture
-			and experimentally evaluate its performance. We also explore
-			Censys's applications and show how recent questions become simple
-			to answer.</p>
+              <p class="abstract">Over the past 20 years, websites have grown increasingly complex
+              and interconnected. In 2016, only a negligible number of sites are
+              dependency free, and over 90% of sites rely on external content.
+              In this paper, we investigate the current state of web dependencies
+              and explore two security challenges associated with the increasing
+              reliance on external services: (1) the expanded attack surface associated
+              with serving unknown, implicitly trusted third-party content,
+              and (2) how the increased set of external dependencies impacts
+              HTTPS adoption. We hope that by shedding light on these issues,
+              we can encourage developers to consider the security risks associated
+              with serving third-party content and prompt service providers
+              to more widely deploy HTTPS.</p>
 
-			<h3><a href="https://zakird.com/papers/zlint.pdf">Tracking Certificate Misissuance in the Wild</a></h3>
-			<p>Deepak Kumar, Zhengping Wang, Matthew Hyder, Joseph Dickinson, Gabrielle Beck, David Adrian,
-			  Joshua Mason, Zakir Durumeric, J. Alex Halderman, Michael Bailey<br/>
-			IEEE Symposium on Security and Privacy ("Oakland"), May 2018</p>
+              <h3><a href="https://zakird.com/papers/tangled_web.pdf">Security Challenges in an Increasingly Tangled Web</a></h3>
+              <p>Deepak Kumar, Zane Ma, Zakir Durumeric, Ariana Mirian, Joshua Mason, J. Alex Halderman, and Michael Bailey<br/>
+              26th World Wide Web Conference (WWW'17)</p>
 
-			<p class="abstract">Over the past 20 years, websites have grown increasingly complex
-			and interconnected. In 2016, only a negligible number of sites are
-			dependency free, and over 90% of sites rely on external content.
-			In this paper, we investigate the current state of web dependencies
-			and explore two security challenges associated with the increasing
-			reliance on external services: (1) the expanded attack surface associated
-			with serving unknown, implicitly trusted third-party content,
-			and (2) how the increased set of external dependencies impacts
-			HTTPS adoption. We hope that by shedding light on these issues,
-			we can encourage developers to consider the security risks associated
-			with serving third-party content and prompt service providers
-			to more widely deploy HTTPS.</p>
-
-
-			<h3><a href="https://zakird.com/papers/tangled_web.pdf">Security Challenges in an Increasingly Tangled Web</a></h3>
-			<p>Deepak Kumar, Zane Ma, Zakir Durumeric, Ariana Mirian, Joshua Mason, J. Alex Halderman, and Michael Bailey<br/>
-			26th World Wide Web Conference (WWW'17)</p>
-
-			<p class="abstract">Over the past 20 years, websites have grown increasingly complex
-			and interconnected. In 2016, only a negligible number of sites are
-			dependency free, and over 90% of sites rely on external content.
-			In this paper, we investigate the current state of web dependencies
-			and explore two security challenges associated with the increasing
-			reliance on external services: (1) the expanded attack surface associated
-			with serving unknown, implicitly trusted third-party content,
-			and (2) how the increased set of external dependencies impacts
-			HTTPS adoption. We hope that by shedding light on these issues,
-			we can encourage developers to consider the security risks associated
-			with serving third-party content and prompt service providers
-			to more widely deploy HTTPS.</p>
-		</div>
-	 </div>
-     <hr>
-		</div>
+              <p class="abstract">Over the past 20 years, websites have grown increasingly complex
+              and interconnected. In 2016, only a negligible number of sites are
+              dependency free, and over 90% of sites rely on external content.
+              In this paper, we investigate the current state of web dependencies
+              and explore two security challenges associated with the increasing
+              reliance on external services: (1) the expanded attack surface associated
+              with serving unknown, implicitly trusted third-party content,
+              and (2) how the increased set of external dependencies impacts
+              HTTPS adoption. We hope that by shedding light on these issues,
+              we can encourage developers to consider the security risks associated
+              with serving third-party content and prompt service providers
+              to more widely deploy HTTPS.</p>
+            </div>
+          </div>
+          <hr>
+        </div>
       </div>
-
       <div class="row">
         <div class="col-md-8">
-      <footer>
-        <p>&copy; 2018 The ZMap Team</p>
-      </footer>
+          <footer>
+            <p>&copy; 2018 The ZMap Team</p>
+          </footer>
+        </div>
       </div>
-	  </div>
     </div> <!-- /container -->
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-		integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
-		crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+      crossorigin="anonymous"></script>
     <script src="js/bootstrap.min.js"></script>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116194376-1"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116194376-1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'UA-116194376-1');
     </script>
-
   </body>
 </html>
 
