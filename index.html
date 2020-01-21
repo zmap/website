@@ -55,11 +55,11 @@
       <div class="row">
         <div class="col-md-4">
           <h2><i class="fa fa-fw fa-binoculars"></i> <a href="https://github.com/zmap/zmap">ZMap</a></h2>
-          <p>ZMap is a fast single packet network scanner designed for Internet-wide network surveys. On a computer with a gigabit connection, ZMap can scan the entire public IPv4 address space in under 45 minutes. With a 10gigE connection and PF_RING, ZMap can scan the IPv4 address space in 5 minutes.</p>
+          <p>ZMap is a fast single-packet network scanner optimized for Internet-wide network surveys. On a computer with a gigabit connection, ZMap can scan the entire public IPv4 address space in under 45 minutes. With a 10gigE connection and PF_RING, ZMap can scan the IPv4 address space in 5 minutes.</p>
         </div>
         <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-camera"></i> <a href="https://github.com/zmap/zgrab">ZGrab</a></h2>
-          <p>ZGrab is a stateful application-layer scanner that works with ZMap. ZGrab is written in Go and supports HTTP, HTTPS, SSH, Telnet, FTP, SMTP, POP3, IMAP, Modbus, BACNET, Siemens S7, and Tridium Fox. For example, ZGrab can perform a TLS connection and collect the root HTTP page of all hosts ZMap finds on TCP/443.</p>
+          <h2><i class="fa fa-fw fa-camera"></i> <a href="https://github.com/zmap/zgrab2">ZGrab</a></h2>
+          <p>ZGrab is a stateful application-layer scanner. ZGrab is written in Go and supports HTTP, HTTPS, SSH, Telnet, FTP, SMTP, POP3, IMAP, Modbus, BACNET, Siemens S7, and Tridium Fox. For example, ZGrab can perform a TLS connection and collect the root HTTP page of all hosts ZMap finds on TCP/443.</p>
         </div>
         <div class="col-md-4">
           <h2><i class="fa fa-fw fa-compass"></i> <a href="http://github.com/zmap/zdns">ZDNS</a></h2>
@@ -67,6 +67,50 @@
         </div>
       </div>
       <div class="row">
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-key"></i> <a href="https://github.com/zmap/zcrypto">ZCrypto</a></h2>
+          <p>ZCrypto is a TLS and X.509 library for researchers. It is based on Go's standard library, but supports a more extensive set of cipher suites, extra lenient ASN.1 and X.509 parsing, and handshake transcription.</p>
+        </div>
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-check-square-o"></i> <a href="https://github.com/zmap/zlint">ZLint</a></h2>
+		  <p>ZLint is an X.509 certificate linter that checks for conformity with X.509 RFCs, CA/Browser Forum baseline requirements, root store policies, and ETSI standards.</p>
+        </div>
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-id-card-o"></i> <a href="https://github.com/zmap/zcertificate">ZCertificate</a></h2>
+          <p>ZCertificate is a command-line utility that parses X.509 certificates, performs browser validation and ZLint tests, and produces a JSON encoding of the certificate.</p>
+      </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-spinner"></i> <a href="https://github.com/zmap/zmap">ZIterate</a></h2>
+          <p>ZIterate is a utility that will produce random permutations of the IPv4 address space. It supports selecting IPs from a set of networks and sharding across multiple servers.</p>
+        </div>
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-filter"></i> <a href="https://github.com/zmap/zmap">ZBlacklist</a></h2>
+          <p>ZBlacklist allows quickly filtering out IP addresses that belong to a set of network blocks. It can be used to remove organizations who have requested exclusion from scans.</p>
+        </div>
+        <div class="col-md-4">
+			<h2><i class="fa fa-fw fa-download"></i> <a href="https://github.com/zmap/zmap">ZTee</a></h2>
+          <p>ZTee is a custom version of the Linux utility tee that can efficiently buffer large amounts of scan data between different phases of a scan. It also produces metadata and updates on progress.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-commenting"></i> <a href="https://github.com/zmap/zannotate">ZAnnotate</a></h2>
+          <p>ZAnnotate is a utility that annotates IPs with additional metadata, such as Maxmind GeoIP2 locations and routing data from a TABLE_DUMPv2 MRT file.</p>
+        </div>
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-map"></i> <a href="https://github.com/zmap/zschema">ZSchema</a></h2>
+          <p>ZSchema is a high-level programming language for describing database schemas. Schemas can be used to validate datasets and be compiled into schemas for other databases.</p>
+        </div>
+        <div class="col-md-4">
+          <h2><i class="fa fa-fw fa-id-card-o"></i> <a href="https://github.com/zmap/zannotate">mrt2json</a></h2>
+          <p>mrt2json is a simple utility for dumping MRT files to JSON similar to bgpdump.</p>
+        </div>
+      </div>
+
+      <div class="row">
+		<h1 style="padding-bottom: 10px">Deprecated Projects</h1>
         <div class="col-md-4">
           <h2><i class="fa fa-fw fa-tags"></i> <a href="https://github.com/zmap/ztag">ZTag</a></h2>
 		  <p>ZTag processes ZGrab output and annotates raw scan data with additional metadata such as device model and vulnerabilities. It can also be used to transform raw protocol handshakes into more descriptive records like those in <a href="https://censys.io">Censys</a>.</p>
@@ -76,55 +120,13 @@
           <p>ZBrowser is a command-line headless web browser built on top of <a href="https://developers.google.com/web/updates/2017/04/headless-chrome">Headless Chrome</a>. It produces JSON reports on the structure websites including the object dependency tree and network requests.</p>
         </div>
 
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-key"></i> <a href="https://github.com/zmap/zcrypto">ZCrypto</a></h2>
-          <p>ZCrypto is a TLS and X.509 library designed for researchers. It is based on Golang's TLS implementation, but also supports older, known-weak cipher suites, more lenient X.509 parsing, and TLS handshake transcription.</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-check-square-o"></i> <a href="https://github.com/zmap/zlint">ZLint</a></h2>
-		  <p>ZLint is a golang-based X.509 certificate linter that checks for conformity with <a href="https://www.ietf.org/rfc/rfc5280.txt">RFC 5280</a> and <a href="https://cabforum.org/baseline-requirements-documents/">CA/B baseline requirements<a/>.</p>
-        </div>
 
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-spinner"></i> <a href="https://github.com/zmap/zmap">ZIterate</a></h2>
-          <p>ZIterate is a utility that will produce random permutations of the IPv4 address space. It supports selecting IPs from a set of networks and sharding across multiple servers.</p>
-        </div>
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-filter"></i> <a href="https://github.com/zmap/zmap">ZBlacklist</a></h2>
-          <p>ZBlacklist allows quickly filtering out IP addresses that belong to a set of network blocks. It can be used to remove organizations who have requested exclusion from scans.</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-commenting"></i> <a href="https://github.com/zmap/zannotate">ZAnnotate</a></h2>
-          <p>ZAnnotate is a golang utility that annotates IPs with additional metadata, such as Maxmind GeoIP2 locations and routing data from a TABLE_DUMPv2 MRT file.</p>
-        </div>
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-map"></i> <a href="https://github.com/zmap/zschema">ZSchema</a></h2>
-          <p>ZSchema is a high-level programming language for describing database schemas. Schemas can be used to validate datasets and be compiled into schemas for other databases.</p>
-        </div>
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-id-card-o"></i> <a href="https://github.com/zmap/zcertificate">ZCertificate</a></h2>
-          <p>ZCertificate is a command-line utility that parses X.509 certificates, performs browser validation and ZLint tests, and produces a JSON description of the certificate.</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-			<h2><i class="fa fa-fw fa-download"></i> <a href="https://github.com/zmap/zmap">ZTee</a></h2>
-          <p>ZTee is a custom version of the Linux utility tee that can efficiently buffer large amounts of scan data between different phases of a scan. It also produces metadata and updates on progress.</p>
-        </div>
-        <div class="col-md-4">
-          <h2><i class="fa fa-fw fa-id-card-o"></i> <a href="https://github.com/zmap/zannotate">mrt2json</a></h2>
-          <p>mrt2json is a simple utility for dumping MRT files to JSON similar to bgpdump.</p>
-        </div>
       </div>
 
       <hr>
 
       <footer>
-        <p>&copy; 2019 The ZMap Team</p>
+        <p>&copy; 2020 The ZMap Team</p>
       </footer>
     </div> <!-- /container -->
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
