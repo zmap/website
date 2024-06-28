@@ -47,7 +47,7 @@
     <div class="container page">
       <!-- Example row of columns -->
       <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
 
 		  <p>The ZMap Project is a collection of open source tools for
 		  performing large-scale studies of hosts and services on the Internet.
@@ -65,6 +65,9 @@
 
           <div class="row">
             <div class="col-md-11 papers">
+
+			  <h2>ZMap</h2>
+
               <h3><a href="https://zmap.io/paper.pdf">ZMap: Fast Internet-Wide Scanning and its Security Applications</a></h3>
               <p>Zakir Durumeric, Eric Wustrow, and J. Alex Halderman<br/>
               22nd USENIX Security Symposium, August 2013</p>
@@ -85,67 +88,6 @@
               Internet-wide surveys, informed by our own experiences conducting a
               long-term research survey over the past year.</p>
 
-              <h3><a href="https://zakird.com/papers/zdns.pdf">ZDNS: A Fast DNS Toolkit for Internet Measurement</a></h3>
-              <p>Liz Izhikevich, Gautam Akiwate, Briana Berger, Spencer Drakontaidis, Anna Ascheman, Paul Pearce, David Adrian, and Zakir Durumeric<br/>
-              ACM Internet Measurement Conference (IMC), October 2022</p>
-
-			  <p class="abstract">Active DNS measurement is fundamental to
-			  understanding and im- proving the DNS ecosystem. However, the
-			  absence of an extensible, high-performance, and easy-to-use DNS
-			  toolkit has limited both the reproducibility and coverage of DNS
-			  research. In this paper, we introduce ZDNS, a modular and
-			  open-source active DNS measure- ment framework optimized for
-			  large-scale research studies of DNS on the public Internet. We
-			  describe ZDNS’s architecture, evaluate its performance, and
-			  present two case studies that highlight how the tool can be used
-			  to shed light on the operational complexities of DNS. We hope
-			  that ZDNS will enable researchers to better—and in a more
-			  reproducible manner—understand Internet behavior.</p>
-
-			  <h3><a href="https://zakird.com/papers/zlint.pdf">ZLint: Tracking Certificate Misissuance in the Wild</a></h3>
-              <p>Deepak Kumar, Zhengping Wang, Matthew Hyder, Joseph Dickinson, Gabrielle Beck, David Adrian,
-              Joshua Mason, Zakir Durumeric, J. Alex Halderman, Michael Bailey<br/>
-              IEEE Symposium on Security and Privacy ("Oakland"), May 2018</p>
-
-              <p class="abstract">Over the past 20 years, websites have grown increasingly complex
-              and interconnected. In 2016, only a negligible number of sites are
-              dependency free, and over 90% of sites rely on external content.
-              In this paper, we investigate the current state of web dependencies
-              and explore two security challenges associated with the increasing
-              reliance on external services: (1) the expanded attack surface associated
-              with serving unknown, implicitly trusted third-party content,
-              and (2) how the increased set of external dependencies impacts
-              HTTPS adoption. We hope that by shedding light on these issues,
-              we can encourage developers to consider the security risks associated
-              with serving third-party content and prompt service providers
-              to more widely deploy HTTPS.</p>
-
-              <h3><a href="https://zakird.com/papers/lzr.pdf">LZR: Identifying Unexpected Internet Services</a></h3>
-              <p>Liz Izhikevich, Renata Teixeira, and Zakir Durumeric<br/>
-              USENIX Security Symposium, August 2021</p>
-
-			  <p class="abstract">Internet-wide scanning is a commonly used
-			  research tech- nique that has helped uncover real-world attacks,
-			  find crypto- graphic weaknesses, and understand both operator and
-			  mis- creant behavior. Studies that employ scanning have largely
-			  assumed that services are hosted on their IANA-assigned ports,
-			  overlooking the study of services on unusual ports. In this work,
-			  we investigate where Internet services are deployed in practice
-			  and evaluate the security posture of services on unexpected
-			  ports. We show protocol deployment is more dif- fuse than
-			  previously believed and that protocols run on many additional
-			  ports beyond their primary IANA-assigned port. For example, only
-			  3% of HTTP and 6% of TLS services run on ports 80 and 443,
-			  respectively. Services on non-standard ports are more likely to
-			  be insecure, which results in studies dramatically
-			  underestimating the security posture of Inter- net hosts.
-			  Building on our observations, we introduce LZR (“Laser”), a
-			  system that identifies 99% of identifiable unex- pected services
-			  in five handshakes and dramatically reduces the time needed to
-			  perform application-layer scans on ports with few responsive
-			  expected services (e.g., 5500% speedup on 27017/MongoDB). We
-			  conclude with recommendations for future studies.</p>
-
               <h3><a href="https://jhalderm.com/pub/papers/zmap10gig-woot14.pdf">Zippier ZMap: Internet-Wide Scanning at 10 Gbps</a></h3>
               <p>David Adrian, Zakir Durumeric, Gulshan Singh, and J. Alex Halderman<br/>
               USENIX Workshop on Offensive Technologies (WOOT), August 2014</p>
@@ -162,7 +104,26 @@
               both defenders and attackers, and we briefly discuss a range of
               potential applications.</p>
 
-              <h3><a href="https://jhalderm.com/pub/papers/censys-ccs15.pdf">Censys: A Search Engine Backed by Internet-Wide Scanning</a></h3>
+              <h3><a href="https://arxiv.org/pdf/2406.15585">Ten Years of ZMap</a></h3>
+              <p>Zakir Durumeric, David Adrian, Phillip Stephens, Eric Wustrow, and J. Alex Halderman</p>
+
+			  <p class="abstract">Since ZMap’s debut in 2013, networking and
+			  security researchers have used the open-source scanner to write
+			  hundreds of research papers that study Internet behavior. In
+			  addition, ZMap powers much of the attack-surface management and
+			  security ratings industries, and more than a dozen security
+			  companies have built products on top of ZMap. Behind the scenes,
+			  much of ZMap’s behavior—ranging from its pseudorandom IP
+			  generation to its packet construction—has quietly evolved as we
+			  have learned more about how to scan the Internet. In this work,
+			  we quantify ZMap’s adoption over the ten years since its release,
+			  describe its modern behavior (and the measurements that motivated
+			  those changes), and offer lessons from releasing and maintaining
+			  ZMap.</p>
+
+			  <h2>ZGrab and ZCrypto</h2>
+
+              <h3><a href="https://jhalderm.com/pub/papers/censys-ccs15.pdf">A Search Engine Backed by Internet-Wide Scanning</a></h3>
               <p>Zakir Durumeric, David Adrian, Ariana Mirian, Michael Bailey, J. Alex Halderman<br/>
               22nd ACM Conference on Computer and Communications Security (CCS'15)</p>
 
@@ -188,6 +149,77 @@
               Censys's applications and show how recent questions become simple
               to answer.</p>
 
+			  <h2>ZDNS</h2>
+
+              <h3><a href="https://zakird.com/papers/zdns.pdf">ZDNS: A Fast DNS Toolkit for Internet Measurement</a></h3>
+              <p>Liz Izhikevich, Gautam Akiwate, Briana Berger, Spencer Drakontaidis, Anna Ascheman, Paul Pearce, David Adrian, and Zakir Durumeric<br/>
+              ACM Internet Measurement Conference (IMC), October 2022</p>
+
+			  <p class="abstract">Active DNS measurement is fundamental to
+			  understanding and im- proving the DNS ecosystem. However, the
+			  absence of an extensible, high-performance, and easy-to-use DNS
+			  toolkit has limited both the reproducibility and coverage of DNS
+			  research. In this paper, we introduce ZDNS, a modular and
+			  open-source active DNS measure- ment framework optimized for
+			  large-scale research studies of DNS on the public Internet. We
+			  describe ZDNS’s architecture, evaluate its performance, and
+			  present two case studies that highlight how the tool can be used
+			  to shed light on the operational complexities of DNS. We hope
+			  that ZDNS will enable researchers to better—and in a more
+			  reproducible manner—understand Internet behavior.</p>
+
+
+			  <h2>LZR ("Laser")</h2>
+
+              <h3><a href="https://zakird.com/papers/lzr.pdf">Identifying Unexpected Internet Services</a></h3>
+              <p>Liz Izhikevich, Renata Teixeira, and Zakir Durumeric<br/>
+              USENIX Security Symposium, August 2021</p>
+
+			  <p class="abstract">Internet-wide scanning is a commonly used
+			  research tech- nique that has helped uncover real-world attacks,
+			  find crypto- graphic weaknesses, and understand both operator and
+			  mis- creant behavior. Studies that employ scanning have largely
+			  assumed that services are hosted on their IANA-assigned ports,
+			  overlooking the study of services on unusual ports. In this work,
+			  we investigate where Internet services are deployed in practice
+			  and evaluate the security posture of services on unexpected
+			  ports. We show protocol deployment is more dif- fuse than
+			  previously believed and that protocols run on many additional
+			  ports beyond their primary IANA-assigned port. For example, only
+			  3% of HTTP and 6% of TLS services run on ports 80 and 443,
+			  respectively. Services on non-standard ports are more likely to
+			  be insecure, which results in studies dramatically
+			  underestimating the security posture of Inter- net hosts.
+			  Building on our observations, we introduce LZR (“Laser”), a
+			  system that identifies 99% of identifiable unex- pected services
+			  in five handshakes and dramatically reduces the time needed to
+			  perform application-layer scans on ports with few responsive
+			  expected services (e.g., 5500% speedup on 27017/MongoDB). We
+			  conclude with recommendations for future studies.</p>
+
+
+			  <h2>ZLint</h2>
+
+			  <h3><a href="https://zakird.com/papers/zlint.pdf">Tracking Certificate Misissuance in the Wild</a></h3>
+              <p>Deepak Kumar, Zhengping Wang, Matthew Hyder, Joseph Dickinson, Gabrielle Beck, David Adrian,
+              Joshua Mason, Zakir Durumeric, J. Alex Halderman, Michael Bailey<br/>
+              IEEE Symposium on Security and Privacy ("Oakland"), May 2018</p>
+
+              <p class="abstract">Over the past 20 years, websites have grown increasingly complex
+              and interconnected. In 2016, only a negligible number of sites are
+              dependency free, and over 90% of sites rely on external content.
+              In this paper, we investigate the current state of web dependencies
+              and explore two security challenges associated with the increasing
+              reliance on external services: (1) the expanded attack surface associated
+              with serving unknown, implicitly trusted third-party content,
+              and (2) how the increased set of external dependencies impacts
+              HTTPS adoption. We hope that by shedding light on these issues,
+              we can encourage developers to consider the security risks associated
+              with serving third-party content and prompt service providers
+              to more widely deploy HTTPS.</p>
+
+
+			  <h2>ZBrowse</h2>
 
               <h3><a href="https://zakird.com/papers/tangled_web.pdf">Security Challenges in an Increasingly Tangled Web</a></h3>
               <p>Deepak Kumar, Zane Ma, Zakir Durumeric, Ariana Mirian, Joshua Mason, J. Alex Halderman, and Michael Bailey<br/>
@@ -213,7 +245,7 @@
       <div class="row">
         <div class="col-md-8">
           <footer>
-            <p>&copy; 2022 The ZMap Team</p>
+            <p>&copy; 2024 The ZMap Team</p>
           </footer>
         </div>
       </div>
